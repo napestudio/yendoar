@@ -39,16 +39,22 @@ export default function CodeCard({
 
   return (
     <>
-      <Card className="w-full" key={discountCode.id}>
-        <CardHeader className="flex flex-row items-center gap-2">
+      <Card className="w-72 max-w-[95vw]" key={discountCode.id}>
+        <CardHeader className="flex flex-row items-center gap-2 text-left">
           <div className="grid gap-1">
-            <CardTitle className="text-xl">{discountCode.code}</CardTitle>
+            <CardTitle className="text-2xl">{discountCode.code}</CardTitle>
             <CardDescription>
-              Evento: {discountCode.event.title}
+              <span className="font-bold text-xl">
+                {discountCode.discount}%
+              </span>
             </CardDescription>
             <CardDescription>
+              Evento:{" "}
+              <span className="font-bold">{discountCode.event.title}</span>
+            </CardDescription>
+            {/* <CardDescription>
               Expira: {format(discountCode.expiresAt, "dd/MM/yyyy")}
-            </CardDescription>
+            </CardDescription> */}
           </div>
         </CardHeader>
         <CardFooter className="flex justify-start gap-4">
@@ -56,12 +62,7 @@ export default function CodeCard({
             <FileEditIcon className="w-6 h-6" />
             <span className="sr-only">Editar</span>
           </Link>
-          <Button
-            className="text-red-500"
-            size="icon"
-            variant="ghost"
-            onClick={handleDeleteCode}
-          >
+          <Button size="icon" variant="destructive" onClick={handleDeleteCode}>
             <TrashIcon className="w-6 h-6" />
             <span className="sr-only"> Eliminar </span>
           </Button>

@@ -8,7 +8,7 @@ import CreateCodeForm from "../components/create-discount-code/create-discount-c
 import { getEventsByUserId } from "@/lib/api/eventos";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
-export default async function NewEvent() {
+export default async function NewCode() {
   const session = await getServerSession(authOptions);
   const { id } = await getUserByEmail(session?.user?.email as string);
   const events = await getEventsByUserId(id);
