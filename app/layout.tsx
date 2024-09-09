@@ -20,6 +20,7 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: `${SITE_NAME} | Entradas online`,
   description: `${SITE_DESCRIPTION}`,
+  openGraph: { images: { url: "/og.jpg" } },
 };
 
 export default async function RootLayout({
