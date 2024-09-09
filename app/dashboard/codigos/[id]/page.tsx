@@ -21,7 +21,7 @@ export default async function EditCode({ params }: { params: { id: string } }) {
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
         Editar código
       </h1>
-      <div className="bg-gray-100 p-5 rounded w-full">
+      <div className="bg-gray-100 p-5 mt-5 rounded w-full text-left">
         <EditCodeForm
           discountCode={discountCode as DiscountCode}
           events={events as Evento[]}

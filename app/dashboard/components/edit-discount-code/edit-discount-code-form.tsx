@@ -173,7 +173,7 @@ export default function EditCodeForm({
             control={form.control}
             name="expiresAt"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col w-full">
                 <FormLabel>Fecha</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -216,7 +216,7 @@ export default function EditCodeForm({
                 Guardando...
               </>
             ) : (
-              "Guardar evento"
+              "Guardar código"
             )}
           </Button>
         </form>

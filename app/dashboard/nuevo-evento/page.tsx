@@ -14,7 +14,7 @@ export default async function NewEvent() {
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
         Nuevo evento
       </h1>
-      <div className="bg-gray-100 p-5 rounded w-full text-left">
+      <div className="bg-gray-100 p-5 mt-5 rounded w-full text-left">
         <CreateEventForm userId={id} />
       </div>
     </>

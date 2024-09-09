@@ -142,6 +142,8 @@ export default function CreateCodeForm({ events }: { events: any }) {
               <FormControl>
                 <Input
                   placeholder="Porcentaje de descuento"
+                  max={100}
+                  maxLength={3}
                   {...field}
                   type="number"
                   onChange={(e) => field.onChange(Number(e.target.value))}
