@@ -22,7 +22,7 @@ export default function TicketTypeAccordion({
 }) {
   const [type, setType] = useState<string>("");
   return (
-    <div className="w-full mx-auto">
+    <div className="w-full mx-auto text-left">
       <div className="flex flex-col gap-4 w-full">
         <div className="bg-gray-50 p-5 rounded w-full">
           {ticketTypes.length > 0 ? (
