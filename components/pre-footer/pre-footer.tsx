@@ -43,7 +43,7 @@ export default function PreFooter() {
             </p>
             <p>
               Por consultas o reclamos escribir a{" "}
-              <span className="font-bold">yendoar@gmail.com</span>
+              <span className="font-bold">entradas.yendo@gmail.com</span>
             </p>
           </div>
         </div>
