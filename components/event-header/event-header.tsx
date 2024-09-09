@@ -62,7 +62,7 @@ export default function EventHeader({
               </div>
             </div>
             <div
-              className={`relative m-auto md:aspect-auto aspect-square h-[${height}rem] w-[${width}rem] max-w-full overflow-hidden`}
+              className={`relative m-auto aspect-square h-[${height}rem] w-[${width}rem] max-w-full overflow-hidden`}
             >
               <Image
                 src={evento?.image || ""}
