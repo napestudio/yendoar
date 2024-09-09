@@ -5,7 +5,7 @@ import { payOrderHandler } from "@/lib/actions";
 // ESTE TOKEN PUEDE SER EL GLOBAL DE LA MARCA,
 // NO NECESITA SER EL DEL USUARIO Y BASICAMENTE
 // ACA NO PODEMOS CONSEGUIR EL DEL USUARIO,
-// LO USAMOS SOLO PARA VER EL ESTADO DLE PAGO
+// LO USAMOS SOLO PARA VER EL ESTADO DEL PAGO
 const client = new MercadoPagoConfig({
   accessToken: process.env.MP_ACCESS_TOKEN!,
 });

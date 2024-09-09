@@ -53,7 +53,10 @@ export default function OrderTotal({
       </div>
       <div className="item bg-gray-100 border-4 text-2xl border-black rounded-none p-5">
         <span>TOTAL:</span>
-        <span className="font-bold"> ${totalWithServiceCharge}</span>
+        <span className="font-bold">
+          {" "}
+          ${totalWithServiceCharge.toLocaleString("es-ar")}
+        </span>
       </div>
     </div>
   );
