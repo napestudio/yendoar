@@ -35,7 +35,7 @@ export default function EventInfo({
   useEffect(() => {
     updateTicketsData();
   }, []);
-  console.log(ticketsData);
+
   return (
     <>
       {ticketsData.length > 0 && (
