@@ -7,6 +7,7 @@ import { TicketOrderType } from "@/types/tickets";
 import { DataTable } from "./data-table";
 import { getColumns } from "./colums";
 import { useEffect, useState } from "react";
+import { Card } from "@/components/ui/card";
 
 type EventInfoProps = {
   eventId: string;
@@ -21,6 +22,7 @@ export default function EventInfo({
     []
   );
   const columns = getColumns("ESTADISTICAS");
+
   const updateTicketsData = async () => {
     try {
       const res = await getOrderTicketsByEvent(eventId);
@@ -33,7 +35,7 @@ export default function EventInfo({
   useEffect(() => {
     updateTicketsData();
   }, []);
-
+  console.log(ticketsData);
   return (
     <>
       {ticketsData.length > 0 && (
@@ -69,6 +71,9 @@ export default function EventInfo({
             </div>
           </div>
         </div>
+      )}
+      {ticketsData.length == 0 && (
+        <Card className="p-6">Aún no hay información sobre el evento.</Card>
       )}
     </>
   );
