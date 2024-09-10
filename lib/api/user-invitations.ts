@@ -51,7 +51,7 @@ export async function createUserInvitation(data: UserInvitation) {
             siguiente enlace.
           </p>
           <form
-            action="${process.env.BASE_URL}api/invitations/accept"
+            action="${process.env.BASE_URL}/api/invitations/accept"
             method="POST"
             style="display: inline-block"
           >
