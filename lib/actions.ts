@@ -291,7 +291,7 @@ export async function payOrderHandler(orderId: string) {
       });
     }
   });
-  createTicketOrder(ticketsData);
+  await createTicketOrder(ticketsData);
 }
 
 export async function createFreeTicket(
@@ -312,7 +312,7 @@ export async function createTicketOrder(tickets: TicketOrderType[]) {
     const result = await TicketOrders.createTicketOrder(tickets);
     console.log("🚀 ~ createTicketOrder ~ result:", result)
     if (result.length > 0) {
-      sendTicketMail(result as TicketOrderType[]);
+      return await sendTicketMail(result as TicketOrderType[]);
     }
   } catch (error) {
     throw new Error("Error tickets");
