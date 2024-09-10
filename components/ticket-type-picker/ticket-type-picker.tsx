@@ -122,7 +122,9 @@ export default function TicketTypePicker({
         throw new Error("Error creando order");
       });
   }
-
+  const isPastEndDate = (endDate: Date): boolean => {
+    return isBefore(new Date(endDate), new Date());
+  };
   function submitCode(event: FormEvent) {
     setIsLoading(true);
 
@@ -132,9 +134,18 @@ export default function TicketTypePicker({
     );
 
     if (matchingCode) {
-      setDiscount(true);
-      setaddedCode(matchingCode.id);
-      setDiscountOpen(false);
+      if (matchingCode.expiresAt && !isPastEndDate(matchingCode.expiresAt)) {
+        setDiscount(true);
+        setaddedCode(matchingCode.id);
+        setDiscountOpen(false);
+      } else {
+        setDiscount(false);
+        toast({
+          variant: "destructive",
+          title: "Código no válido",
+        });
+        setDiscountOpen(false);
+      }
     } else {
       setDiscount(false);
       toast({
@@ -146,10 +157,6 @@ export default function TicketTypePicker({
     setIsLoading(false);
     setDiscountInput("");
   }
-
-  const isPastEndDate = (endDate: Date): boolean => {
-    return isBefore(new Date(endDate), new Date());
-  };
 
   useEffect(() => {
     const selectedTicket = tickets.find(
