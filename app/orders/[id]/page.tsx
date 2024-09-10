@@ -49,7 +49,7 @@ export default async function OrderPage({
         height={10}
       />
 
-      <section className="w-full py-6 md:py-6 mt-[6rem] text-white">
+      <section className="w-full py-6 md:py-6 mt-[6rem] text-white px-4">
         <h2 className="mb-14 mt-10 scroll-m-20 text-4xl uppercase font-medium tracking-tight lg:text-6xl text-white text-stroke text-center">
           Datos de tu orden
         </h2>
