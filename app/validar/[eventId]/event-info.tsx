@@ -73,7 +73,9 @@ export default function EventInfo({
         </div>
       )}
       {ticketsData.length == 0 && (
-        <Card className="p-6">Aún no hay información sobre el evento.</Card>
+        <Card className="p-6 text-center">
+          Aún no hay información sobre el evento.
+        </Card>
       )}
     </>
   );
