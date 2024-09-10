@@ -313,6 +313,7 @@ export async function createTicketOrder(tickets: TicketOrderType[]) {
     if (result.length > 0) {
       sendTicketMail(result as TicketOrderType[]);
     }
+      console.log("🚀 ~ createTicketOrder ~ result:", result)
   } catch (error) {
     throw new Error("Error tickets");
   }
