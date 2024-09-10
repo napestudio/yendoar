@@ -9,9 +9,10 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendEmail = async (buyer: string, subject: string, html: string, attachments : any) => {
+  console.log("🚀 ~ sendEmail ~ buyer:", buyer)
   const mailOptions: any = {
     from: process.env.GMAIL_USER,
-    to: [buyer, process.env.GMAIL_USER],
+    to: [buyer, process.env.EMAIL],
     subject,
     html,
     attachments,
