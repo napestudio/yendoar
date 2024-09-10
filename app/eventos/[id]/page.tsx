@@ -1,14 +1,29 @@
 import { getEventById, getServiceCharge } from "@/lib/actions";
-import Image from "next/image";
-import { CalendarIcon, MapPin } from "lucide-react";
 import { datesFormater } from "@/lib/utils";
 import TicketTypePicker from "@/components/ticket-type-picker/ticket-type-picker";
 import EventHeader from "@/components/event-header/event-header";
 import { Evento as EventoType } from "@/types/event";
-import { getAllUserConfiguration } from "@/lib/api/user-configuration";
 import { DiscountCode } from "@/types/discount-code";
 import { Suspense } from "react";
 import Loader from "../loader";
+import { Metadata, ResolvingMetadata } from "next";
+
+export async function generateMetadata(
+  { params }: { params: { id: string } },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const id = params.id;
+
+  const evento = await getEventById(params.id);
+
+  return {
+    title: `${evento?.title} | ${evento?.location}`,
+    description: evento?.description,
+    openGraph: {
+      images: evento?.image ? [{ url: evento.image }] : [],
+    },
+  };
+}
 
 export default async function Evento({ params }: { params: { id: string } }) {
   const evento = await getEventById(params.id);
