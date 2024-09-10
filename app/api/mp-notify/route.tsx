@@ -14,7 +14,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const r = await req.json();
   //const topic = r.topic || r.type;
   const topic = r.type;
-
+  console.log(r);
   try {
     if (topic === "payment") {
       const paymentId = r.data.id;
