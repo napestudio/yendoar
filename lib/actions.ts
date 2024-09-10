@@ -310,10 +310,10 @@ export async function createFreeTicket(
 export async function createTicketOrder(tickets: TicketOrderType[]) {
   try {
     const result = await TicketOrders.createTicketOrder(tickets);
+    console.log("🚀 ~ createTicketOrder ~ result:", result)
     if (result.length > 0) {
       sendTicketMail(result as TicketOrderType[]);
     }
-      console.log("🚀 ~ createTicketOrder ~ result:", result)
   } catch (error) {
     throw new Error("Error tickets");
   }
