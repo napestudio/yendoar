@@ -12,14 +12,12 @@ const client = new MercadoPagoConfig({
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const r = await req.json();
-  console.log("🚀 ~ POST ~ r:", r);
-  //const topic = r.topic || r.type;
-  const topic = r.type;
+  const topic = r.topic || r.type;
+  // const topic = r.type;
   try {
     if (topic === "payment") {
       const paymentId = r.data.id;
       const payment = await new Payment(client).get({ id: paymentId });
-      console.log(paymentId, payment, client);
       if (payment.status === "approved") {
         let orderId = payment.external_reference;
         await payOrderHandler(orderId!);
