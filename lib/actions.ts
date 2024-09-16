@@ -259,7 +259,11 @@ export async function getMercadPagoUrl(
     throw new Error("Error MercadoPago");
   }
   if (preference) {
-    redirect(preference.init_point!);
+    if (process.env.NODE_ENV === "production") {
+      redirect(preference.init_point!);
+    } else {
+      redirect(preference.sandbox_init_point!);
+    }
   }
 }
 
