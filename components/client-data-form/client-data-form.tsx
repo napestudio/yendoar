@@ -50,7 +50,6 @@ export default function UserDataForm({ order }: { order: Order }) {
   const [hasDiscount, setHasDiscount] = useState<boolean>(false);
   const [discountPercent, setDiscountPercent] = useState<number | null>(null);
   const [isFree, setIsFree] = useState<boolean>(false);
-  const [is2x1, setIs2x1] = useState<boolean>(false);
   const orderId = order?.id;
   const userId = order?.event!.userId;
 
@@ -67,9 +66,6 @@ export default function UserDataForm({ order }: { order: Order }) {
       setHasDiscount(true);
       setDiscountPercent(matchingCode.discount);
       setIsFree(matchingCode.discount === 100);
-    }
-    if(order.ticketType?.buyGet === 2) {
-      setIs2x1(true);
     }
   }, [order]);
 
