@@ -12,6 +12,7 @@ const client = new MercadoPagoConfig({
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const r = await req.json();
+  console.log("🚀 ~ POST ~ r:", r)
   const topic = r.topic || r.type;
   // const topic = r.type;
   try {
