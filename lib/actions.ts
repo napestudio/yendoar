@@ -42,6 +42,21 @@ export type Evento = {
   endDate: string;
 };
 
+export async function getAvailability(
+  eventId: string,
+  ticketTypeId: string,
+  tickets: number
+) {
+  try {
+    const ticketsRes = await TicketTypes.getTicketTypesById(ticketTypeId);
+    const ticketsOrderRes = await TicketOrders.getOrderTicketsByEvent(eventId);
+    const availableTickets = ticketsRes!.quantity - ticketsOrderRes.length;
+    return availableTickets >= 0;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}
+
 export async function createEvent(data: Evento) {
   let eventId = null;
   try {

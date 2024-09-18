@@ -101,6 +101,8 @@ export default function TicketTypePicker({
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
+
+    // check for availability
     const orderData = {
       ticketTypeId: data.ticketType,
       status: "PENDING",
