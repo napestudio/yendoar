@@ -8,7 +8,7 @@ import { payOrderHandler } from "@/lib/actions";
 // LO USAMOS SOLO PARA VER EL ESTADO DEL PAGO
 const client = new MercadoPagoConfig({
   accessToken:
-    "APP_USR-3322264706263758-090912-65e5b06899deb5c24feb199fc20da7fd-54797482",
+    "APP_USR-3672614689710911-091713-66f39925b4b509d12c1615a3f21d2b01-1031008335",
 });
 // PUSE EL TOKEN ACA PORQUE DESDE EL ENV LO ESTABA TOMANDO MAL Y ESO PUEDE SER EL PROBLEMA DEL FALLO
 
@@ -18,22 +18,24 @@ export async function POST(req: NextRequest, res: NextResponse) {
   try {
     if (topic === "payment") {
       const paymentId = r.data.id;
-      console.log("🚀 ~ POST ~ r:", r)
-      console.log("🚀 ~ POST ~ r:", client)
-
-      const payment = await new Payment(client).get({ id: paymentId });
-      console.log("🚀 ~ POST ~ payment:", payment)
-
-      if (payment.status === "approved") {
-        let orderId = payment.external_reference;
-        await payOrderHandler(orderId!);
-        return NextResponse.json({ data: "OK" }, { status: 201 });
-      } else {
-        // Return a different response if payment status is not approved
-        return NextResponse.json(
-          { data: "Payment not approved" },
-          { status: 400 }
-        );
+      console.log("🚀 ~ POST ~ r:", r);
+      console.log("🚀 ~ POST ~ r:", client);
+      try {
+        const payment = await new Payment(client).get({ id: paymentId });
+        console.log("🚀 ~ POST ~ payment:", payment);
+        if (payment.status === "approved") {
+          let orderId = payment.external_reference;
+          await payOrderHandler(orderId!);
+          return NextResponse.json({ data: "OK" }, { status: 201 });
+        } else {
+          // Return a different response if payment status is not approved
+          return NextResponse.json(
+            { data: "Payment not approved" },
+            { status: 400 }
+          );
+        }
+      } catch (error) {
+        console.log("payment error", error);
       }
     } else {
       // Return a response when topic is not 'payment'
