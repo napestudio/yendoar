@@ -18,8 +18,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
   try {
     if (topic === "payment") {
       const paymentId = r.data.id;
+      console.log("🚀 ~ POST ~ r:", r)
 
       const payment = await new Payment(client).get({ id: paymentId });
+      console.log("🚀 ~ POST ~ payment:", payment)
 
       if (payment.status === "approved") {
         let orderId = payment.external_reference;
