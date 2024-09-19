@@ -20,7 +20,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const topic = r.topic || r.type;
 
   const MP_ACCESS_TOKEN = await getMercadoPagoTokenByUser(userId!);
-  console.log("🚀 ~ MP_ACCESS_TOKEN ~ id:", MP_ACCESS_TOKEN)
+  // console.log("🚀 ~ MP_ACCESS_TOKEN ~ id:", MP_ACCESS_TOKEN)
   const client = new MercadoPagoConfig({
     accessToken: MP_ACCESS_TOKEN!,
   });
@@ -32,10 +32,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
       }    
 
       const paymentId = r.data.id;
-      console.log("🚀 ~ POST ~ client:", client)
-      console.log("🚀 ~ POST ~ paymentId:", paymentId)
+      // console.log("🚀 ~ POST ~ client:", client)
+      // console.log("🚀 ~ POST ~ paymentId:", paymentId)
       const payment = await new Payment(client).get({ id: paymentId });
-      console.log("🚀 ~ POST ~ payment:", payment)
+      // console.log("🚀 ~ POST ~ payment:", payment)
 
 
       if (payment.status === "approved") {
