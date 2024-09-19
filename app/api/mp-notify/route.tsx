@@ -7,19 +7,20 @@ import { payOrderHandler } from "@/lib/actions";
 // ACA NO PODEMOS CONSEGUIR EL DEL USUARIO,
 // LO USAMOS SOLO PARA VER EL ESTADO DEL PAGO
 const client = new MercadoPagoConfig({
-  accessToken: process.env.MP_ACCESS_TOKEN!,
+  accessToken:
+    "APP_USR-3322264706263758-090912-65e5b06899deb5c24feb199fc20da7fd-54797482",
 });
+// PUSE EL TOKEN ACA PORQUE DESDE EL ENV LO ESTABA TOMANDO MAL Y ESO PUEDE SER EL PROBLEMA DEL FALLO
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const r = await req.json();
-  console.log("🚀 ~ POST ~ r:", r)
   const topic = r.topic || r.type;
-  // const topic = r.type;
   try {
     if (topic === "payment") {
       const paymentId = r.data.id;
+
       const payment = await new Payment(client).get({ id: paymentId });
-      console.log("🚀 ~ POST ~ payment:", payment)
+
       if (payment.status === "approved") {
         let orderId = payment.external_reference;
         await payOrderHandler(orderId!);

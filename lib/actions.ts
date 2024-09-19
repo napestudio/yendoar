@@ -262,7 +262,7 @@ export async function getMercadPagoUrl(
     // if (process.env.NODE_ENV === "production") {
     redirect(preference.init_point!);
     // } else {
-    //   redirect(preference.sandbox_init_point!);
+    // redirect(preference.sandbox_init_point!);
     // }
   }
 }
