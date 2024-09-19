@@ -19,7 +19,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     if (topic === "payment") {
       const paymentId = r.data.id;
       console.log("🚀 ~ POST ~ r:", r);
-      console.log("🚀 ~ POST ~ r:", client);
+      console.log("CLIENT:", client);
       try {
         const payment = await new Payment(client).get({ id: paymentId });
         console.log("🚀 ~ POST ~ payment:", payment);
