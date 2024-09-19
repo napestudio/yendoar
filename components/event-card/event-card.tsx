@@ -15,11 +15,16 @@ import { datesFormater } from "@/lib/utils";
 
 export default function EventCard({ evento }: { evento: HomeCard }) {
   const groupedDates = datesFormater(evento.dates as string);
-
+  console.log(evento.userId);
+  if (
+    evento.userId === "cm0vhobsu00039p6awxcj4dmt" &&
+    process.env.NODE_ENV === "production"
+  )
+    return;
   return (
     <Link
       href={`eventos/${evento.id}`}
-      className="overflow-hidden border-4 rounded-sm border-black shadow-hard bg-white "
+      className="overflow-hidden border-4 rounded-sm border-black shadow-hard bg-white"
     >
       <Card className="border-none rounded-none flex flex-col h-full">
         <div className="aspect-[16/9] relative border-b-4 border-black">

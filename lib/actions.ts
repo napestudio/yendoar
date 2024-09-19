@@ -273,7 +273,7 @@ export async function payOrderHandler(orderId: string) {
 
   const dates = JSON.parse(order.ticketType.dates!);
   const is2x1 = order.ticketType.buyGet === 2;
-  order.quantity = is2x1? (order.quantity*2): order.quantity;
+  order.quantity = is2x1 ? order.quantity * 2 : order.quantity;
 
   updateOrder(
     {
