@@ -252,7 +252,7 @@ export async function getMercadPagoUrl(
           success: `${siteUrl}/`,
           failure: `${siteUrl}/`,
         },
-        notification_url: `${siteUrl}/api/mp-notify`,
+        notification_url: `${siteUrl}/api/mp-notify?user_id=${userId}`,
       },
     });
   } catch (error) {
