@@ -14,13 +14,12 @@ import { getMercadoPagoTokenByUser, payOrderHandler } from "@/lib/actions";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const r = await req.json();
-  
+
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("user_id");
   const topic = r.topic || r.type;
 
   const MP_ACCESS_TOKEN = await getMercadoPagoTokenByUser(userId!);
-  // console.log("🚀 ~ MP_ACCESS_TOKEN ~ id:", MP_ACCESS_TOKEN)
   const client = new MercadoPagoConfig({
     accessToken: MP_ACCESS_TOKEN!,
   });
@@ -29,14 +28,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
     if (topic === "payment") {
       if (!userId) {
         return NextResponse.json({ msg: "No user id" });
-      }    
+      }
 
       const paymentId = r.data.id;
-      // console.log("🚀 ~ POST ~ client:", client)
-      // console.log("🚀 ~ POST ~ paymentId:", paymentId)
-      const payment = await new Payment(client).get({ id: paymentId });
-      // console.log("🚀 ~ POST ~ payment:", payment)
 
+      const payment = await new Payment(client).get({ id: paymentId });
 
       if (payment.status === "approved") {
         let orderId = payment.external_reference;
@@ -44,7 +40,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         return NextResponse.json({ data: "OK" }, { status: 201 });
       } else {
         // Return a different response if payment status is not approved
-        return NextResponse.json(          
+        return NextResponse.json(
           { data: "Payment not approved" },
           { status: 400 }
         );
@@ -54,7 +50,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
       return NextResponse.json({ data: "Invalid topic" }, { status: 400 });
     }
   } catch (error) {
-    console.log("🚀 ~ POST ~ error:", error)
     // Return a response when there is an error
     return NextResponse.json({ error });
   }

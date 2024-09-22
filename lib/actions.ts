@@ -746,3 +746,27 @@ export async function confirmNewPassword(password: string, token: string) {
     throw new Error("Error confirmando nueva contraseña");
   }
 }
+
+export async function getSoldTicketsByType(eventId: string) {
+  let ticketCounts: any = {};
+  try {
+    const orders = await getOrdersByEvent(eventId);
+    orders.forEach((order) => {
+      if (order.status === "PAID") {
+        const { ticketTypeId, ticketType, quantity } = order;
+
+        if (!ticketCounts[ticketTypeId]) {
+          ticketCounts[ticketTypeId] = {
+            title: ticketType.title,
+            count: 0,
+          };
+        }
+
+        ticketCounts[ticketTypeId].count += quantity;
+      }
+    });
+    return ticketCounts;
+  } catch (error) {
+    throw new Error("Error trayendo la cantidad de entradas vendidas");
+  }
+}
