@@ -61,11 +61,13 @@ export default function TicketTypePicker({
   eventId,
   discountCode,
   serviceCharge,
+  soldTickets,
 }: {
   tickets: any;
   eventId: string;
   discountCode?: Partial<DiscountCode>[];
   serviceCharge?: number;
+  soldTickets?: any;
 }) {
   const [discountOpen, setDiscountOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -208,23 +210,30 @@ export default function TicketTypePicker({
                               ticket.status !== "DELETED" &&
                               ticket.status !== "INACTIVE"
                           )
-                          .map((ticket: Partial<TicketType>) => (
-                            <SelectItem
-                              value={ticket.id!}
-                              key={ticket.id}
-                              disabled={
-                                ticket.status === "INACTIVE" ||
-                                ticket.status === "SOLDOUT" ||
-                                (ticket.endDate
-                                  ? isPastEndDate(ticket.endDate)
-                                  : false)
-                              }
-                            >
-                              {ticket.title} |{" "}
-                              {datesFormater(ticket.dates as any)} | $
-                              {ticket.price}
-                            </SelectItem>
-                          ))}
+                          .map((ticket: Partial<TicketType>) => {
+                            const soldTicketCount =
+                              soldTickets[ticket.id!]?.count || 0;
+                            const isSoldOut =
+                              ticket.quantity! === soldTicketCount;
+                            return (
+                              <SelectItem
+                                value={ticket.id!}
+                                key={ticket.id}
+                                disabled={
+                                  isSoldOut ||
+                                  ticket.status === "INACTIVE" ||
+                                  ticket.status === "SOLDOUT" ||
+                                  (ticket.endDate
+                                    ? isPastEndDate(ticket.endDate)
+                                    : false)
+                                }
+                              >
+                                {ticket.title} |{" "}
+                                {datesFormater(ticket.dates as any)} | $
+                                {ticket.price}
+                              </SelectItem>
+                            );
+                          })}
                       </SelectContent>
                     </Select>
 

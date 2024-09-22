@@ -1,4 +1,8 @@
-import { getEventById, getServiceCharge } from "@/lib/actions";
+import {
+  getEventById,
+  getServiceCharge,
+  getSoldTicketsByType,
+} from "@/lib/actions";
 import { datesFormater } from "@/lib/utils";
 import TicketTypePicker from "@/components/ticket-type-picker/ticket-type-picker";
 import EventHeader from "@/components/event-header/event-header";
@@ -29,9 +33,11 @@ export default async function Evento({ params }: { params: { id: string } }) {
   const evento = await getEventById(params.id);
   const groupedDates = datesFormater(evento?.dates as string);
   let serviceCharge;
+  let soldTickets;
   if (evento) {
     const sC = await getServiceCharge(evento?.userId);
     serviceCharge = sC || null;
+    soldTickets = await getSoldTicketsByType(evento.id);
   }
 
   return (
@@ -48,6 +54,7 @@ export default async function Evento({ params }: { params: { id: string } }) {
             <TicketTypePicker
               tickets={evento?.ticketTypes}
               eventId={evento?.id}
+              soldTickets={soldTickets}
               discountCode={
                 evento?.discountCode &&
                 (evento.discountCode as DiscountCode[]).filter(
