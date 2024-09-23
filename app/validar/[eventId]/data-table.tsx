@@ -57,6 +57,7 @@ export function DataTable<TData, TValue>({
     },
     meta: {
       updateData,
+      type: "VALIDADOR",
     } as ExtendedTableMeta<TData>,
   });
 

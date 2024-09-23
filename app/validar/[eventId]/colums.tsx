@@ -7,6 +7,8 @@ import { invalidateTicketById, validateTicketById } from "@/lib/actions";
 import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
+import path from "path";
+import { usePathname } from "next/navigation";
 
 function StatusSwitch({
   status,
@@ -22,6 +24,7 @@ function StatusSwitch({
   type?: "ESTADISTICAS" | "VALIDADOR";
 }) {
   const [isValidated, setIsValidated] = useState(status === "VALIDATED");
+  const pathname = usePathname();
 
   useEffect(() => {
     setIsValidated(status === "VALIDATED");

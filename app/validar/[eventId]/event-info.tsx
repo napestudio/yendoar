@@ -12,16 +12,18 @@ import { Card } from "@/components/ui/card";
 type EventInfoProps = {
   eventId: string;
   type?: "ESTADISTICAS" | "VALIDADOR";
+  soldCount?: any;
 };
 
 export default function EventInfo({
   eventId,
   type = "VALIDADOR",
+  soldCount,
 }: EventInfoProps) {
   const [ticketsData, setTicketsData] = useState<Partial<TicketOrderType>[]>(
     []
   );
-  const columns = getColumns("ESTADISTICAS");
+  const columns = getColumns(type);
 
   const updateTicketsData = async () => {
     try {
@@ -42,6 +44,7 @@ export default function EventInfo({
         <div className="space-y-5 w-full pb-20 bg-white">
           <ValidatorsPageHeader
             ticketsData={ticketsData as Partial<TicketOrderType>[]}
+            soldCount={soldCount}
           />
           <div>
             <div className="flex justify-between mb-5 gap-2 flex-wrap">

@@ -4,23 +4,13 @@ import { TicketOrderType } from "@/types/tickets";
 
 type Props = {
   ticketsData: Partial<TicketOrderType>[];
+  soldCount?: any;
 };
 
-export default function ValidatorsPageHeader({ ticketsData }: Props) {
-  const ticketTitleCounts = ticketsData.reduce((acc, ticket) => {
-    // @ts-ignore
-    const title = ticket.order?.ticketType?.title;
-
-    if (title) {
-      if (!acc[title]) {
-        acc[title] = 0;
-      }
-      acc[title] += 1;
-    }
-
-    return acc;
-  }, {} as Record<string, number>);
-
+export default function ValidatorsPageHeader({
+  ticketsData,
+  soldCount = 0,
+}: Props) {
   const validatedTicketsCount = ticketsData.filter(
     (ticket) => ticket.status === "VALIDATED"
   ).length;
@@ -48,9 +38,12 @@ export default function ValidatorsPageHeader({ ticketsData }: Props) {
               <span className="font-bold">Entradas no validadas:</span>{" "}
               {ticketsData.length - validatedTicketsCount}
             </li>
-            {Object.entries(ticketTitleCounts).map(([title, count]) => (
-              <li key={title}>
-                <span className="font-bold">{title}:</span> {count} tickets
+            {Object.entries(soldCount).map(([ticketId, ticketData]) => (
+              <li key={ticketId}>
+                {/* @ts-ignore */}
+                <span className="font-bold">{ticketData.title}</span>{" "}
+                {/* @ts-ignore */}
+                {ticketData.count}
               </li>
             ))}
           </ul>

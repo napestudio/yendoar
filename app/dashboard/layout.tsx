@@ -30,7 +30,6 @@ export default async function DashboardLayout({
           {children}
         </div>
       </div>
-      <Toaster />
     </>
   );
 }

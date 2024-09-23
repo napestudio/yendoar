@@ -7,8 +7,10 @@ import { toast, useToast } from "@/components/ui/use-toast";
 
 export default function ValidatorsPageHandler({
   eventId,
+  soldCount,
 }: {
   eventId: string;
+  soldCount?: any;
 }) {
   const [hasData, setHasData] = useState<boolean>(false);
   const [dialogError, setDialogError] = useState<string>("");
@@ -45,7 +47,7 @@ export default function ValidatorsPageHandler({
           errorHandler={setDialogError}
         />
       )}
-      {hasData && <EventInfo eventId={eventId} />}
+      {hasData && <EventInfo eventId={eventId} soldCount={soldCount} />}
     </>
   );
 }
