@@ -2,12 +2,13 @@
 import ExportEventAsPDF from "@/components/data-pdf";
 import QrScannerComponent from "@/components/qr-scanner";
 import ValidatorsPageHeader from "@/components/validator-page-header/validator-page-header";
-import { getOrderTicketsByEvent } from "@/lib/actions";
+import { getOrdersByEvent, getOrderTicketsByEvent } from "@/lib/actions";
 import { TicketOrderType } from "@/types/tickets";
 import { DataTable } from "./data-table";
 import { getColumns } from "./colums";
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
+import { Order } from "@/types/order";
 
 type EventInfoProps = {
   eventId: string;
@@ -15,20 +16,74 @@ type EventInfoProps = {
   soldCount?: any;
 };
 
+export type TicketsCountType = {
+  [key: string]: {
+    title: string;
+    count: number;
+  };
+};
+
 export default function EventInfo({
   eventId,
   type = "VALIDADOR",
   soldCount,
 }: EventInfoProps) {
-  const [ticketsData, setTicketsData] = useState<Partial<TicketOrderType>[]>(
-    []
-  );
+  const [ticketsData, setTicketsData] = useState<Partial<Order>[]>([]);
+  const [totalTitckets, setTotalTickets] = useState<number>();
+  const [ticketsCount, setTicketsCount] = useState<TicketsCountType>({});
+
   const columns = getColumns(type);
+
+  const getTotalTicketsAndGroupByType = (orders: Partial<Order[]>) => {
+    const newTicketsCount: TicketsCountType = {};
+
+    orders.forEach((order) => {
+      const quantity = order!.quantity || 0;
+      const buyGet = order!.ticketType?.buyGet || 0;
+      const ticketTypeId = order!.ticketType?.id || "unknown";
+      const ticketTypeTitle = order!.ticketType?.title || "Unknown Type";
+
+      // Si buyGet es mayor a 0, multiplicamos la cantidad, sino solo sumamos la cantidad normal
+      const ticketsSold = buyGet > 0 ? quantity * buyGet : quantity;
+
+      // Si el tipo de ticket ya está en el objeto, sumamos el conteo, sino lo inicializamos
+      if (newTicketsCount[ticketTypeId]) {
+        newTicketsCount[ticketTypeId].count += ticketsSold;
+      } else {
+        newTicketsCount[ticketTypeId] = {
+          title: ticketTypeTitle,
+          count: ticketsSold,
+        };
+      }
+    });
+
+    setTicketsCount(newTicketsCount);
+  };
+
+  function getTotalTickets(orders: Partial<Order[]>) {
+    if (!orders) return;
+    const totalTickets = orders.reduce((total, order) => {
+      const quantity = order!.quantity || 0;
+      const buyGet = order!.ticketType?.buyGet || 0;
+
+      // Si buyGet es mayor a 0, multiplicamos la cantidad, sino solo sumamos la cantidad normal
+      const ticketsSold = buyGet > 0 ? quantity * buyGet : quantity;
+
+      return total + ticketsSold;
+    }, 0);
+
+    return totalTickets;
+  }
 
   const updateTicketsData = async () => {
     try {
-      const res = await getOrderTicketsByEvent(eventId);
-      setTicketsData(res as TicketOrderType[]);
+      // const res = await getOrderTicketsByEvent(eventId);
+      const res = await getOrdersByEvent(eventId);
+      // console.log(res);
+      const total = getTotalTickets(res as Order[]);
+      getTotalTicketsAndGroupByType(res as Order[]);
+      setTotalTickets(total);
+      setTicketsData(res as Order[]);
     } catch (error) {
       console.error("errr", error);
     }
@@ -44,7 +99,8 @@ export default function EventInfo({
         <div className="space-y-5 w-full pb-20 bg-white">
           <ValidatorsPageHeader
             ticketsData={ticketsData as Partial<TicketOrderType>[]}
-            soldCount={soldCount}
+            soldCount={totalTitckets}
+            ticketsCount={ticketsCount}
           />
           <div>
             <div className="flex justify-between mb-5 gap-2 flex-wrap">

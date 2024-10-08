@@ -1,15 +1,18 @@
 "use client";
+import { TicketsCountType } from "@/app/validar/[eventId]/event-info";
 import { Evento } from "@/types/event";
 import { TicketOrderType } from "@/types/tickets";
 
 type Props = {
   ticketsData: Partial<TicketOrderType>[];
   soldCount?: any;
+  ticketsCount?: TicketsCountType;
 };
 
 export default function ValidatorsPageHeader({
   ticketsData,
   soldCount = 0,
+  ticketsCount,
 }: Props) {
   const validatedTicketsCount = ticketsData.filter(
     (ticket) => ticket.status === "VALIDATED"
@@ -27,8 +30,7 @@ export default function ValidatorsPageHeader({
         <div className="pl-2">
           <ul className="space-y-1">
             <li>
-              <span className="font-bold">Entradas vendidas:</span>{" "}
-              {ticketsData.length}
+              <span className="font-bold">Entradas vendidas:</span> {soldCount}
             </li>
             <li>
               <span className="font-bold">Entradas validadas:</span>{" "}
@@ -36,16 +38,15 @@ export default function ValidatorsPageHeader({
             </li>
             <li>
               <span className="font-bold">Entradas no validadas:</span>{" "}
-              {ticketsData.length - validatedTicketsCount}
+              {soldCount - validatedTicketsCount}
             </li>
-            {Object.entries(soldCount).map(([ticketId, ticketData]) => (
-              <li key={ticketId}>
-                {/* @ts-ignore */}
-                <span className="font-bold">{ticketData.title}</span>{" "}
-                {/* @ts-ignore */}
-                {ticketData.count}
-              </li>
-            ))}
+            {ticketsCount &&
+              Object.entries(ticketsCount).map(([ticketTypeId, ticketInfo]) => (
+                <li key={ticketTypeId}>
+                  <span className="font-bold">{ticketInfo.title}</span>{" "}
+                  {ticketInfo.count}
+                </li>
+              ))}
           </ul>
         </div>
       </div>
