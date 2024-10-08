@@ -24,6 +24,7 @@ export async function getOrdersByEvent(eventId: string) {
   return await db.order.findMany({
     where: {
       eventId: eventId,
+      status: "PAID",
     },
     include: {
       ticketType: true,

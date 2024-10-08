@@ -12,6 +12,9 @@ export async function getOrderTicketsByEvent(eventId: string) {
   return await db.ticketOrder.findMany({
     where: {
       eventId: eventId,
+      order: {
+        status: "PAID",
+      },
     },
     orderBy: [
       {
