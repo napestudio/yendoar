@@ -61,3 +61,13 @@ export async function getTicketStatusById(ticketId: string) {
     },
   });
 }
+
+export async function getTicketsByTicketTypeId(ticketTypeId: string) {
+  return await db.ticketOrder.findMany({
+    where: {
+      order: {
+        ticketTypeId: ticketTypeId,
+      },
+    },
+  });
+}
