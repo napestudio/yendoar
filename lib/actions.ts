@@ -747,22 +747,28 @@ export async function confirmNewPassword(password: string, token: string) {
   }
 }
 
+export async function getTicketAmountByTicketTypeId(ticketTypeId: string) {
+  try {
+    const result = await TicketOrders.getTicketsByTicketTypeId(ticketTypeId);
+    return result.length;
+  } catch (error) {
+    throw new Error(JSON.stringify(error));
+  }
+}
+
 export async function getSoldTicketsByType(eventId: string) {
   let ticketCounts: any = {};
   try {
-    const orders = await getOrdersByEvent(eventId);
-    orders.forEach((order) => {
-      if (order.status === "PAID") {
-        const { ticketTypeId, ticketType, quantity } = order;
+    const ticketOrders = await getOrderTicketsByEvent(eventId);
+    ticketOrders.forEach((ticketOrder) => {
+      const { order } = ticketOrder;
+      if (!ticketCounts[order.ticketTypeId]) {
+        const length = getTicketAmountByTicketTypeId(order.ticketTypeId);
 
-        if (!ticketCounts[ticketTypeId]) {
-          ticketCounts[ticketTypeId] = {
-            title: ticketType.title,
-            count: 0,
-          };
-        }
-
-        ticketCounts[ticketTypeId].count += quantity;
+        ticketCounts[order.ticketTypeId] = {
+          title: order.ticketType.title,
+          count: length,
+        };
       }
     });
     return ticketCounts;
