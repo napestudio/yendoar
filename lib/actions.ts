@@ -269,7 +269,7 @@ export async function getMercadPagoUrl(
 
 export async function payOrderHandler(orderId: string) {
   const order = await getOrderById(orderId);
-  if (!order) return;
+  if (!order || order.status === "PAID") return;
 
   const dates = JSON.parse(order.ticketType.dates!);
   const is2x1 = order.ticketType.buyGet === 2;

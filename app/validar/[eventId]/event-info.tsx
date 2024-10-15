@@ -79,7 +79,7 @@ export default function EventInfo({
     try {
       // const res = await getOrderTicketsByEvent(eventId);
       const res = await getOrdersByEvent(eventId);
-      // console.log(res);
+      console.log(res);
       const total = getTotalTickets(res as Order[]);
       getTotalTicketsAndGroupByType(res as Order[]);
       setTotalTickets(total);
