@@ -2,9 +2,11 @@ import EventCard from "@/components/event-card/event-card";
 import { getAllEvents } from "@/lib/api/eventos";
 import { HomeCard } from "@/types/card";
 
-export default async function Eventos() {
-  const eventos = await getAllEvents();
+type EventosProps = {
+  eventos: HomeCard[];
+};
 
+export default async function Eventos({ eventos }: EventosProps) {
   return (
     <main className="p-24">
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
@@ -16,4 +18,14 @@ export default async function Eventos() {
         ))}
     </main>
   );
+}
+
+export async function generateStaticParams() {
+  const eventos = await getAllEvents();
+
+  return {
+    props: {
+      eventos,
+    },
+  };
 }
