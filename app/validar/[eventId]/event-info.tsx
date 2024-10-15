@@ -28,6 +28,7 @@ export default function EventInfo({
   type = "VALIDADOR",
   soldCount,
 }: EventInfoProps) {
+  const [eventTitle, setEventTitle] = useState<string>("");
   const [ticketsData, setTicketsData] = useState<Partial<Order>[]>([]);
   const [totalTitckets, setTotalTickets] = useState<number>();
   const [ticketsCount, setTicketsCount] = useState<TicketsCountType>({});
@@ -79,11 +80,12 @@ export default function EventInfo({
     try {
       // const res = await getOrderTicketsByEvent(eventId);
       const res = await getOrdersByEvent(eventId);
-      console.log(res);
+      const tickets = res.flatMap((order) => order.tickets).filter(Boolean);
+      setEventTitle(res[0].event.title);
       const total = getTotalTickets(res as Order[]);
       getTotalTicketsAndGroupByType(res as Order[]);
       setTotalTickets(total);
-      setTicketsData(res as Order[]);
+      setTicketsData(tickets as TicketOrderType[]);
     } catch (error) {
       console.error("errr", error);
     }
@@ -98,6 +100,7 @@ export default function EventInfo({
       {ticketsData.length > 0 && (
         <div className="space-y-5 w-full pb-20 bg-white">
           <ValidatorsPageHeader
+            eventTitle={eventTitle}
             ticketsData={ticketsData as Partial<TicketOrderType>[]}
             soldCount={totalTitckets}
             ticketsCount={ticketsCount}
@@ -106,7 +109,7 @@ export default function EventInfo({
             <div className="flex justify-between mb-5 gap-2 flex-wrap">
               <ExportEventAsPDF
                 //  @ts-ignore
-                eventTitle={ticketsData[0].event.title}
+                eventTitle={eventTitle}
                 ticketsData={ticketsData as Partial<TicketOrderType>[]}
                 quantity={ticketsData.length}
                 type={"ESTADISTICAS"}
