@@ -23,7 +23,16 @@ export async function generateMetadata(
   return {
     title: `${evento?.title} | ${evento?.location}`,
     description: evento?.description,
+
     openGraph: {
+      title: `${evento?.title} | ${evento?.location}`,
+      description: evento?.description,
+      images: evento?.image ? [{ url: evento.image }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${evento?.title} | ${evento?.location}`,
+      description: evento?.description,
       images: evento?.image ? [{ url: evento.image }] : [],
     },
   };

@@ -4,6 +4,7 @@ import { Evento } from "@/types/event";
 import { TicketOrderType } from "@/types/tickets";
 
 type Props = {
+  eventTitle?: string;
   ticketsData: Partial<TicketOrderType>[];
   soldCount?: any;
   ticketsCount?: TicketsCountType;
@@ -13,6 +14,7 @@ export default function ValidatorsPageHeader({
   ticketsData,
   soldCount = 0,
   ticketsCount,
+  eventTitle,
 }: Props) {
   const validatedTicketsCount = ticketsData.filter(
     (ticket) => ticket.status === "VALIDATED"
@@ -23,9 +25,7 @@ export default function ValidatorsPageHeader({
     <div className="bg-gray-50 py-10">
       <div>
         {firstTicket && "event" in firstTicket && (
-          <h1 className="text-3xl font-bold mb-4 uppercase">
-            {(firstTicket as { event: Evento }).event.title}
-          </h1>
+          <h1 className="text-3xl font-bold mb-4 uppercase">{eventTitle}</h1>
         )}
         <div className="pl-2">
           <ul className="space-y-1">
