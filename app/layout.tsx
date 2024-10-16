@@ -51,7 +51,7 @@ export default async function RootLayout({
       <body className={montserrat.className}>
         <SessionProvider session={session}>
           <NavBar user={user} session={session as Session} />
-          <main className="flex flex-col items-center gap-8 min-h-screen bg-blue">
+          <main className="flex flex-col items-center gap-8 bg-blue">
             {children}
           </main>
           <PreFooter />
