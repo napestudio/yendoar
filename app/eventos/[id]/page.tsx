@@ -11,6 +11,7 @@ import { DiscountCode } from "@/types/discount-code";
 import { Suspense } from "react";
 import Loader from "../loader";
 import { Metadata, ResolvingMetadata } from "next";
+import { getAllEvents } from "@/lib/api/eventos";
 
 export async function generateMetadata(
   { params }: { params: { id: string } },
@@ -38,16 +39,43 @@ export async function generateMetadata(
   };
 }
 
+export async function generateStaticParams() {
+  const events = await getAllEvents();
+  return events.map((event) => ({
+    id: event.id,
+  }));
+}
+
+// Genera props estáticos con datos del evento al momento de la compilación
+export async function getEventData(id: string) {
+  const evento = await getEventById(id);
+  if (!evento) return;
+  const serviceCharge = await getServiceCharge(evento.userId);
+  const soldTickets = await getSoldTicketsByType(evento.id);
+
+  return {
+    evento,
+    serviceCharge,
+    soldTickets,
+  };
+}
+
 export default async function Evento({ params }: { params: { id: string } }) {
-  const evento = await getEventById(params.id);
-  const groupedDates = datesFormater(evento?.dates as string);
-  let serviceCharge;
-  let soldTickets;
-  if (evento) {
-    const sC = await getServiceCharge(evento?.userId);
-    serviceCharge = sC || null;
-    soldTickets = await getSoldTicketsByType(evento.id);
+  const eventData = await getEventData(params.id);
+
+  if (!eventData) {
+    return <p>Evento no encontrado.</p>;
   }
+
+  const { evento, serviceCharge, soldTickets } = eventData;
+
+  const groupedDates = datesFormater(evento?.dates as string);
+
+  const discountCode =
+    evento?.discountCode &&
+    (evento.discountCode as DiscountCode[]).filter(
+      (dc) => dc.status !== "DELETED"
+    );
 
   return (
     <Suspense fallback={<Loader />}>
