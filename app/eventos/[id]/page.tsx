@@ -44,12 +44,6 @@ export default async function Evento({ params }: { params: { id: string } }) {
 
   const groupedDates = datesFormater(evento?.dates as string);
 
-  const discountCode =
-    evento?.discountCode &&
-    (evento.discountCode as DiscountCode[]).filter(
-      (dc) => dc.status !== "DELETED"
-    );
-
   return (
     <Suspense fallback={<Loader />}>
       <EventHeader evento={evento as EventoType} dates={groupedDates} />
