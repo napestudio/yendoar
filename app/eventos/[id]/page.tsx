@@ -13,32 +13,6 @@ import Loader from "../loader";
 import { Metadata, ResolvingMetadata } from "next";
 import { getAllEvents } from "@/lib/api/eventos";
 
-export async function generateMetadata(
-  { params }: { params: { id: string } },
-  parent: ResolvingMetadata
-): Promise<Metadata> {
-  const id = params.id;
-
-  const evento = await getEventById(params.id);
-
-  return {
-    title: `${evento?.title} | ${evento?.location}`,
-    description: evento?.description,
-
-    openGraph: {
-      title: `${evento?.title} | ${evento?.location}`,
-      description: evento?.description,
-      images: evento?.image ? [{ url: evento.image }] : [],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${evento?.title} | ${evento?.location}`,
-      description: evento?.description,
-      images: evento?.image ? [{ url: evento.image }] : [],
-    },
-  };
-}
-
 export async function generateStaticParams() {
   const events = await getAllEvents();
   return events.map((event) => ({
@@ -46,8 +20,7 @@ export async function generateStaticParams() {
   }));
 }
 
-// Genera props estáticos con datos del evento al momento de la compilación
-export async function getEventData(id: string) {
+async function getEventData(id: string) {
   const evento = await getEventById(id);
   if (!evento) return;
   const serviceCharge = await getServiceCharge(evento.userId);
