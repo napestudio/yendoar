@@ -11,43 +11,44 @@ import { DiscountCode } from "@/types/discount-code";
 import { Suspense } from "react";
 import Loader from "../loader";
 import { Metadata, ResolvingMetadata } from "next";
+import { getAllEvents } from "@/lib/api/eventos";
 
-export async function generateMetadata(
-  { params }: { params: { id: string } },
-  parent: ResolvingMetadata
-): Promise<Metadata> {
-  const id = params.id;
+export async function generateStaticParams() {
+  const events = await getAllEvents();
+  return events.map((event) => ({
+    id: event.id,
+  }));
+}
 
-  const evento = await getEventById(params.id);
+async function getEventData(id: string) {
+  const evento = await getEventById(id);
+  if (!evento) return;
+  const serviceCharge = await getServiceCharge(evento.userId);
+  const soldTickets = await getSoldTicketsByType(evento.id);
 
   return {
-    title: `${evento?.title} | ${evento?.location}`,
-    description: evento?.description,
-
-    openGraph: {
-      title: `${evento?.title} | ${evento?.location}`,
-      description: evento?.description,
-      images: evento?.image ? [{ url: evento.image }] : [],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${evento?.title} | ${evento?.location}`,
-      description: evento?.description,
-      images: evento?.image ? [{ url: evento.image }] : [],
-    },
+    evento,
+    serviceCharge,
+    soldTickets,
   };
 }
 
 export default async function Evento({ params }: { params: { id: string } }) {
-  const evento = await getEventById(params.id);
-  const groupedDates = datesFormater(evento?.dates as string);
-  let serviceCharge;
-  let soldTickets;
-  if (evento) {
-    const sC = await getServiceCharge(evento?.userId);
-    serviceCharge = sC || null;
-    soldTickets = await getSoldTicketsByType(evento.id);
+  const eventData = await getEventData(params.id);
+
+  if (!eventData) {
+    return <p>Evento no encontrado.</p>;
   }
+
+  const { evento, serviceCharge, soldTickets } = eventData;
+
+  const groupedDates = datesFormater(evento?.dates as string);
+
+  const discountCode =
+    evento?.discountCode &&
+    (evento.discountCode as DiscountCode[]).filter(
+      (dc) => dc.status !== "DELETED"
+    );
 
   return (
     <Suspense fallback={<Loader />}>
