@@ -36,7 +36,7 @@ export type Evento = {
   address: string;
   location: string;
   userId: string;
-  image: string;
+  image: string | null;
   dates: string;
   status: EventStatus;
   endDate: string;

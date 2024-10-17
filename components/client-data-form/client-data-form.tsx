@@ -38,7 +38,10 @@ const formSchema = z
       .email()
       .min(5, { message: "Debe ser un email válido" }),
     phone: z.string(),
-    dni: z.string().min(8, { message: "Debe ser un dni válido" }),
+    dni: z
+      .string()
+      .regex(/^[1-9]\d{7}$/, { message: "Debe ser un DNI válido de 8 dígitos" })
+      .length(8, { message: "Debe tener 8 dígitos" }),
   })
   .refine((data) => data.email === data.confirmEmail, {
     message: "Los correos electrónicos deben coincidir",
