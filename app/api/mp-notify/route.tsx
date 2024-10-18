@@ -8,14 +8,13 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("user_id");
   const topic = r.topic || r.type;
-
+  const MP_ACCESS_TOKEN = await getMercadoPagoTokenByUser(userId!);
   try {
     if (topic === "payment") {
       if (!userId) {
         return NextResponse.json({ msg: "No user id" });
       }
 
-      const MP_ACCESS_TOKEN = await getMercadoPagoTokenByUser(userId!);
       const client = new MercadoPagoConfig({
         accessToken: MP_ACCESS_TOKEN!,
       });
