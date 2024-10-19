@@ -262,7 +262,7 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
                   Guardando...
                 </>
               ) : (
-                "Guardar cambiosss"
+                "Guardar cambios"
               )}
             </Button>
             <Button
