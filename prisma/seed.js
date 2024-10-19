@@ -46,7 +46,7 @@ function main() {
             switch (_a.label) {
                 case 0:
                     today = new Date();
-                    endDate = (0, date_fns_1.addMonths)(today, 2);
+                    endDate = (0, date_fns_1.addYears)(today, 1);
                     return [4 /*yield*/, prisma.user.upsert({
                             where: { email: "renzocostarelli@gmail.com" },
                             update: {},
