@@ -26,7 +26,6 @@ const mpApi = {
           ],
           metadata: {
             orderId: orderId,
-            userData: userId,
           },
         },
       });
