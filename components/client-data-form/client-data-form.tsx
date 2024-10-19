@@ -23,6 +23,8 @@ import {
 } from "@/lib/actions";
 import { Order } from "@/types/order";
 import { useEffect, useState } from "react";
+import { createMercadoPagoOrder } from "@/lib/mercadopago";
+import { redirect } from "next/navigation";
 
 const formSchema = z
   .object({
@@ -109,7 +111,9 @@ export default function UserDataForm({ order }: { order: Order }) {
     } catch (error) {
       throw new Error("Error free ticket");
     }
-    await getMercadPagoUrl(product, orderData, orderId!, userId);
+    // await getMercadPagoUrl(product, orderData, orderId!, userId);
+
+    await createMercadoPagoOrder(product, orderData, orderId!, userId);
   }
 
   function expire() {
