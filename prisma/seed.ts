@@ -1,12 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import { addMonths } from "date-fns"; // Puedes usar esta función de date-fns para manipular fechas
+import { addMonths, addYears } from "date-fns"; // Puedes usar esta función de date-fns para manipular fechas
 
 const prisma = new PrismaClient();
 
 async function main() {
   // Obtener la fecha actual y sumarle dos meses para endDate
   const today = new Date();
-  const endDate = addMonths(today, 2); // Sumar dos meses
+  const endDate = addYears(today, 1); // Sumar dos meses
 
   // Crear el usuario
   const user = await prisma.user.upsert({
