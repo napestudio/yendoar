@@ -25,8 +25,6 @@ export async function POST(req: Request) {
       // Obtenemos el pago
       const payment = await new Payment(mp).get({ id: body.data.id });
 
-      console.log("payment", payment);
-
       if (payment.status === "approved") {
         payOrderHandler(payment.metadata.order_id);
       }

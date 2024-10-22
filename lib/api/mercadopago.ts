@@ -12,7 +12,6 @@ export const mpApi = {
     ) {
       const mercadopagoToken = await getMercadoPagoTokenByUser(userId);
       if (mercadopagoToken) {
-        console.log(mercadopagoToken);
         const mercadopago = new MercadoPagoConfig({
           accessToken: mercadopagoToken,
         });

@@ -15,7 +15,6 @@ export async function createMercadoPagoOrder(
     console.log("error", error);
     throw new Error("Error generando Orden de mercado pago");
   }
-  console.log(url);
   if (url) {
     redirect(url);
   }
