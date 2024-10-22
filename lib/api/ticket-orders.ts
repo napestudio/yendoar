@@ -74,3 +74,23 @@ export async function getTicketsByTicketTypeId(ticketTypeId: string) {
     },
   });
 }
+
+export async function getTicketOrdersByEventId(eventId: string) {
+  return await db.ticketOrder.findMany({
+    where: {
+      eventId: eventId,
+      order: {
+        status: "PAID",
+      },
+    },
+    orderBy: [
+      {
+        name: "asc",
+      },
+      { createdAt: "desc" },
+    ],
+    include: {
+      event: true,
+    },
+  });
+}
