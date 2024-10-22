@@ -59,7 +59,8 @@ export default async function Evento({ params }: { params: { id: string } }) {
           <span className="font-bold">Comprá tu </span>
           <span className="font-thin">entrada</span>
         </h2>
-        <div className="md:flex w-[90vw] md:w-full max-w-[90vw] mx-auto align-center justify-center">
+
+        <div className="md:flex w-[90vw] md:w-full max-w-[90vw] mx-auto align-center justify-center flex-1">
           {evento?.ticketTypes && (
             <TicketTypePicker
               tickets={evento?.ticketTypes}

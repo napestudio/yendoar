@@ -172,7 +172,7 @@ export default function TicketTypePicker({
   }, [addedCode, form, tickets]);
 
   return (
-    <div className="p-3 border-4 border-black shadow-hard bg-white">
+    <div className="p-3 border-4 border-black shadow-hard bg-white w-full flex-1">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="flex gap-2">

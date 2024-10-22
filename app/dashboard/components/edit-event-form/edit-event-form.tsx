@@ -61,8 +61,8 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
       description: evento.description,
       location: evento.location,
       address: evento.address,
-      image: evento.image,
-      file: evento.image,
+      image: evento.image || "",
+      file: evento.image || "",
     },
   });
 
@@ -113,8 +113,8 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
   endDate.setHours(23, 59, 0, 0);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const parsedDates = JSON.stringify(dateTimeSelections);
     setIsLoading(true);
+    const parsedDates = JSON.stringify(dateTimeSelections);
 
     if (files.length > 0) {
       const uploadedImages = await startUpload(files);
@@ -134,7 +134,7 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
         description: values.description,
         location: values.location,
         address: values.address,
-        image: values.image,
+        image: values.image || null,
         dates: parsedDates,
         userId: evento.userId,
         endDate: endDate.toISOString(),
@@ -262,7 +262,7 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
                   Guardando...
                 </>
               ) : (
-                "Guardar cambios"
+                "Guardar cambiosss"
               )}
             </Button>
             <Button

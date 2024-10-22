@@ -5,7 +5,6 @@ import { HomeCard } from "@/types/card";
 
 export default async function Home() {
   const eventos = await getAllEvents();
-
   return (
     <>
       <section className="container pb-14">
