@@ -290,7 +290,7 @@ export default function EditTycketTypeForm({
           )}
         />
         <div className="flex flex-col items-center justify-between rounded-lg border p-4">
-          <div className="flex flex-row items-center justify-between">
+          <div className="flex flex-row items-center justify-between w-full flex-1">
             <div className="space-y-0.5">
               <Label>Descuento</Label>
               <FormDescription>
