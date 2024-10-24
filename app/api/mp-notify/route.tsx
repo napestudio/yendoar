@@ -1,46 +1,35 @@
-import { NextRequest, NextResponse } from "next/server";
-import { MercadoPagoConfig, Payment } from "mercadopago";
 import { getMercadoPagoTokenByUser, payOrderHandler } from "@/lib/actions";
+import MercadoPagoConfig, { Payment } from "mercadopago";
 
-export async function POST(req: NextRequest, res: NextResponse) {
-  const r = await req.json();
+export async function POST(req: Request) {
+  const res = await req.json();
+  const topic = res.topic || res.type;
+  // Algunas veces el topic es payment pero la respuesta no trae el objeto data.
+  // Si esto es asi, no lo dejamos pasar
+  if (topic !== "payment" || !res.data) {
+    return new Response(null, { status: 200 });
+  }
 
-  const topic = r.topic || r.type;
-
-  try {
-    if (topic === "payment") {
-      const { searchParams } = new URL(req.url);
-      const userId = searchParams.get("user_id");
-      const MP_ACCESS_TOKEN = await getMercadoPagoTokenByUser(userId!);
-      if (!userId) {
-        return NextResponse.json({ msg: "No user id" });
-      }
-
-      const client = new MercadoPagoConfig({
-        accessToken: MP_ACCESS_TOKEN!,
+  // Obtenemos el cuerpo de la petición que incluye información sobre la notificación
+  const body: { data: { id: string } } = res;
+  const { searchParams } = new URL(req.url);
+  // Obtenemos el id del usuario de la URL
+  const userId = searchParams.get("u");
+  if (userId) {
+    // Obtenemos el token del usuario
+    const mpToken = await getMercadoPagoTokenByUser(userId);
+    if (mpToken) {
+      const mp = new MercadoPagoConfig({
+        accessToken: mpToken,
       });
-
-      const paymentId = r.data.id;
-
-      const payment = await new Payment(client).get({ id: paymentId });
+      // Obtenemos el pago
+      const payment = await new Payment(mp).get({ id: body.data.id });
 
       if (payment.status === "approved") {
-        let orderId = payment.external_reference;
-        await payOrderHandler(orderId!);
-        return NextResponse.json({ data: "OK" }, { status: 201 });
-      } else {
-        // Return a different response if payment status is not approved
-        return NextResponse.json(
-          { data: "Payment not approved" },
-          { status: 400 }
-        );
+        payOrderHandler(payment.metadata.order_id);
       }
-    } else {
-      // Return a response when topic is not 'payment'
-      return NextResponse.json({ data: "Invalid topic" }, { status: 400 });
     }
-  } catch (error) {
-    // Return a response when there is an error
-    return NextResponse.json({ error });
   }
+
+  return new Response(null, { status: 200 });
 }
