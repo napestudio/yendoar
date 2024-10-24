@@ -20,42 +20,6 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { id: string; eventData?: EventoType };
-}): Promise<Metadata> {
-  const evento = params.eventData || (await getEventById(params.id));
-
-  if (!evento) {
-    return {
-      title: "Evento no encontrado",
-      description: "El evento solicitado no existe.",
-    };
-  }
-
-  return {
-    // @ts-ignore
-    metadataBase: new URL(process.env.BASE_URL),
-    title: `${evento.title} | Tu Sitio de Eventos`,
-    description:
-      evento.description || "Detalles del evento y compra de entradas.",
-    openGraph: {
-      title: evento.title,
-      description: evento.description,
-      // url: `https://tusitio.com/evento/${evento.id}`,
-      images: [
-        {
-          url: evento.image || "/default-image.jpg",
-          width: 800,
-          height: 600,
-          alt: evento.title,
-        },
-      ],
-    },
-  };
-}
-
 async function getEventData(id: string) {
   const evento = await getEventById(id);
   if (!evento) return;
