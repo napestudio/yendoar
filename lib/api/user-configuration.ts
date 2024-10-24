@@ -1,4 +1,4 @@
-import { db } from "../prisma";
+import db from "../prisma";
 
 export async function getAllUserConfiguration(userId: string) {
   return await db.userConfiguration.findMany({

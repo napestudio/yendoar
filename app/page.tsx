@@ -2,6 +2,19 @@ import EventCard from "@/components/event-card/event-card";
 import EventMarquee from "@/components/marquee/marquee";
 import { getAllEvents } from "@/lib/api/eventos";
 import { HomeCard } from "@/types/card";
+import { Metadata } from "next/types";
+
+export const metadata: Metadata = {
+  title: "Yendo.ar | Eventos en vivo",
+  description: "Venta de tickets online para eventos en vivo.",
+};
+
+export const generateStaticParams = async () => {
+  const eventos = await getAllEvents();
+  return eventos.map((evento: HomeCard) => ({
+    params: { id: evento.id.toString() },
+  }));
+};
 
 export default async function Home() {
   const eventos = await getAllEvents();
