@@ -60,12 +60,12 @@ async function getEventData(id: string) {
   const evento = await getEventById(id);
   if (!evento) return;
   const serviceCharge = await getServiceCharge(evento.userId);
-  const soldTickets = await getSoldTicketsByType(evento.id);
+  // const soldTickets = await getSoldTicketsByType(evento.id);
 
   return {
     evento,
     serviceCharge,
-    soldTickets,
+    // soldTickets,
   };
 }
 
@@ -76,7 +76,7 @@ export default async function Evento({ params }: { params: { id: string } }) {
     return <p>Evento no encontrado.</p>;
   }
 
-  const { evento, serviceCharge, soldTickets } = eventData;
+  const { evento, serviceCharge } = eventData;
 
   const groupedDates = datesFormater(evento?.dates as string);
 
@@ -101,7 +101,7 @@ export default async function Evento({ params }: { params: { id: string } }) {
             <TicketTypePicker
               tickets={evento?.ticketTypes}
               eventId={evento?.id}
-              soldTickets={soldTickets}
+              // soldTickets={soldTickets}
               discountCode={
                 evento?.discountCode &&
                 (evento.discountCode as DiscountCode[]).filter(
