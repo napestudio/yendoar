@@ -1,5 +1,5 @@
 import { TicketOrderType } from "@/types/tickets";
-import { db } from "../prisma";
+import db from "../prisma";
 import { title } from "process";
 
 export async function createTicketOrder(data: TicketOrderType[]) {

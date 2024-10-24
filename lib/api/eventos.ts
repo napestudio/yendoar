@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { Evento } from "../actions";
-import { db } from "../prisma";
+import db from "../prisma";
 
 export async function getEventsByUserId(userId: string) {
   return await db.event.findMany({
