@@ -1,5 +1,6 @@
 import { TicketOrderType } from "@/types/tickets";
 import { db } from "../prisma";
+import { title } from "process";
 
 export async function createTicketOrder(data: TicketOrderType[]) {
   const createdOrders = await db.$transaction(
@@ -90,7 +91,7 @@ export async function getTicketOrdersByEventId(eventId: string) {
       { createdAt: "desc" },
     ],
     include: {
-      event: true,
+      event: { select: { title: true } },
     },
   });
 }
