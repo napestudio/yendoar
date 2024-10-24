@@ -13,12 +13,12 @@ import Loader from "../loader";
 import { Metadata, ResolvingMetadata } from "next";
 import { getAllEvents } from "@/lib/api/eventos";
 
-export async function generateStaticParams() {
-  const events = await getAllEvents();
-  return events.map((event) => ({
-    id: event.id,
-  }));
-}
+// export async function generateStaticParams() {
+//   const events = await getAllEvents();
+//   return events.map((evento) => ({
+//     id: evento.id,
+//   }));
+// }
 
 async function getEventData(id: string) {
   const evento = await getEventById(id);
