@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export const generateStaticParams = async () => {
   const eventos = await getAllEvents();
-  return eventos.map((evento: HomeCard) => ({
+  return eventos.map((evento: any) => ({
     params: { id: evento.id.toString() },
   }));
 };
