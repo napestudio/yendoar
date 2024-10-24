@@ -28,6 +28,7 @@ import {
 } from "./api/reset-password-token";
 import { stat } from "fs";
 import { SITE_NAME } from "./constants";
+import { getPaidOrdersDataByEvent } from "@/lib/api/orders";
 
 // Type temporal
 export type Evento = {
@@ -777,18 +778,19 @@ export async function getTicketAmountByTicketTypeId(ticketTypeId: string) {
 export async function getSoldTicketsByType(eventId: string) {
   let ticketCounts: any = {};
   try {
-    const ticketOrders = await getOrderTicketsByEvent(eventId);
+    const ticketOrders = await getPaidOrdersDataByEvent(eventId);
     ticketOrders.forEach((ticketOrder) => {
-      const { order } = ticketOrder;
-      if (!ticketCounts[order.ticketTypeId]) {
-        const length = getTicketAmountByTicketTypeId(order.ticketTypeId);
-
-        ticketCounts[order.ticketTypeId] = {
-          title: order.ticketType.title,
-          count: length,
+      if (!ticketCounts[ticketOrder.ticketTypeId]) {
+        ticketCounts[ticketOrder.ticketTypeId] = {
+          title: ticketOrder.ticketType.title,
+          count: ticketOrder.tickets.length,
         };
+      } else {
+        ticketCounts[ticketOrder.ticketTypeId].count +=
+          ticketOrder.tickets.length;
       }
     });
+
     return ticketCounts;
   } catch (error) {
     throw new Error("Error trayendo la cantidad de entradas vendidas");

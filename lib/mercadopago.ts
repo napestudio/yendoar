@@ -12,7 +12,6 @@ export async function createMercadoPagoOrder(
   try {
     url = await mpApi.order.createPayment(product, orderData, orderId!, userId);
   } catch (error) {
-    console.log("error", error);
     throw new Error("Error generando Orden de mercado pago");
   }
   if (url) {

@@ -34,6 +34,27 @@ export async function getOrdersByEvent(eventId: string) {
   });
 }
 
+export async function getPaidOrdersDataByEvent(eventId: string) {
+  return await db.order.findMany({
+    where: {
+      eventId: eventId,
+      status: "PAID",
+    },
+    include: {
+      tickets: {
+        select: {
+          id: true,
+        },
+      },
+      ticketType: {
+        select: {
+          title: true,
+        },
+      },
+    },
+  });
+}
+
 // Crear type para order
 export async function updateOrder(orderId: string, orderData: any) {
   return await db.order.update({
