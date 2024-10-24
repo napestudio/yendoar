@@ -20,10 +20,11 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata(
-  { params }: { params: { id: string; eventData?: EventoType } },
-  parent?: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string; eventData?: EventoType };
+}): Promise<Metadata> {
   const evento = params.eventData || (await getEventById(params.id));
 
   if (!evento) {
