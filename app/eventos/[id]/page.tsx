@@ -13,23 +13,23 @@ import Loader from "../loader";
 import { Metadata, ResolvingMetadata } from "next";
 import { getAllEvents } from "@/lib/api/eventos";
 
-export async function generateStaticParams() {
-  const events = await getAllEvents();
-  return events.map((event) => ({
-    id: event.id,
-  }));
-}
+// export async function generateStaticParams() {
+//   const events = await getAllEvents();
+//   return events.map((evento) => ({
+//     id: evento.id,
+//   }));
+// }
 
 async function getEventData(id: string) {
   const evento = await getEventById(id);
   if (!evento) return;
   const serviceCharge = await getServiceCharge(evento.userId);
-  const soldTickets = await getSoldTicketsByType(evento.id);
+  // const soldTickets = await getSoldTicketsByType(evento.id);
 
   return {
     evento,
     serviceCharge,
-    soldTickets,
+    // soldTickets,
   };
 }
 
@@ -40,7 +40,7 @@ export default async function Evento({ params }: { params: { id: string } }) {
     return <p>Evento no encontrado.</p>;
   }
 
-  const { evento, serviceCharge, soldTickets } = eventData;
+  const { evento, serviceCharge } = eventData;
 
   const groupedDates = datesFormater(evento?.dates as string);
 
@@ -65,7 +65,7 @@ export default async function Evento({ params }: { params: { id: string } }) {
             <TicketTypePicker
               tickets={evento?.ticketTypes}
               eventId={evento?.id}
-              soldTickets={soldTickets}
+              soldTickets={0}
               discountCode={
                 evento?.discountCode &&
                 (evento.discountCode as DiscountCode[]).filter(

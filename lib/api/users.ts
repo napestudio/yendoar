@@ -1,4 +1,4 @@
-import { db } from "../prisma";
+import db from "../prisma";
 import { generateVerificationToken } from "../tokens";
 
 export async function getAllUsers() {

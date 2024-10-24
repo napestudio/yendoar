@@ -1,5 +1,5 @@
 import { ValidatorToken } from "@/types/validators";
-import { db } from "../prisma";
+import db from "../prisma";
 
 export async function createValidatorToken(data: ValidatorToken) {
   return await db.validatorToken.create({ data });
