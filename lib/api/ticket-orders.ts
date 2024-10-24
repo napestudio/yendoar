@@ -24,10 +24,15 @@ export async function getOrderTicketsByEvent(eventId: string) {
       { createdAt: "desc" },
     ],
     include: {
-      event: true,
       order: {
-        include: {
-          ticketType: true,
+        select: {
+          ticketTypeId: true,
+          quantity: true,
+          ticketType: {
+            select: {
+              title: true,
+            },
+          },
         },
       },
     },
