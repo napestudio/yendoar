@@ -114,6 +114,20 @@ export async function getOrderTicketsByEvent(eventId: string) {
     throw new Error("Error GET order tickets");
   }
 }
+export async function getTicketOrdersByEventId(eventId: string) {
+  try {
+    const result = await TicketOrders.getTicketOrdersByEventId(eventId);
+    const response = {
+      evento: {
+        title: result[0].event.title,
+      },
+      result,
+    };
+    return response;
+  } catch (error) {
+    throw new Error("Error GET order tickets");
+  }
+}
 
 export async function getTicketTypesByEventId(eventId: string) {
   try {

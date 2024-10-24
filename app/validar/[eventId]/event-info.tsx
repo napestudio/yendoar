@@ -2,7 +2,11 @@
 import ExportEventAsPDF from "@/components/data-pdf";
 import QrScannerComponent from "@/components/qr-scanner";
 import ValidatorsPageHeader from "@/components/validator-page-header/validator-page-header";
-import { getOrdersByEvent, getOrderTicketsByEvent } from "@/lib/actions";
+import {
+  getOrdersByEvent,
+  getOrderTicketsByEvent,
+  getTicketOrdersByEventId,
+} from "@/lib/actions";
 import { TicketOrderType } from "@/types/tickets";
 import { DataTable } from "./data-table";
 import { getColumns } from "./colums";
@@ -78,7 +82,8 @@ export default function EventInfo({
 
   const updateTicketsData = async () => {
     try {
-      // const res = await getOrderTicketsByEvent(eventId);
+      const rest = await getTicketOrdersByEventId(eventId);
+      console.log(rest);
       const res = await getOrdersByEvent(eventId);
       const tickets = res.flatMap((order) => order.tickets).filter(Boolean);
       setEventTitle(res[0].event.title);

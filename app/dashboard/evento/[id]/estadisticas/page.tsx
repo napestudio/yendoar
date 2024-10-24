@@ -1,9 +1,4 @@
 import EventInfo from "@/app/validar/[eventId]/event-info";
-import {
-  getOrdersByEvent,
-  getOrderTicketsByEvent,
-  getSoldTicketsByType,
-} from "@/lib/actions";
 
 export default async function Estadisticas({
   params,
