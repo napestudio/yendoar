@@ -782,6 +782,7 @@ export async function getSoldTicketsByType(eventId: string) {
     ticketOrders.forEach((ticketOrder) => {
       if (!ticketCounts[ticketOrder.ticketTypeId]) {
         ticketCounts[ticketOrder.ticketTypeId] = {
+          id: ticketOrder.ticketTypeId,
           title: ticketOrder.ticketType.title,
           count: ticketOrder.tickets.length,
         };
