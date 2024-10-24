@@ -25,7 +25,6 @@ async function getEventData(id: string) {
   if (!evento) return;
   const serviceCharge = await getServiceCharge(evento.userId);
   const soldTickets = await getSoldTicketsByType(evento.id);
-
   return {
     evento,
     serviceCharge,
