@@ -5,12 +5,13 @@ import { getMercadoPagoTokenByUser, payOrderHandler } from "@/lib/actions";
 export async function POST(req: NextRequest, res: NextResponse) {
   const r = await req.json();
 
-  const { searchParams } = new URL(req.url);
-  const userId = searchParams.get("user_id");
   const topic = r.topic || r.type;
-  const MP_ACCESS_TOKEN = await getMercadoPagoTokenByUser(userId!);
+
   try {
     if (topic === "payment") {
+      const { searchParams } = new URL(req.url);
+      const userId = searchParams.get("user_id");
+      const MP_ACCESS_TOKEN = await getMercadoPagoTokenByUser(userId!);
       if (!userId) {
         return NextResponse.json({ msg: "No user id" });
       }
