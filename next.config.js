@@ -4,7 +4,6 @@ const nextConfig = {
   env: {
     // fe_api_url: process.env.apiUrl,
     apiKey: "33F85ADC279C7872D63B1B42A1B31",
-    MP_PUBLIC_KEY: process.env.MP_PUBLIC_KEY,
     MP_ACCESS_TOKEN: process.env.MP_ACCESS_TOKEN,
     GOOGLE_ID:
       "426944037353-doj012lil9vjrbb60o8gghbrs0khh1sp.apps.googleusercontent.com",
