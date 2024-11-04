@@ -268,37 +268,42 @@ export async function getMercadPagoUrl(
 }
 
 export async function payOrderHandler(orderId: string) {
-  const order = await getOrderById(orderId);
-  if (!order || order.status === "PAID") return;
+  try {
+    const order = await getOrderById(orderId);
+    if (!order || order.status === "PAID") return;
 
-  const dates = JSON.parse(order.ticketType.dates!);
-  const is2x1 = order.ticketType.buyGet === 2;
-  order.quantity = is2x1 ? order.quantity * 2 : order.quantity;
+    const dates = JSON.parse(order.ticketType.dates!);
+    const is2x1 = order.ticketType.buyGet === 2;
+    order.quantity = is2x1 ? order.quantity * 2 : order.quantity;
 
-  updateOrder(
-    {
-      status: "PAID",
-    },
-    orderId
-  );
+    updateOrder(
+      {
+        status: "PAID",
+      },
+      orderId
+    );
 
-  const ticketsData: TicketOrderType[] = [];
-  dates.forEach((dateObj: DatesType) => {
-    for (let i = 0; i < order.quantity; i++) {
-      ticketsData.push({
-        name: order.name!,
-        lastName: order.lastName!,
-        dni: order.dni!,
-        email: order.email!,
-        base64Qr: "code",
-        date: new Date(dateObj.date),
-        orderId: orderId,
-        eventId: order.event.id,
-        status: "NOT_VALIDATED",
-      });
-    }
-  });
-  await createTicketOrder(ticketsData);
+    const ticketsData: TicketOrderType[] = [];
+    dates.forEach((dateObj: DatesType) => {
+      for (let i = 0; i < order.quantity; i++) {
+        ticketsData.push({
+          name: order.name!,
+          lastName: order.lastName!,
+          dni: order.dni!,
+          email: order.email!,
+          base64Qr: "code",
+          date: new Date(dateObj.date),
+          orderId: orderId,
+          eventId: order.event.id,
+          status: "NOT_VALIDATED",
+        });
+      }
+    });
+    await createTicketOrder(ticketsData);
+  } catch (error) {
+    console.log("payOrderHandler ~ error:", error);
+    throw new Error("Error creando free ticket");
+  }
 }
 
 export async function createFreeTicket(
