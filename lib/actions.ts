@@ -270,9 +270,7 @@ export async function getMercadPagoUrl(
 export async function payOrderHandler(orderId: string) {
   try {
     const order = await getOrderById(orderId);
-    console.log("bef ~ payOrderHandler ~ order:", order)
     if (!order || order.status === "PAID") return;
-    console.log("aft ~ payOrderHandler ~ order:", order)
 
     const dates = JSON.parse(order.ticketType.dates!);
     const is2x1 = order.ticketType.buyGet === 2;
@@ -303,7 +301,6 @@ export async function payOrderHandler(orderId: string) {
     });
     await createTicketOrder(ticketsData);
   } catch (error) {
-    console.log("payOrderHandler ~ error:", error);
     throw new Error("Error creando free ticket");
   }
 }
