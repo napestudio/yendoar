@@ -15,6 +15,7 @@ export async function POST(req: Request) {
   const body: { data: { id: string } } = res;
   console.log("🚀 ~ POST ~ body:", body)
   const { searchParams } = new URL(req.url);
+  console.log("🚀 ~ POST ~ searchParams:", searchParams)
   // Obtenemos el id del usuario de la URL
   const userId = searchParams.get("u");
   console.log("🚀 ~ POST ~ userId:", userId)
