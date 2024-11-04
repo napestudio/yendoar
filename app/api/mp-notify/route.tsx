@@ -17,6 +17,7 @@ export async function POST(req: Request) {
   const { searchParams } = new URL(req.url);
   // Obtenemos el id del usuario de la URL
   const userId = searchParams.get("u");
+  console.log("🚀 ~ POST ~ userId:", userId)
   if (userId) {
     // Obtenemos el token del usuario
     const mpToken = await getMercadoPagoTokenByUser(userId);
