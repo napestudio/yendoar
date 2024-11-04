@@ -32,7 +32,7 @@ export async function POST(req: Request) {
       console.log("🚀 ~ POST ~ payment:", payment)
 
       if (payment.status === "approved") {
-        await payOrderHandler(payment.metadata.order_id);
+        await payOrderHandler(payment.external_reference as string);
       }
     }
   }
