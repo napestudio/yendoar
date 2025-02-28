@@ -1,8 +1,7 @@
 datasource db {
-  provider = "postgresql"
+    provider = "postgresql"
     url      = env("yendo_db_PRISMA_URL")
-    directUrl = env("yendo_db_URL_NON_POOLING")
-    
+    directUrl = env("yendo_db_URL_NON_POOLING")    
 }
 
 generator client {
