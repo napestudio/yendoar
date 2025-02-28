@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   // Obtenemos el id del usuario de la URL
   const userId = searchParams.get("user_id");
   if (userId) {
-    // Obtenemos el token del usuario
+    // Obtenemos el token del usuario.
     const mpToken = await getMercadoPagoTokenByUser(userId);
     if (mpToken) {
       const mp = new MercadoPagoConfig({
