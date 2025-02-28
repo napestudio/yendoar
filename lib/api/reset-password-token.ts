@@ -1,4 +1,4 @@
-import { db } from "../prisma";
+import db from "../prisma";
 
 export const getPasswordResetTokenByToken = async (token: string) => {
   try {

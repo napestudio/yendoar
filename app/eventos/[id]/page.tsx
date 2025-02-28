@@ -13,19 +13,18 @@ import Loader from "../loader";
 import { Metadata, ResolvingMetadata } from "next";
 import { getAllEvents } from "@/lib/api/eventos";
 
-export async function generateStaticParams() {
-  const events = await getAllEvents();
-  return events.map((event) => ({
-    id: event.id,
-  }));
-}
+// export async function generateStaticParams() {
+//   const events = await getAllEvents();
+//   return events.map((evento) => ({
+//     id: evento.id,
+//   }));
+// }
 
 async function getEventData(id: string) {
   const evento = await getEventById(id);
   if (!evento) return;
   const serviceCharge = await getServiceCharge(evento.userId);
   const soldTickets = await getSoldTicketsByType(evento.id);
-
   return {
     evento,
     serviceCharge,
@@ -59,7 +58,8 @@ export default async function Evento({ params }: { params: { id: string } }) {
           <span className="font-bold">Comprá tu </span>
           <span className="font-thin">entrada</span>
         </h2>
-        <div className="md:flex w-[90vw] md:w-full max-w-[90vw] mx-auto align-center justify-center">
+
+        <div className="md:flex w-[90vw] md:w-full max-w-[90vw] mx-auto align-center justify-center flex-1">
           {evento?.ticketTypes && (
             <TicketTypePicker
               tickets={evento?.ticketTypes}

@@ -1,4 +1,4 @@
-import { db } from "../prisma";
+import db from "../prisma";
 
 export const getVerificationTokenByToken = async (token: string) => {
   try {

@@ -26,7 +26,7 @@ import { createOrder } from "@/lib/actions";
 import { datesFormater } from "@/lib/utils";
 import { Input } from "../ui/input";
 import { DiscountCode } from "@/types/discount-code";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { toast } from "../ui/use-toast";
 import { isAfter, isBefore } from "date-fns";
 
@@ -46,6 +46,7 @@ export type TicketType = {
   dates: { id: number; date: string }[];
   createdAt: Date;
   updatedAt: Date;
+  buyGet?: number;
 };
 
 const FormSchema = z.object({
@@ -67,7 +68,7 @@ export default function TicketTypePicker({
   eventId: string;
   discountCode?: Partial<DiscountCode>[];
   serviceCharge?: number;
-  soldTickets?: any;
+  soldTickets?: { id: string; title: string; count: number };
 }) {
   const [discountOpen, setDiscountOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -76,9 +77,11 @@ export default function TicketTypePicker({
   const [addedCode, setaddedCode] = useState<string | undefined>("");
   const [total, setTotal] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
+  const [discountPer, setDiscountPer] = useState(0);
 
   const calculateTotal = (ticketPrice: number, quantity: number) => {
     let calculatedTotal = ticketPrice * quantity;
+    setSubtotal(0);
 
     if (discount && discountCode?.length && addedCode) {
       const appliedDiscount = discountCode.find(
@@ -87,9 +90,10 @@ export default function TicketTypePicker({
       if (appliedDiscount && appliedDiscount.discount) {
         const discountPercentage = appliedDiscount.discount / 100;
         calculatedTotal -= calculatedTotal * discountPercentage;
+        setSubtotal(ticketPrice);
+        setDiscountPer(appliedDiscount.discount);
       }
     }
-
     if (serviceCharge) {
       setSubtotal(calculatedTotal);
       calculatedTotal += (calculatedTotal * serviceCharge) / 100;
@@ -172,7 +176,7 @@ export default function TicketTypePicker({
   }, [addedCode, form, tickets]);
 
   return (
-    <div className="p-3 border-4 border-black shadow-hard bg-white">
+    <div className="p-3 border-4 border-black shadow-hard bg-white w-full flex-1">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="flex gap-2">
@@ -211,8 +215,11 @@ export default function TicketTypePicker({
                               ticket.status !== "INACTIVE"
                           )
                           .map((ticket: Partial<TicketType>) => {
-                            const soldTicketCount =
-                              soldTickets[ticket.id!]?.count || 0;
+                            const bGet = ticket.buyGet || 1;
+                            const soldTicketCount = soldTickets
+                              ? // @ts-ignore
+                                soldTickets[ticket.id!].count / bGet
+                              : 0;
                             const isSoldOut =
                               ticket.quantity! === soldTicketCount;
                             return (
@@ -291,21 +298,29 @@ export default function TicketTypePicker({
             />
           </div>
           <div>
-            {serviceCharge && form.watch("quantity") && (
-              <>
-                <div className="px-1 text-right text-lg font-medium">
-                  <p>
-                    SUBTOTAL:{" "}
-                    <span className="font-bold">
-                      ${subtotal.toLocaleString("es-ar")}
-                    </span>
-                  </p>
-                </div>
-                <div className="px-1 text-right text-sm">
-                  <p>+ costo de servicio {serviceCharge}%</p>
-                </div>
-              </>
-            )}
+            {serviceCharge ||
+              (discount && form.watch("quantity") && (
+                <>
+                  <div className="px-1 text-right text-lg font-medium">
+                    <p>
+                      SUBTOTAL:{" "}
+                      <span className="font-bold">
+                        ${subtotal.toLocaleString("es-ar")}
+                      </span>
+                    </p>
+                  </div>
+                  {discount && (
+                    <div className="px-1 text-right text-sm">
+                      <p>- descuento por codigo {discountPer}%</p>
+                    </div>
+                  )}
+                  {serviceCharge && (
+                    <div className="px-1 text-right text-sm">
+                      <p>+ costo de servicio {serviceCharge}%</p>
+                    </div>
+                  )}
+                </>
+              ))}
             <p className="font-bold text-2xl text-right">
               TOTAL: $
               <span className="font-extrabold">

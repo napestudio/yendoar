@@ -1,5 +1,6 @@
 import { TicketOrderType } from "@/types/tickets";
-import { db } from "../prisma";
+import db from "../prisma";
+import { title } from "process";
 
 export async function createTicketOrder(data: TicketOrderType[]) {
   const createdOrders = await db.$transaction(
@@ -23,10 +24,15 @@ export async function getOrderTicketsByEvent(eventId: string) {
       { createdAt: "desc" },
     ],
     include: {
-      event: true,
       order: {
-        include: {
-          ticketType: true,
+        select: {
+          ticketTypeId: true,
+          quantity: true,
+          ticketType: {
+            select: {
+              title: true,
+            },
+          },
         },
       },
     },
@@ -71,6 +77,26 @@ export async function getTicketsByTicketTypeId(ticketTypeId: string) {
       order: {
         ticketTypeId: ticketTypeId,
       },
+    },
+  });
+}
+
+export async function getTicketOrdersByEventId(eventId: string) {
+  return await db.ticketOrder.findMany({
+    where: {
+      eventId: eventId,
+      order: {
+        status: "PAID",
+      },
+    },
+    orderBy: [
+      {
+        name: "asc",
+      },
+      { createdAt: "desc" },
+    ],
+    include: {
+      event: { select: { title: true } },
     },
   });
 }

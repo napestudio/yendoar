@@ -2,10 +2,15 @@ import EventCard from "@/components/event-card/event-card";
 import EventMarquee from "@/components/marquee/marquee";
 import { getAllEvents } from "@/lib/api/eventos";
 import { HomeCard } from "@/types/card";
+import { Metadata } from "next/types";
+
+export const metadata: Metadata = {
+  title: "Yendo.ar | Eventos en vivo",
+  description: "Venta de tickets online para eventos en vivo.",
+};
 
 export default async function Home() {
   const eventos = await getAllEvents();
-
   return (
     <>
       <section className="container pb-14">
@@ -20,9 +25,11 @@ export default async function Home() {
             ))}
         </div>
       </section>
-      <div className="w-full overflow-hidden py-5 relative mt-10">
-        <EventMarquee eventos={eventos} />
-      </div>
+      {eventos && (
+        <div className="w-full overflow-hidden py-5 relative mt-10">
+          <EventMarquee eventos={eventos} />
+        </div>
+      )}
     </>
   );
 }

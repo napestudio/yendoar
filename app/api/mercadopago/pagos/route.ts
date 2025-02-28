@@ -14,9 +14,9 @@ export async function POST(req: Request) {
   const body: { data: { id: string } } = res;
   const { searchParams } = new URL(req.url);
   // Obtenemos el id del usuario de la URL
-  const userId = searchParams.get("user_id");
+  const userId = searchParams.get("u");
   if (userId) {
-    // Obtenemos el token del usuario.
+    // Obtenemos el token del usuario
     const mpToken = await getMercadoPagoTokenByUser(userId);
     if (mpToken) {
       const mp = new MercadoPagoConfig({
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       const payment = await new Payment(mp).get({ id: body.data.id });
 
       if (payment.status === "approved") {
-        await payOrderHandler(payment.external_reference as string);
+        payOrderHandler(payment.metadata.order_id);
       }
     }
   }

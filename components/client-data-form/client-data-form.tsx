@@ -23,6 +23,8 @@ import {
 } from "@/lib/actions";
 import { Order } from "@/types/order";
 import { useEffect, useState } from "react";
+import { createMercadoPagoOrder } from "@/lib/mercadopago";
+import { redirect } from "next/navigation";
 
 const formSchema = z
   .object({
@@ -38,7 +40,10 @@ const formSchema = z
       .email()
       .min(5, { message: "Debe ser un email válido" }),
     phone: z.string(),
-    dni: z.string().min(8, { message: "Debe ser un dni válido" }),
+    dni: z
+      .string()
+      .regex(/^[1-9]\d{7}$/, { message: "Debe ser un DNI válido de 8 dígitos" })
+      .length(8, { message: "Debe tener 8 dígitos" }),
   })
   .refine((data) => data.email === data.confirmEmail, {
     message: "Los correos electrónicos deben coincidir",
@@ -106,7 +111,9 @@ export default function UserDataForm({ order }: { order: Order }) {
     } catch (error) {
       throw new Error("Error free ticket");
     }
-    await getMercadPagoUrl(product, orderData, orderId!, userId);
+    // await getMercadPagoUrl(product, orderData, orderId!, userId);
+
+    await createMercadoPagoOrder(product, orderData, orderId!, userId);
   }
 
   function expire() {

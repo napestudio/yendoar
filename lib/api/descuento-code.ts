@@ -1,11 +1,11 @@
 import { DiscountCode } from "@/types/discount-code";
-import { db } from "../prisma";
+import db from "../prisma";
 
 export async function getDiscountCodeByUserId(userId: string) {
   return await db.discountCode.findMany({
     where: {
       status: {
-        not: "DELETED"
+        not: "DELETED",
       },
     },
     orderBy: {
@@ -14,10 +14,10 @@ export async function getDiscountCodeByUserId(userId: string) {
     include: {
       event: {
         select: {
-          title: true
-        }
-      }
-    }
+          title: true,
+        },
+      },
+    },
   });
 }
 
@@ -25,9 +25,9 @@ export async function getAllDiscountCode() {
   return await db.discountCode.findMany({
     where: {
       status: {
-        not: "DELETED"
+        not: "DELETED",
       },
-    }
+    },
   });
 }
 
@@ -35,7 +35,10 @@ export async function createDiscountCode(data: DiscountCode) {
   return await db.discountCode.create({ data });
 }
 
-export async function updateDiscountCode(codeId: string, codeData: Partial<DiscountCode>) {
+export async function updateDiscountCode(
+  codeId: string,
+  codeData: Partial<DiscountCode>
+) {
   return await db.discountCode.update({
     where: {
       id: codeId,

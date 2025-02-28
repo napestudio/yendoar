@@ -28,6 +28,7 @@ import {
 } from "./api/reset-password-token";
 import { stat } from "fs";
 import { SITE_NAME } from "./constants";
+import { getPaidOrdersDataByEvent } from "@/lib/api/orders";
 
 // Type temporal
 export type Evento = {
@@ -36,7 +37,7 @@ export type Evento = {
   address: string;
   location: string;
   userId: string;
-  image: string;
+  image: string | null;
   dates: string;
   status: EventStatus;
   endDate: string;
@@ -110,6 +111,20 @@ export async function getOrderTicketsByEvent(eventId: string) {
   try {
     const result = await TicketOrders.getOrderTicketsByEvent(eventId);
     return result;
+  } catch (error) {
+    throw new Error("Error GET order tickets");
+  }
+}
+export async function getTicketOrdersByEventId(eventId: string) {
+  try {
+    const result = await TicketOrders.getTicketOrdersByEventId(eventId);
+    const response = {
+      evento: {
+        title: result[0].event.title,
+      },
+      result,
+    };
+    return response;
   } catch (error) {
     throw new Error("Error GET order tickets");
   }
@@ -763,18 +778,20 @@ export async function getTicketAmountByTicketTypeId(ticketTypeId: string) {
 export async function getSoldTicketsByType(eventId: string) {
   let ticketCounts: any = {};
   try {
-    const ticketOrders = await getOrderTicketsByEvent(eventId);
+    const ticketOrders = await getPaidOrdersDataByEvent(eventId);
     ticketOrders.forEach((ticketOrder) => {
-      const { order } = ticketOrder;
-      if (!ticketCounts[order.ticketTypeId]) {
-        const length = getTicketAmountByTicketTypeId(order.ticketTypeId);
-
-        ticketCounts[order.ticketTypeId] = {
-          title: order.ticketType.title,
-          count: length,
+      if (!ticketCounts[ticketOrder.ticketTypeId]) {
+        ticketCounts[ticketOrder.ticketTypeId] = {
+          id: ticketOrder.ticketTypeId,
+          title: ticketOrder.ticketType.title,
+          count: ticketOrder.tickets.length,
         };
+      } else {
+        ticketCounts[ticketOrder.ticketTypeId].count +=
+          ticketOrder.tickets.length;
       }
     });
+
     return ticketCounts;
   } catch (error) {
     throw new Error("Error trayendo la cantidad de entradas vendidas");

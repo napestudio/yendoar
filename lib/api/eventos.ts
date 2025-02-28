@@ -1,5 +1,6 @@
+import { cache } from "react";
 import { Evento } from "../actions";
-import { db } from "../prisma";
+import db from "../prisma";
 
 export async function getEventsByUserId(userId: string) {
   return await db.event.findMany({
@@ -19,7 +20,7 @@ export async function getEventsByUserId(userId: string) {
   });
 }
 
-export async function getAllEvents() {
+export const getAllEvents = cache(async () => {
   return await db.event.findMany({
     where: {
       status: {
@@ -35,7 +36,7 @@ export async function getAllEvents() {
       user: true,
     },
   });
-}
+});
 
 export async function createEvent(data: Evento) {
   return await db.event.create({ data });

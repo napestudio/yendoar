@@ -1,5 +1,5 @@
 import { TicketType } from "@/types/tickets";
-import { db } from "../prisma";
+import db from "../prisma";
 
 export async function getTicketTypesById(ticketTypeId: string) {
   return await db.ticketType.findUnique({

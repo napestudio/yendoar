@@ -1,5 +1,5 @@
 import { UserInvitation } from "@/types/user-invitations";
-import { db } from "../prisma";
+import db from "../prisma";
 import { sendEmail } from "../invitation-email";
 import { SITE_NAME } from "../constants";
 

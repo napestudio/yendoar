@@ -1,8 +1,7 @@
 datasource db {
-  provider = "postgresql"
-  // url      = env("DATABASE_URL")
+    provider = "postgresql"
     url      = env("yendo_db_PRISMA_URL")
-    directUrl = env("yendo_db_URL_NON_POOLING")
+    directUrl = env("yendo_db_URL_NON_POOLING")    
 }
 
 generator client {
@@ -149,6 +148,7 @@ model TicketType {
   orders       Order[]
   isFree       Boolean          @default(false)
   promotion    Promotion[]
+  ticketOrder  TicketOrder[]
 
   @@map("ticket_types")
 }
@@ -194,11 +194,14 @@ model TicketOrder {
   date      DateTime
   orderId   String
   eventId   String
+  ticketTypeId String?
+  ticketType TicketType?       @relation(fields: [ticketTypeId], references: [id], onDelete: Cascade)
   order     Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
   event     Event             @relation(fields: [eventId], references: [id], onDelete: Cascade)
   status    TicketOrderStatus
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
+  code      Int?              @default(autoincrement())
 
   @@map("ticket_orders")
 }

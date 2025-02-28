@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { db } from "./prisma";
+import db from "./prisma";
 
 import { getVerificationTokenByEmail } from "./api/verification-token";
 import { getPasswordResetTokenByEmail } from "./api/reset-password-token";

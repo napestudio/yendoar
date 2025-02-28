@@ -1,4 +1,4 @@
-import { db } from "../prisma";
+import db from "../prisma";
 
 export async function createOrder(data: any) {
   return await db.order.create({ data });
@@ -30,6 +30,27 @@ export async function getOrdersByEvent(eventId: string) {
       ticketType: true,
       event: true,
       tickets: true,
+    },
+  });
+}
+
+export async function getPaidOrdersDataByEvent(eventId: string) {
+  return await db.order.findMany({
+    where: {
+      eventId: eventId,
+      status: "PAID",
+    },
+    include: {
+      tickets: {
+        select: {
+          id: true,
+        },
+      },
+      ticketType: {
+        select: {
+          title: true,
+        },
+      },
     },
   });
 }
