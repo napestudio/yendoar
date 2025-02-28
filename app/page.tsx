@@ -9,13 +9,6 @@ export const metadata: Metadata = {
   description: "Venta de tickets online para eventos en vivo.",
 };
 
-// export const generateStaticParams = async () => {
-//   const eventos = await getAllEvents();
-//   return eventos.map((evento: any) => ({
-//     params: { id: evento.id.toString() },
-//   }));
-// };
-
 export default async function Home() {
   const eventos = await getAllEvents();
   return (
