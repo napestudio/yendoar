@@ -32,9 +32,11 @@ export default async function Home() {
             ))}
         </div>
       </section>
-      <div className="w-full overflow-hidden py-5 relative mt-10">
-        <EventMarquee eventos={eventos} />
-      </div>
+      {eventos && (
+        <div className="w-full overflow-hidden py-5 relative mt-10">
+          <EventMarquee eventos={eventos} />
+        </div>
+      )}
     </>
   );
 }
