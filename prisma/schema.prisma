@@ -38,6 +38,7 @@ model Session {
 enum UserType {
   SELLER
   ADMIN
+  PRODUCER
   SUPERADMIN
 }
 
