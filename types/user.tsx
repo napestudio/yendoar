@@ -1,4 +1,4 @@
-type UserType = "SELLER" | "ADMIN" | "SUPERADMIN";
+export type UserType = "SELLER" | "PRODUCER" | "ADMIN" | "SUPERADMIN";
 
 export type User = {
   id?: string;
