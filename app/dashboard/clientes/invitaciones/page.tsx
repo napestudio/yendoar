@@ -1,6 +1,5 @@
 import { getServerSession } from "next-auth";
 import InvitationsTable from "./table";
-import { getUserByEmail } from "@/lib/api/users";
 import { getInvitationsByUser } from "@/lib/actions";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import NewClientForm from "../alta/form";
@@ -8,7 +7,8 @@ import { redirect } from "next/navigation";
 
 export default async function Invitations() {
   const session = await getServerSession(authOptions);
-  const { id } = await getUserByEmail(session?.user?.email as string);
+  if (!session) return;
+  const id = session.user.id;
   const invitations = await getInvitationsByUser(id);
   if (session?.user.type === "SELLER") {
     redirect("/dashboard");

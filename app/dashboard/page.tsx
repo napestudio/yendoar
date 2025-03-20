@@ -4,7 +4,6 @@ import { getEventsByUserId } from "@/lib/api/eventos";
 import { Plus } from "lucide-react";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { getUserByEmail } from "@/lib/api/users";
 import EventCard from "./components/event-card/event-card";
 import { Evento } from "@/types/event";
 import { authOptions } from "../api/auth/[...nextauth]/options";
@@ -12,7 +11,8 @@ import { Card } from "@/components/ui/card";
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
-  const { id } = await getUserByEmail(session?.user?.email as string);
+  if (!session) return;
+  const id = session.user.id;
   const eventos = await getEventsByUserId(id);
 
   return (

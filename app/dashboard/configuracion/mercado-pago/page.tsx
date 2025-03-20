@@ -1,5 +1,4 @@
 import MercadoPagoForm from "../../mercado-pago-form/mercado-pago-form";
-import { getUserByEmail } from "@/lib/api/users";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -7,7 +6,8 @@ import { getAllUserConfiguration } from "@/lib/actions";
 
 export default async function MercadoPago() {
   const session = await getServerSession(authOptions);
-  const { id } = await getUserByEmail(session?.user?.email as string);
+  if (!session) return;
+  const id = session.user.id;
   const userConfiguration = (await getAllUserConfiguration(id)) || [];
 
   return (
