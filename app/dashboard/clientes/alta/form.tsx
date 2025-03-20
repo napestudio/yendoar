@@ -76,7 +76,7 @@ export default function NewClientForm({
     const timeZone = "America/Argentina/Buenos_Aires";
     const today = toZonedTime(new Date(), timeZone);
     const tomorrow = addDays(today, 1);
-    console.log(values);
+
     createUserInvitation({
       email: values.email,
       role: values.role as UserType,

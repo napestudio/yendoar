@@ -6,6 +6,7 @@ import "@uploadthing/react/styles.css";
 import Link from "next/link";
 import { authOptions } from "../api/auth/[...nextauth]/options";
 import DashboardNavigation from "./components/dashboard-navigation";
+import SideBar from "./components/side-bar";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -24,9 +25,14 @@ export default async function DashboardLayout({
 
   return (
     <>
-      <div className="flex flex-col items-center min-h-screen gap-8 py-2 md:p-8 mx-auto w-full bg-white">
-        <DashboardNavigation session={session} />
-        <div className="w-[550px] max-w-[95vw] mx-auto flex flex-col text-center justify-center">
+      <div className="flex h-[90vh] gap-8 py-2 md:p-8 mx-auto w-full bg-white">
+        {/* <div className="hidden md:block">
+          <DashboardNavigation session={session} />
+        </div> */}
+        <div className="block md:hidden bg-gray-200 px-8 p-6 rounded-xl">
+          <SideBar session={session} />
+        </div>
+        <div className="w-[550px] max-w-[95vw] mx-auto flex flex-col text-center py-6">
           {children}
         </div>
       </div>
