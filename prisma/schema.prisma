@@ -254,6 +254,7 @@ model Promotion {
 model Invitation {
   id        String   @id @default(cuid())
   email     String
+  role      UserType @default(SELLER)
   inviterId String
   token     String   @unique
   createdAt DateTime @default(now())
