@@ -3,11 +3,11 @@ import { Evento } from "@/types/event";
 import EventsHandler from "./handler";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import { getUserByEmail } from "@/lib/api/users";
 
 export default async function EventosPage() {
   const session = await getServerSession(authOptions);
-  const { id } = await getUserByEmail(session?.user?.email as string);
+  if (!session) return;
+  const id = session.user.id;
   const eventos =
     session?.user.type !== "SELLER"
       ? await getAllEvents()

@@ -1,8 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import { getAllUsers, getUserByEmail } from "@/lib/api/users";
+import { getAllUsers } from "@/lib/api/users";
 import { getServerSession } from "next-auth";
-import { getAllUsersButAdmins, getInvitationsByUser } from "@/lib/actions";
-import InvitationsTable from "./invitaciones/table";
+
 import AccountsTable from "./clients-table";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";

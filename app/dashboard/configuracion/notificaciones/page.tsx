@@ -1,12 +1,13 @@
 import { getServerSession } from "next-auth";
 import NotificationsForm from "../../components/notifications-form/notifications-form";
-import { getUserByEmail } from "@/lib/api/users";
+
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { getAllUserConfiguration } from "@/lib/actions";
 
 export default async function Notificaciones() {
   const session = await getServerSession(authOptions);
-  const { id } = await getUserByEmail(session?.user?.email as string);
+  if (!session) return;
+  const id = session.user.id;
   const userConfiguration = (await getAllUserConfiguration(id)) || [];
   return (
     <div>
@@ -16,7 +17,7 @@ export default async function Notificaciones() {
       <p className="text-muted-foreground">
         Elegí que notificaciones recibir en tu e-mail.
       </p>
-      <NotificationsForm configuration={userConfiguration} userId={id}/>
+      <NotificationsForm configuration={userConfiguration} userId={id} />
     </div>
   );
 }

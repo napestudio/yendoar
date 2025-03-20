@@ -2,8 +2,8 @@ import { cache } from "react";
 import { Evento } from "../actions";
 import db from "../prisma";
 
-export async function getEventsByUserId(userId: string) {
-  return await db.event.findMany({
+export const getEventsByUserId = cache(async (userId: string) => {
+  return db.event.findMany({
     where: {
       userId: userId,
       status: {
@@ -18,10 +18,10 @@ export async function getEventsByUserId(userId: string) {
       createdAt: "desc",
     },
   });
-}
+});
 
 export const getAllEvents = cache(async () => {
-  return await db.event.findMany({
+  return db.event.findMany({
     where: {
       status: {
         not: "DELETED",
@@ -39,20 +39,19 @@ export const getAllEvents = cache(async () => {
 });
 
 export async function createEvent(data: Evento) {
-  return await db.event.create({ data });
+  return db.event.create({ data });
 }
 
 export async function updateEvent(eventId: string, eventData: Partial<Evento>) {
-  return await db.event.update({
+  return db.event.update({
     where: {
       id: eventId,
     },
     data: eventData,
   });
 }
-
-export async function getEventById(eventId: string) {
-  return await db.event.findUnique({
+export const getEventById = cache(async (eventId: string) => {
+  return db.event.findUnique({
     where: {
       id: eventId,
     },
@@ -62,4 +61,4 @@ export async function getEventById(eventId: string) {
       discountCode: true,
     },
   });
-}
+});

@@ -21,9 +21,20 @@ import { Loader2, TicketIcon } from "lucide-react";
 import { addDays } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import { UserInvitation } from "@/types/user-invitations";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { UserType } from "@/types/user";
 
 const formSchema = z.object({
   email: z.string().email().min(5, { message: "Debe ser un email válido" }),
+  role: z.enum(["SELLER", "PRODUCER", "ADMIN", "SUPERADMIN"] as const, {
+    required_error: "Debe seleccionar un rol",
+  }),
 });
 
 export default function NewClientForm({
@@ -40,6 +51,7 @@ export default function NewClientForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
+      role: undefined,
     },
   });
 
@@ -64,8 +76,10 @@ export default function NewClientForm({
     const timeZone = "America/Argentina/Buenos_Aires";
     const today = toZonedTime(new Date(), timeZone);
     const tomorrow = addDays(today, 1);
+    console.log(values);
     createUserInvitation({
       email: values.email,
+      role: values.role as UserType,
       token: uuidv4(),
       inviterId: userId,
       createdAt: today,
@@ -92,7 +106,7 @@ export default function NewClientForm({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((values) => onSubmit(values))}
-          className="space-y-8 w-full"
+          className="space-y-8 w-full text-left"
         >
           <FormField
             control={form.control}
@@ -103,6 +117,32 @@ export default function NewClientForm({
                 <FormControl>
                   <Input placeholder="E-mail del cliente" {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="role"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Rol</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar rol" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="PRODUCER">Productor</SelectItem>
+                    <SelectItem value="SELLER">
+                      Punto de venta / Vendedor
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

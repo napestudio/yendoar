@@ -1,16 +1,13 @@
 import { getServerSession } from "next-auth";
-import { getUserByEmail } from "@/lib/api/users";
 
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import CreateCodeForm from "../components/create-discount-code/create-discount-code";
 import { getAllEvents, getEventsByUserId } from "@/lib/api/eventos";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
 export default async function NewCode() {
   const session = await getServerSession(authOptions);
-  const { id } = await getUserByEmail(session?.user?.email as string);
+  if (!session) return;
+  const id = session.user.id;
   const events =
     session?.user.type === "SELLER"
       ? await getEventsByUserId(id)

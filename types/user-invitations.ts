@@ -6,7 +6,8 @@ export interface UserInvitation {
   inviterId: string;
   token: string;
   createdAt?: string | Date | undefined;
-  userType?: UserType | null;
+  role?: UserType | undefined;
+  userType?: UserType | null | undefined;
   expiresAt: string | Date;
   updatedAt?: string | Date;
   accepted?: boolean;
