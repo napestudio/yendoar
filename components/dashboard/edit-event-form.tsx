@@ -290,28 +290,6 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
                 "Guardar cambios"
               )}
             </Button>
-            <Button
-              asChild
-              variant="secondary"
-              className="border-2 border-gray-500"
-            >
-              <Link
-                href={`/dashboard/evento/ticket-types/${evento.id}`}
-                className="bg-white"
-              >
-                <TooltipProvider delayDuration={300}>
-                  <Tooltip>
-                    <TooltipTrigger className="flex gap-1 items-center">
-                      <TicketIcon className="w-6 h-6" />
-                      <span className="hidden lg:block">Tickets</span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Tickets</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </Link>
-            </Button>
           </div>
         </form>
       </Form>

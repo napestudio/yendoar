@@ -31,7 +31,7 @@ import Image from "next/image";
 import { datesFormater } from "@/lib/utils";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { TicketTypeCard } from "./ticket-type-card";
+import { InfoTicketTypeCard } from "./info-ticket-type-card";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import DashboardHeader from "./dashboard-header";
@@ -171,7 +171,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                   <CardContent className="space-y-4">
                     {evento.ticketTypes &&
                       evento.ticketTypes.map((ticket, index) => (
-                        <TicketTypeCard key={index} ticket={ticket} />
+                        <InfoTicketTypeCard key={index} ticket={ticket} />
                       ))}
                   </CardContent>
                   <CardFooter>
