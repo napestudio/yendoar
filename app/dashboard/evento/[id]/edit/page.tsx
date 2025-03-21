@@ -5,13 +5,19 @@ import { getEventById } from "@/lib/actions";
 import { Evento } from "@/types/event";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import EditEventTabs from "./edit-event-tabs";
+
+interface EditEventPageProps {
+  params: { id: string };
+  searchParams: { [key: string]: string | undefined };
+}
 
 export default async function EditEventPage({
   params,
-}: {
-  params: { id: string };
-}) {
+  searchParams,
+}: EditEventPageProps) {
   const evento = await getEventById(params.id);
+  const activeTab = searchParams.tab || "basic";
   return (
     <>
       <div className="space-y-6 pb-8">
@@ -27,7 +33,7 @@ export default async function EditEventPage({
             </Link>
           </Button>
         </div>
-        <EditEventForm evento={evento as Evento} />
+        <EditEventTabs evento={evento as Evento} tab={activeTab} />
       </div>
     </>
   );

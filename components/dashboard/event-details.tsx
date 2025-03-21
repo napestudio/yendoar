@@ -176,8 +176,13 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                   </CardContent>
                   <CardFooter>
                     <Button variant="outline">
-                      <Ticket className="mr-2 h-4 w-4" />
-                      Agregar tipo de ticket
+                      <Link
+                        href={`/dashboard/evento/${evento.id}/edit?tab=tickets`}
+                        className="flex items-center"
+                      >
+                        <Ticket className="mr-2 h-4 w-4" />
+                        Agregar tipo de ticket
+                      </Link>
                     </Button>
                   </CardFooter>
                 </Card>
