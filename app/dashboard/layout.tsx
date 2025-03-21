@@ -25,7 +25,7 @@ export default async function DashboardLayout({
 
   return (
     <>
-      <div className="flex h-[90vh] gap-8 py-2 md:p-8 mx-auto w-full bg-white">
+      <div className="flex h-svh gap-8 py-2 md:p-8 mx-auto w-full bg-white">
         {/* <div className="hidden md:block">
           <DashboardNavigation session={session} />
         </div> */}

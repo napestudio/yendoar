@@ -1,8 +1,13 @@
+"use client";
 import { SITE_NAME } from "@/lib/constants";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function PreFooter() {
+  const pathname = usePathname();
+  if (pathname.startsWith("/validar") || pathname.startsWith("/dashboard"))
+    return;
   return (
     <div className="bg-neutral-950 text-white py-32">
       <div className="container flex gap-12 md:flex-row flex-col md:items-start w-full md:justify-between items-center justify-center">
