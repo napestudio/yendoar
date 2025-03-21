@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 import Link from "next/link";
-import { menuData } from "../data/menuData";
+import { menuData } from "../../app/dashboard/data/menuData";
 
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";

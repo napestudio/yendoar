@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
-import CreateEventForm from "../components/create-event/create-event-form";
+import CreateEventForm from "../../../components/dashboard/create-event-form";
 import DashboardHeader from "@/components/dashboard/dashboard-header";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";

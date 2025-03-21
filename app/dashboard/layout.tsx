@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import "@uploadthing/react/styles.css";
 
 import { authOptions } from "../api/auth/[...nextauth]/options";
-import SideBar from "./components/side-bar";
+import SideBar from "../../components/dashboard/side-bar";
 
 const dashboardConfig = {
   mainNav: [
