@@ -94,8 +94,11 @@ export default function EventCard({ evento }: { evento: Evento }) {
             <Link href={`/dashboard/evento/${evento.id}`}>Detalles</Link>
           </Button>
           <Button>
-            <Link href={`/dashboard/evento/ticket-types/${evento.id}`}>
-              Tickets
+            <Link
+              href={`/dashboard/evento/ticket-types/${evento.id}`}
+              className="flex items-center gap-2"
+            >
+              <TicketIcon className="w-6 h-6" /> Tickets
             </Link>
           </Button>
           {/* <Link href={`/dashboard/evento/${evento.id}`}>
