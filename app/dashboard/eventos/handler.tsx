@@ -1,7 +1,7 @@
 "use client";
 import { Evento } from "@/types/event";
 import EventFilters from "../components/event-filters";
-import EventCard from "../components/event-card/event-card";
+import EventCard from "../../../components/dashboard/event-card";
 import { Card } from "@/components/ui/card";
 import { useState } from "react";
 
