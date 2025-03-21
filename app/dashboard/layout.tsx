@@ -1,12 +1,54 @@
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { Toaster } from "@/components/ui/toaster";
 import "@uploadthing/react/styles.css";
-import Link from "next/link";
+
 import { authOptions } from "../api/auth/[...nextauth]/options";
-import DashboardNavigation from "./components/dashboard-navigation";
 import SideBar from "./components/side-bar";
+
+const dashboardConfig = {
+  mainNav: [
+    {
+      title: "Dashboard",
+      href: "/dashboard",
+    },
+    {
+      title: "Support",
+      href: "/support",
+    },
+    {
+      title: "Documentation",
+      href: "/docs",
+    },
+  ],
+  sidebarNav: [
+    {
+      title: "Dashboard",
+      href: "/dashboard",
+      icon: "dashboard",
+    },
+    {
+      title: "Eventos",
+      href: "/dashboard/eventos",
+      icon: "calendar",
+    },
+    {
+      title: "Sales",
+      href: "/dashboard/sales",
+      icon: "sales",
+    },
+    {
+      title: "Usuarios",
+      href: "/dashboard/customers",
+      icon: "users",
+    },
+    {
+      title: "Settings",
+      href: "/dashboard/settings",
+      icon: "settings",
+    },
+  ],
+};
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -29,12 +71,10 @@ export default async function DashboardLayout({
         {/* <div className="hidden md:block">
           <DashboardNavigation session={session} />
         </div> */}
-        <div className="block md:hidden bg-gray-200 px-8 p-6 rounded-xl">
-          <SideBar session={session} />
-        </div>
-        <div className="w-[550px] max-w-[95vw] mx-auto flex flex-col text-center py-6">
-          {children}
-        </div>
+        <aside className="hidden w-[200px] flex-col md:flex lg:w-[240px]">
+          <SideBar session={session} items={dashboardConfig.sidebarNav} />
+        </aside>
+        <div className="flex flex-col flex-1">{children}</div>
       </div>
     </>
   );

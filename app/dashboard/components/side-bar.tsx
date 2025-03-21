@@ -1,25 +1,83 @@
 "use client";
 
-import { Home } from "lucide-react";
+import {
+  Calendar,
+  CreditCard,
+  Home,
+  LayoutDashboard,
+  Settings,
+  Ticket,
+  Users,
+} from "lucide-react";
 
 import Link from "next/link";
 import { menuData } from "../data/menuData";
-import AdminDropDown from "@/components/admin-dropdown/admin-dropdown";
-import { User } from "@/types/user";
+
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Session } from "next-auth";
+import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
-export default function SideBar({ session }: { session: any }) {
+interface DashboardNavProps {
+  session: Session;
+  items: {
+    title: string;
+    href: string;
+    icon: string;
+  }[];
+}
+
+export default function SideBar({ items, session }: DashboardNavProps) {
+  const path = usePathname();
   const filteredMenuData = menuData.filter(
     (section) =>
       !(session.user.type === "SELLER" && section.title === "Cuentas")
   );
 
+  const getIcon = (icon: string) => {
+    switch (icon) {
+      case "dashboard":
+        return <LayoutDashboard className="mr-2 h-4 w-4" />;
+      case "calendar":
+        return <Calendar className="mr-2 h-4 w-4" />;
+      case "ticket":
+        return <Ticket className="mr-2 h-4 w-4" />;
+      case "sales":
+        return <CreditCard className="mr-2 h-4 w-4" />;
+      case "users":
+        return <Users className="mr-2 h-4 w-4" />;
+      case "settings":
+        return <Settings className="mr-2 h-4 w-4" />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4 justify-between h-full">
+      <nav className="grid items-start gap-2">
+        {items.map((item, index) => {
+          const isActive = path === item.href;
+          return (
+            <Link key={index} href={item.href}>
+              <Button
+                variant={isActive ? "secondary" : "ghost"}
+                className={cn(
+                  "w-full justify-start",
+                  isActive ? "bg-muted font-medium" : "font-normal"
+                )}
+              >
+                {getIcon(item.icon)}
+                {item.title}
+              </Button>
+            </Link>
+          );
+        })}
+      </nav>
       <div>
-        {filteredMenuData.map((section) =>
+        {/* {filteredMenuData.map((section) =>
           section.items ? (
             <div key={section.title} className="flex flex-col">
               <div className="font-bold">{section.title}</div>
@@ -43,7 +101,7 @@ export default function SideBar({ session }: { session: any }) {
               )}
             </Link>
           )
-        )}
+        )} */}
       </div>
       <div>
         <div className="flex">
