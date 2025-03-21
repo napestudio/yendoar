@@ -52,9 +52,9 @@ export default function EventCard({ evento }: { evento: Evento }) {
 
   return (
     <>
-      <Card className="w-full text-left" key={evento.id}>
+      <Card className="w-full text-left overflow-hidden" key={evento.id}>
         <CardHeader className="flex gap-2 p-0">
-          <div className="relative h-48 w-full">
+          <div className="relative h-48 w-full ">
             <Image
               src={evento.image || "/placeholder.svg"}
               alt=""
@@ -95,7 +95,7 @@ export default function EventCard({ evento }: { evento: Evento }) {
           </Button>
           <Button>
             <Link
-              href={`/dashboard/evento/ticket-types/${evento.id}`}
+              href={`/dashboard/evento/${evento.id}/edit?tab=tickets`}
               className="flex items-center gap-2"
             >
               <TicketIcon className="w-6 h-6" /> Tickets

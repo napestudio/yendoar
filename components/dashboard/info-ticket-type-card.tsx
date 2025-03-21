@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TicketType } from "@/types/tickets";
+import Link from "next/link";
 
 interface TicketTypeCardProps {
   ticket: {
@@ -41,9 +42,13 @@ export function InfoTicketTypeCard({ ticket }: { ticket: TicketType }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-              <DropdownMenuItem>
-                <Edit className="mr-2 h-4 w-4" />
-                Editar ticket
+              <DropdownMenuItem asChild>
+                {/* <Edit className="mr-2 h-4 w-4" /> */}
+                <Link
+                  href={`/dashboard/evento/${ticket.eventId}/edit?tab=tickets`}
+                >
+                  Editar ticket
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Pausar ventas</DropdownMenuItem>
