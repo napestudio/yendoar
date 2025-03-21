@@ -56,7 +56,7 @@ export default function SideBar({ items, session }: DashboardNavProps) {
   };
 
   return (
-    <div className="flex flex-col gap-4 justify-between h-full">
+    <div className="flex flex-col gap-4 justify-between">
       <nav className="grid items-start gap-2">
         {items.map((item, index) => {
           const isActive = path === item.href;
