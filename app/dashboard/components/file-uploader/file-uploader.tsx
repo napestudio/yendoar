@@ -52,7 +52,7 @@ export function FileUploader({
         {...getRootProps()}
         className="flex-center border bg-dark-3 flex cursor-pointer flex-col overflow-hidden rounded-xl bg-grey-50"
       >
-        <div className="flex-center text-center flex-col py-5 text-grey-500 relative min-h-[145px]">
+        <div className="flex-center text-center flex-col py-5 text-grey-500 relative min-h-[245px]">
           {imageUrl ? (
             <>
               <Image

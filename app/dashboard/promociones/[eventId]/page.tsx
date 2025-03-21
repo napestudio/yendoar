@@ -1,5 +1,5 @@
 import { getEventById } from "@/lib/actions";
-import EditEventForm from "../../components/edit-event-form/edit-event-form";
+import EditEventForm from "../../../../components/dashboard/edit-event-form";
 import { Evento } from "@/types/event";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";

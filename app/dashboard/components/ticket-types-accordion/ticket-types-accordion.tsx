@@ -20,7 +20,6 @@ export default function TicketTypeAccordion({
   ticketTypes: TicketType[];
   evento: Evento;
 }) {
-  const [type, setType] = useState<string>("");
   return (
     <div className="w-full mx-auto text-left">
       <div className="flex flex-col gap-4 w-full">
@@ -43,7 +42,7 @@ export default function TicketTypeAccordion({
         <h2 className="mt-10 scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
           Nuevo tipo de ticket
         </h2>
-        <div className="bg-gray-50 p-5 rounded">
+        <div>
           <TycketTypeForm evento={evento} />
         </div>
       </div>

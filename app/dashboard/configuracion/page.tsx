@@ -1,4 +1,4 @@
-import CreateEventForm from "../components/create-event/create-event-form";
+import CreateEventForm from "../../../components/dashboard/create-event-form";
 
 export default function SettingsPage() {
   return (

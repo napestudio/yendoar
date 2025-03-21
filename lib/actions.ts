@@ -164,7 +164,7 @@ export async function updateTicketType(
 ) {
   try {
     const result = await TicketTypes.updateTicketType(ticketId, data);
-    revalidatePath(`/dashboard/evento/${result.id}`);
+    revalidatePath(`/dashboard/evento/`);
   } catch (error) {
     throw new Error("Error editando el tipo de ticket");
   }
