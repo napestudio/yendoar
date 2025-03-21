@@ -20,7 +20,6 @@ export default function TicketTypeAccordion({
   ticketTypes: TicketType[];
   evento: Evento;
 }) {
-  const [type, setType] = useState<string>("");
   return (
     <div className="w-full mx-auto text-left">
       <div className="flex flex-col gap-4 w-full">

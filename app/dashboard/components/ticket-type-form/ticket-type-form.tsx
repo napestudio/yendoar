@@ -119,7 +119,7 @@ export default function TycketTypeForm({ evento }: { evento: Evento }) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Box>
           <div className="space-y-8">
-            <h3 className="font-bold">General</h3>
+            <h3 className="font-bold">Información Básica</h3>
             <FormField
               control={form.control}
               name="title"

@@ -2,6 +2,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
 import CreateEventForm from "../components/create-event/create-event-form";
+import DashboardHeader from "@/components/dashboard/dashboard-header";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default async function NewEvent() {
   const session = await getServerSession(authOptions);
@@ -9,11 +13,19 @@ export default async function NewEvent() {
   const id = session.user.id;
   return (
     <>
-      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-        Nuevo evento
-      </h1>
-      <div className="bg-gray-100 p-5 mt-5 rounded w-full text-left">
-        <CreateEventForm userId={id} />
+      <div className="space-y-6 pb-8">
+        <DashboardHeader title="Nuevo evento" subtitle="Crea un evento nuevo" />
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" asChild>
+            <Link href={`/dashboard`}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Volver al Dashboard
+            </Link>
+          </Button>
+        </div>
+        <div>
+          <CreateEventForm userId={id} />
+        </div>
       </div>
     </>
   );
