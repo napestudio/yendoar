@@ -4,7 +4,7 @@ import { getEventsByUserId } from "@/lib/api/eventos";
 import { DollarSign, Plus } from "lucide-react";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
-import EventCard from "./components/event-card/event-card";
+import EventCard from "../../components/dashboard/event-card";
 import { Evento } from "@/types/event";
 import { authOptions } from "../api/auth/[...nextauth]/options";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";

@@ -30,7 +30,7 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
-import AlertRemove from "../alert-remove/alert-remove";
+import AlertRemove from "../../app/dashboard/components/alert-remove/alert-remove";
 import { datesFormater } from "@/lib/utils";
 
 export default function EventCard({ evento }: { evento: Evento }) {
@@ -82,7 +82,7 @@ export default function EventCard({ evento }: { evento: Evento }) {
                 <span className="space-y-2">
                   <span className="flex justify-between text-sm font-bold">
                     <span>Tickets vendidos</span>
-                    <span>200 / 1500</span>
+                    <span>100 / 1200</span>
                   </span>
                 </span>
               </CardDescription>

@@ -3,7 +3,7 @@ import { Filter, Plus } from "lucide-react";
 import { Button } from "../ui/button";
 import Box from "./box";
 import { Evento } from "@/types/event";
-import EventCard from "@/app/dashboard/components/event-card/event-card";
+import EventCard from "@/components/dashboard/event-card";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
