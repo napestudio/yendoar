@@ -71,20 +71,20 @@ export default function EventCard({ evento }: { evento: Evento }) {
             <div>
               <CardTitle className="text-lg mb-4">{evento.title}</CardTitle>
               <CardDescription>
-                <div className="flex items-center gap-2 mb-2">
+                <span className="flex items-center gap-2 mb-2">
                   <MapPin className="mr-1 h-4 w-4" />
                   {evento.location}
-                </div>
-                <div className="flex items-center gap-2 mb-4">
+                </span>
+                <span className="flex items-center gap-2 mb-4">
                   <Calendar className="mr-1 h-4 w-4" />
                   {groupedDates}
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm font-bold">
+                </span>
+                <span className="space-y-2">
+                  <span className="flex justify-between text-sm font-bold">
                     <span>Tickets vendidos</span>
                     <span>200 / 1500</span>
-                  </div>
-                </div>
+                  </span>
+                </span>
               </CardDescription>
             </div>
           </div>

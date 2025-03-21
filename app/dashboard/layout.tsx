@@ -33,7 +33,7 @@ const dashboardConfig = {
       icon: "calendar",
     },
     {
-      title: "Sales",
+      title: "Métodos de pago",
       href: "/dashboard/sales",
       icon: "sales",
     },
