@@ -6,6 +6,7 @@ import { Evento } from "@/types/event";
 import EventCard from "@/components/dashboard/event-card";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import Link from "next/link";
 
 export default function EventsDisplay({ eventos }: { eventos: Evento[] }) {
   const [activeTab, setActiveTab] = useState("upcoming");
@@ -23,7 +24,9 @@ export default function EventsDisplay({ eventos }: { eventos: Evento[] }) {
             Filtros
           </Button>
           <Button size="sm">
-            <Plus className="mr-2 h-4 w-4" /> Evento
+            <Link href="/dashboard/nuevo-evento" className="flex items-center">
+              <Plus className="mr-2 h-4 w-4" /> Evento
+            </Link>
           </Button>
         </div>
       </div>

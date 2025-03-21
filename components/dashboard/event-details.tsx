@@ -9,6 +9,7 @@ import {
   Calendar,
   Download,
   Edit,
+  KeyIcon,
   MapPin,
   Share2,
   Ticket,
@@ -32,6 +33,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { TicketTypeCard } from "./ticket-type-card";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
+import DashboardHeader from "./dashboard-header";
 export default function EventDetails({ evento }: { evento: Evento }) {
   const [activeTab, setActiveTab] = useState("overview");
   const groupedDates = datesFormater(evento.dates as string);
@@ -39,10 +41,10 @@ export default function EventDetails({ evento }: { evento: Evento }) {
   return (
     <>
       <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl font-medium">{evento?.title}</h2>
-          <p className="text-sm">Administra los datos de este evento</p>
-        </div>
+        <DashboardHeader
+          title={evento.title}
+          subtitle="Administra los datos de este evento"
+        />
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" asChild>
             <Link href="/dashboard">
@@ -56,8 +58,13 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                 Share
               </Button> */}
             <Button variant="outline" size="sm">
-              <Edit className="mr-2 h-4 w-4" />
-              Editar
+              <Link
+                href={`/dashboard/evento/${evento.id}/edit`}
+                className="flex items-center"
+              >
+                <Edit className="mr-2 h-4 w-4" />
+                Editar
+              </Link>
             </Button>
             <Button variant="destructive" size="sm">
               <Trash className="mr-2 h-4 w-4" />
@@ -206,6 +213,15 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                     <Button variant="outline" size="sm">
                       <User className="mr-2 h-4 w-4" />
                       Agregar invitado
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <Link
+                        href={`/dashboard/evento/${evento.id}/validadores`}
+                        className="flex items-center"
+                      >
+                        <KeyIcon className="mr-2 w-4 h-4" />
+                        <span>Validadores</span>
+                      </Link>
                     </Button>
                   </div>
                 </div>

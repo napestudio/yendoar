@@ -11,6 +11,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 import StatsCards from "@/components/dashboard/stats-cards";
 import EventsDisplay from "@/components/dashboard/events-display";
+import DashboardHeader from "@/components/dashboard/dashboard-header";
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
@@ -22,20 +23,10 @@ export default async function Dashboard() {
     <>
       <div className="flex flex-col gap-8">
         <div className="flex gap-5">
-          <div>
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-              Dashboard
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              Administra tus eventos y venta de tickets
-            </p>
-          </div>
-
-          {/* <Button asChild variant="secondary">
-            <Link href={"/dashboard/nuevo-evento"}>
-              <Plus className="mr-2" /> Crear evento
-            </Link>
-          </Button> */}
+          <DashboardHeader
+            title="Dashboard"
+            subtitle="Administra tus eventos y venta de tickets"
+          />
         </div>
         <div className="w-full space-y-5">
           <StatsCards />
