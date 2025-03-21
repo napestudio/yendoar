@@ -1,5 +1,5 @@
 import { DollarSign } from "lucide-react";
-import Box from "./Box";
+import Box from "./box";
 
 export default function StatsCards() {
   return (

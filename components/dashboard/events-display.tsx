@@ -1,6 +1,6 @@
 import { Filter, Plus } from "lucide-react";
 import { Button } from "../ui/button";
-import Box from "./Box";
+import Box from "./box";
 import { Evento } from "@/types/event";
 import EventCard from "@/app/dashboard/components/event-card/event-card";
 
