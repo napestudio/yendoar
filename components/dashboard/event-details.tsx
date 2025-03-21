@@ -9,6 +9,7 @@ import {
   Calendar,
   Download,
   Edit,
+  Globe,
   KeyIcon,
   MapPin,
   Share2,
@@ -34,6 +35,7 @@ import { TicketTypeCard } from "./ticket-type-card";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import DashboardHeader from "./dashboard-header";
+import { SITE_URL } from "@/lib/constants";
 export default function EventDetails({ evento }: { evento: Evento }) {
   const [activeTab, setActiveTab] = useState("overview");
   const groupedDates = datesFormater(evento.dates as string);
@@ -53,10 +55,15 @@ export default function EventDetails({ evento }: { evento: Evento }) {
             </Link>
           </Button>
           <div className="ml-auto flex items-center gap-2">
-            {/* <Button variant="outline" size="sm">
-                <Share2 className="mr-2 h-4 w-4" />
-                Share
-              </Button> */}
+            <Button variant="outline" size="sm">
+              <Link
+                href={`${SITE_URL}/eventos/${evento.id}`}
+                className="flex items-center"
+              >
+                <Globe className="mr-2 h-4 w-4" />
+                Ver en la web
+              </Link>
+            </Button>
             <Button variant="outline" size="sm">
               <Link
                 href={`/dashboard/evento/${evento.id}/edit`}
