@@ -1,4 +1,5 @@
 import { DiscountCode } from "./discount-code";
+import { TicketType } from "./tickets";
 import { User } from "./user";
 
 export type EventStatus = "DRAFT" | "ACTIVE" | "CONCLUDED" | "DELETED";
@@ -15,4 +16,5 @@ export interface Evento {
   status?: EventStatus;
   user?: User;
   discountCode?: DiscountCode[] | undefined;
+  ticketTypes?: TicketType[];
 }
