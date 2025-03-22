@@ -176,11 +176,10 @@ type CreateOrderType = {
   eventId: string;
 };
 
-export async function createOrder(data: CreateOrderType) {
+export async function createOrder(data: CreateOrderType) {  
   let orderId = null;
   try {
     const result = await Orders.createOrder(data);
-
     orderId = result.id;
   } catch (error) {
     throw new Error("Error creando la order");
@@ -776,10 +775,12 @@ export async function getTicketAmountByTicketTypeId(ticketTypeId: string) {
 }
 
 export async function getSoldTicketsByType(eventId: string) {
-  let ticketCounts: any = {};
   try {
-    const ticketOrders = await getPaidOrdersDataByEvent(eventId);
-    ticketOrders.forEach((ticketOrder) => {
+    let ticketCounts: Record<string, { id: string, title: string,count: number}> = {};
+    const ticketOrders = await getPaidOrdersDataByEvent(eventId);    
+    if (ticketOrders.length == 0) return null;
+
+    ticketOrders.forEach((ticketOrder: any) => {
       if (!ticketCounts[ticketOrder.ticketTypeId]) {
         ticketCounts[ticketOrder.ticketTypeId] = {
           id: ticketOrder.ticketTypeId,

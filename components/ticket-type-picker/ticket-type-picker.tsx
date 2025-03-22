@@ -68,8 +68,10 @@ export default function TicketTypePicker({
   eventId: string;
   discountCode?: Partial<DiscountCode>[];
   serviceCharge?: number;
-  soldTickets?: { id: string; title: string; count: number };
+  soldTickets?: any;
 }) {
+  console.log("🚀 ~ TicketTypePicker:", soldTickets)
+  
   const [discountOpen, setDiscountOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [discountInput, setDiscountInput] = useState("");
