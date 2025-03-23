@@ -1,3 +1,4 @@
+import { ValidatorToken } from "@prisma/client";
 import { DiscountCode } from "./discount-code";
 import { TicketType } from "./tickets";
 import { User } from "./user";
@@ -17,4 +18,5 @@ export interface Evento {
   user?: User;
   discountCode?: DiscountCode[] | undefined;
   ticketTypes?: TicketType[];
+  validatorToken?: ValidatorToken[];
 }

@@ -63,6 +63,7 @@ export const getEventById = cache(async (eventId: string) => {
         },
       },
       discountCode: true,
+      validatorToken: true,
     },
   });
 });

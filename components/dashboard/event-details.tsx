@@ -12,6 +12,7 @@ import {
   Globe,
   KeyIcon,
   MapPin,
+  Plus,
   Share2,
   Ticket,
   Trash,
@@ -36,6 +37,9 @@ import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import DashboardHeader from "./dashboard-header";
 import { SITE_URL } from "@/lib/constants";
+import ValidatorsTable from "./validators-table";
+import { ValidatorToken } from "@/types/validators";
+import NewTokenDialog from "@/app/dashboard/components/new-token-dialog/new-token-dialog";
 export default function EventDetails({ evento }: { evento: Evento }) {
   const [activeTab, setActiveTab] = useState("overview");
   const groupedDates = datesFormater(evento.dates as string);
@@ -47,14 +51,14 @@ export default function EventDetails({ evento }: { evento: Evento }) {
           title={evento.title}
           subtitle="Administra los datos de este evento"
         />
-        <div className="flex items-center gap-2">
+        <div className="flex items-start md:items-center flex-wrap  gap-2">
           <Button variant="outline" size="sm" asChild>
             <Link href="/dashboard">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Volver a Eventos
             </Link>
           </Button>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex flex-wrap items-center gap-2">
             <Button variant="outline" size="sm">
               <Link
                 href={`${SITE_URL}/eventos/${evento.id}`}
@@ -119,7 +123,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="overview">Detalles</TabsTrigger>
                 <TabsTrigger value="tickets">Tickets</TabsTrigger>
-                <TabsTrigger value="attendees">Asistentes</TabsTrigger>
+                <TabsTrigger value="validators">Validadores</TabsTrigger>
               </TabsList>
               <TabsContent value="overview" className="space-y-6">
                 <Card>
@@ -187,6 +191,30 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                   </CardFooter>
                 </Card>
               </TabsContent>
+              <TabsContent value="validators" className="space-y-6">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                      <CardTitle>Tokens de validación</CardTitle>
+                      <CardDescription>
+                        Administra los tokens de validación de este evento
+                      </CardDescription>
+                    </div>
+                    {/* <Button size="sm">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Nuevo Token
+                    </Button> */}
+                    <NewTokenDialog eventId={evento.id} />
+                  </CardHeader>
+                  <CardContent>
+                    {evento.validatorToken && (
+                      <ValidatorsTable
+                        tokens={evento.validatorToken as ValidatorToken[]}
+                      />
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
             </Tabs>
           </div>
           <div className="md:col-span-2 space-y-6">
@@ -226,7 +254,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                       <User className="mr-2 h-4 w-4" />
                       Agregar invitado
                     </Button>
-                    <Button variant="outline" size="sm">
+                    {/* <Button variant="outline" size="sm">
                       <Link
                         href={`/dashboard/evento/${evento.id}/validadores`}
                         className="flex items-center"
@@ -234,7 +262,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                         <KeyIcon className="mr-2 w-4 h-4" />
                         <span>Validadores</span>
                       </Link>
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
               </CardContent>

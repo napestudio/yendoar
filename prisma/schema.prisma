@@ -226,6 +226,7 @@ model UserConfiguration {
   serviceCharge                   Int?    @default(0)
   maxInvitesAmount                Int?    @default(0)
   maxValidatorsAmount             Int?    @default(1)
+  maxTicketsAmount                Int?    @default(0)
   user                            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_configurations")
