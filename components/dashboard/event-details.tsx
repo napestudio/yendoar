@@ -12,6 +12,7 @@ import {
   Globe,
   KeyIcon,
   MapPin,
+  Plus,
   Share2,
   Ticket,
   Trash,
@@ -36,6 +37,9 @@ import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import DashboardHeader from "./dashboard-header";
 import { SITE_URL } from "@/lib/constants";
+import ValidatorsTable from "./validators-table";
+import { ValidatorToken } from "@/types/validators";
+import NewTokenDialog from "@/app/dashboard/components/new-token-dialog/new-token-dialog";
 export default function EventDetails({ evento }: { evento: Evento }) {
   const [activeTab, setActiveTab] = useState("overview");
   const groupedDates = datesFormater(evento.dates as string);
@@ -188,9 +192,28 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                 </Card>
               </TabsContent>
               <TabsContent value="validators" className="space-y-6">
-                {evento.validatorToken?.map((token) => (
-                  <span key={token.id}>{token.token}</span>
-                ))}
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                      <CardTitle>Tokens de validación</CardTitle>
+                      <CardDescription>
+                        Administra los tokens de validación de este evento
+                      </CardDescription>
+                    </div>
+                    {/* <Button size="sm">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Nuevo Token
+                    </Button> */}
+                    <NewTokenDialog eventId={evento.id} />
+                  </CardHeader>
+                  <CardContent>
+                    {evento.validatorToken && (
+                      <ValidatorsTable
+                        tokens={evento.validatorToken as ValidatorToken[]}
+                      />
+                    )}
+                  </CardContent>
+                </Card>
               </TabsContent>
             </Tabs>
           </div>

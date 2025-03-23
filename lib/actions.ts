@@ -576,7 +576,7 @@ export async function getDiscountCodeById(eventId: string) {
 export async function createValidatorToken(data: any) {
   try {
     const result = await ValidatorToken.createValidatorToken(data);
-    revalidatePath("/dashboard");
+    revalidatePath(`/dashboard/evento/${data.eventId}`);
   } catch (error) {
     throw new Error("Error validators token");
   }
