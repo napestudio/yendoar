@@ -57,7 +57,11 @@ export const getEventById = cache(async (eventId: string) => {
     },
     include: {
       user: true,
-      ticketTypes: true,
+      ticketTypes: {
+        where: {
+          status: "ACTIVE",
+        },
+      },
       discountCode: true,
     },
   });

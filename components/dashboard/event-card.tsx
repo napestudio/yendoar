@@ -2,6 +2,7 @@
 
 import {
   Card,
+  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -10,8 +11,10 @@ import {
 import {
   BadgePercent,
   BarChartIcon,
+  Calendar,
   FileEditIcon,
   KeyIcon,
+  MapPin,
   TicketIcon,
   TrashIcon,
 } from "lucide-react";
@@ -27,7 +30,7 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
-import AlertRemove from "../alert-remove/alert-remove";
+import AlertRemove from "../../app/dashboard/components/alert-remove/alert-remove";
 import { datesFormater } from "@/lib/utils";
 
 export default function EventCard({ evento }: { evento: Evento }) {
@@ -49,32 +52,56 @@ export default function EventCard({ evento }: { evento: Evento }) {
 
   return (
     <>
-      <Card className="w-full text-left" key={evento.id}>
-        <CardHeader className="flex flex-row items-center gap-2">
-          {evento.image && (
+      <Card className="w-full text-left overflow-hidden" key={evento.id}>
+        <CardHeader className="flex gap-2 p-0">
+          <div className="relative h-48 w-full ">
             <Image
-              src={evento.image || ""}
-              alt="text"
-              width={100}
-              height={100}
-              className="object-cover aspect-square rounded-sm"
+              src={evento.image || "/placeholder.svg"}
+              alt=""
+              fill
+              className="object-cover"
             />
-          )}
-          <div className="grid gap-1">
-            <Link
-              href={"#"}
-              className="font-bold text-sm uppercase text-gray-500"
-            >
+            <div className="absolute right-2 top-2 bg-black rounded-full text-white px-3 py-1">
               {evento.user!.name}
-            </Link>
-            <div>
-              <CardTitle className="text-xl">{evento.title}</CardTitle>
-              <CardDescription>{groupedDates}</CardDescription>
             </div>
           </div>
         </CardHeader>
-        <CardFooter className="flex justify-between gap-4">
-          <Link href={`/dashboard/evento/${evento.id}`}>
+        <CardContent className="p-4">
+          <div className="grid gap-1">
+            <div>
+              <CardTitle className="text-lg mb-4">{evento.title}</CardTitle>
+              <CardDescription>
+                <span className="flex items-center gap-2 mb-2">
+                  <MapPin className="mr-1 h-4 w-4" />
+                  {evento.location}
+                </span>
+                <span className="flex items-center gap-2 mb-4">
+                  <Calendar className="mr-1 h-4 w-4" />
+                  {groupedDates}
+                </span>
+                <span className="space-y-2">
+                  <span className="flex justify-between text-sm font-bold">
+                    <span>Tickets vendidos</span>
+                    <span>100 / 1200</span>
+                  </span>
+                </span>
+              </CardDescription>
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-between gap-4 p-4">
+          <Button variant="outline" asChild>
+            <Link href={`/dashboard/evento/${evento.id}`}>Detalles</Link>
+          </Button>
+          <Button>
+            <Link
+              href={`/dashboard/evento/${evento.id}/edit?tab=tickets`}
+              className="flex items-center gap-2"
+            >
+              <TicketIcon className="w-6 h-6" /> Tickets
+            </Link>
+          </Button>
+          {/* <Link href={`/dashboard/evento/${evento.id}`}>
             <TooltipProvider delayDuration={300}>
               <Tooltip>
                 <TooltipTrigger>
@@ -126,7 +153,7 @@ export default function EventCard({ evento }: { evento: Evento }) {
               <TrashIcon className="w-6 h-6" />
               <span className="sr-only"> Eliminar </span>
             </Button>
-          </AlertRemove>
+          </AlertRemove> */}
         </CardFooter>
       </Card>
     </>
