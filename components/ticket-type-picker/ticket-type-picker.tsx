@@ -68,7 +68,7 @@ export default function TicketTypePicker({
   eventId: string;
   discountCode?: Partial<DiscountCode>[];
   serviceCharge?: number;
-  soldTickets?: { id: string; title: string; count: number };
+  soldTickets?: { id?: string; title?: string; count?: number };
 }) {  
   const [discountOpen, setDiscountOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -216,7 +216,7 @@ export default function TicketTypePicker({
                           )
                           .map((ticket: Partial<TicketType>) => {
                             const bGet = ticket.buyGet || 1;
-                            const soldTicketCount = soldTickets
+                            const soldTicketCount = soldTickets?.id
                               ? // @ts-ignore
                                 soldTickets[ticket.id!].count / bGet
                               : 0;

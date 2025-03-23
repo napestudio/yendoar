@@ -176,7 +176,7 @@ type CreateOrderType = {
   eventId: string;
 };
 
-export async function createOrder(data: CreateOrderType) {  
+export async function createOrder(data: CreateOrderType) {
   let orderId = null;
   try {
     const result = await Orders.createOrder(data);
@@ -776,9 +776,12 @@ export async function getTicketAmountByTicketTypeId(ticketTypeId: string) {
 
 export async function getSoldTicketsByType(eventId: string) {
   try {
-    let ticketCounts: Record<string, { id: string, title: string,count: number}> = {};
-    const ticketOrders = await getPaidOrdersDataByEvent(eventId);    
-    if (ticketOrders.length == 0) return null;
+    let ticketCounts: Record<
+      string,
+      { id?: string; title?: string; count?: number }
+    > = {};
+    const ticketOrders = await getPaidOrdersDataByEvent(eventId);
+    //if (ticketOrders.length == 0) return { "": {count: 0}};
 
     ticketOrders.forEach((ticketOrder: any) => {
       if (!ticketCounts[ticketOrder.ticketTypeId]) {
