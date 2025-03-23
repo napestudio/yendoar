@@ -47,7 +47,6 @@ export default function ValidatorsTable({
   };
 
   const handleDeleteToken = (tokenId: string) => {
-    console.log("Eliminar token");
     deleteTokenById(tokenId)
       .then(() => {
         toast({
