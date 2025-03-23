@@ -117,261 +117,275 @@ export default function TycketTypeForm({ evento }: { evento: Evento }) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <Box>
-          <div className="space-y-8">
-            <h3 className="font-bold">Información Básica</h3>
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Titulo</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Titulo del Ticket" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Precio</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                      disabled={form.watch("isFree")}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="selectedDates"
-              render={() => (
-                <FormItem>
-                  <div className="mb-4"></div>
-                  <FormLabel>Fecha(s)</FormLabel>
-                  <div className="border p-2">
-                    {parsedEventDates.map((item: DatesType) => (
-                      <FormField
-                        key={item.id}
-                        control={form.control}
-                        name="selectedDates"
-                        render={({ field }) => {
-                          return (
-                            <FormItem
-                              key={item.id}
-                              className="flex flex-row items-center space-x-3 space-y-0 p-2"
-                            >
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value?.includes(item.date)}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([
-                                          ...field.value,
-                                          item.date,
-                                        ])
-                                      : field.onChange(
-                                          field.value?.filter(
-                                            (value) => value !== item.date
-                                          )
-                                        );
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="text-sm font-medium">
-                                {format(item.date, "dd/MM/yyyy")}
-                              </FormLabel>
-                            </FormItem>
-                          );
-                        }}
-                      />
-                    ))}
-                    <FormMessage />
-                  </div>
-                </FormItem>
-              )}
-            />
-          </div>
-        </Box>
-        <Box>
-          <div className="space-y-8">
-            <h3 className="font-bold">Disponibilidad</h3>
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Cantidad disponible</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="endDate"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Disponible hasta</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
+        <div className="grid lg:grid-cols-3 gap-5">
+          <div className="col-span-2 space-y-8">
+            <Box>
+              <div className="space-y-8">
+                <h3 className="font-bold">Información Básica</h3>
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Titulo</FormLabel>
                       <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Seleccionar fecha</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
+                        <Input placeholder="Titulo del Ticket" {...field} />
                       </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date) => date < new Date()}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </Box>
-        <Box>
-          <div className="space-y-8">
-            <h3 className="font-bold">Extras</h3>
-            <div className="flex flex-col items-center justify-between rounded-lg border p-4">
-              <div className="flex flex-row items-center justify-between w-full flex-1">
-                <div className="space-y-0.5">
-                  <Label>Descuento</Label>
-                  <FormDescription>
-                    Agregar un % de descuento al precio del ticket.
-                  </FormDescription>
-                </div>
-                <div>
-                  <Switch
-                    checked={hasDiscount}
-                    onCheckedChange={() => setHasDiscount(!hasDiscount)}
-                  />
-                </div>
-              </div>
-              {hasDiscount && (
-                <div className="w-full mt-2">
-                  <FormField
-                    control={form.control}
-                    name="discount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) =>
-                              field.onChange(Number(e.target.value))
-                            }
-                            disabled={form.watch("isFree")}
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Precio</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                          disabled={form.watch("isFree")}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="selectedDates"
+                  render={() => (
+                    <FormItem>
+                      <div className="mb-4"></div>
+                      <FormLabel>Fecha(s)</FormLabel>
+                      <div className="border p-2">
+                        {parsedEventDates.map((item: DatesType) => (
+                          <FormField
+                            key={item.id}
+                            control={form.control}
+                            name="selectedDates"
+                            render={({ field }) => {
+                              return (
+                                <FormItem
+                                  key={item.id}
+                                  className="flex flex-row items-center space-x-3 space-y-0 p-2"
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(item.date)}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([
+                                              ...field.value,
+                                              item.date,
+                                            ])
+                                          : field.onChange(
+                                              field.value?.filter(
+                                                (value) => value !== item.date
+                                              )
+                                            );
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="text-sm font-medium">
+                                    {format(item.date, "dd/MM/yyyy")}
+                                  </FormLabel>
+                                </FormItem>
+                              );
+                            }}
                           />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              )}
-            </div>
-            <FormField
-              control={form.control}
-              name="isFree"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">Gratis</FormLabel>
-                    <FormDescription>
-                      Al seleccionar este ticket, las entradas llegaran al email
-                      del cliente sin confirmación de pago.
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="multi"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">2x1</FormLabel>
-                    <FormDescription>
-                      Los clientes recibiran 2 tickets de este tipo.
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+                        ))}
+                        <FormMessage />
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </Box>
+            <Box>
+              <div className="space-y-8">
+                <h3 className="font-bold">Disponibilidad</h3>
+                <FormField
+                  control={form.control}
+                  name="quantity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Cantidad disponible</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="endDate"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Disponible hasta</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-[240px] pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Seleccionar fecha</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) => date < new Date()}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </Box>
+
+            <Box>
+              <h3 className="font-bold mb-4">Estado</h3>
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue="ACTIVE"
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Estado" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="ACTIVE">Publicado</SelectItem>
+                        <SelectItem value="INACTIVE">Borrador</SelectItem>
+                        <SelectItem value="SOLDOUT">Agotado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </Box>
           </div>
-        </Box>
-        <Box>
-          <h3 className="font-bold mb-4">Estado</h3>
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <Select onValueChange={field.onChange} defaultValue="ACTIVE">
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Estado" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="ACTIVE">Publicado</SelectItem>
-                    <SelectItem value="INACTIVE">Borrador</SelectItem>
-                    <SelectItem value="SOLDOUT">Agotado</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </Box>
+          <div>
+            <Box>
+              <div className="space-y-8">
+                <h3 className="font-bold">Extras</h3>
+                <div className="flex flex-col items-center justify-between rounded-lg border p-4">
+                  <div className="flex flex-row items-center justify-between w-full flex-1 gap-2">
+                    <div className="space-y-0.5">
+                      <Label>Descuento</Label>
+                      <FormDescription>
+                        Agregar un % de descuento al precio del ticket.
+                      </FormDescription>
+                    </div>
+                    <div>
+                      <Switch
+                        checked={hasDiscount}
+                        onCheckedChange={() => setHasDiscount(!hasDiscount)}
+                      />
+                    </div>
+                  </div>
+                  {hasDiscount && (
+                    <div className="w-full mt-2">
+                      <FormField
+                        control={form.control}
+                        name="discount"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(Number(e.target.value))
+                                }
+                                disabled={form.watch("isFree")}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
+                </div>
+                <FormField
+                  control={form.control}
+                  name="isFree"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 gap-2">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">Gratis</FormLabel>
+                        <FormDescription>
+                          Al seleccionar este ticket, las entradas llegaran al
+                          email del cliente sin confirmación de pago.
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="multi"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 gap-2">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">2x1</FormLabel>
+                        <FormDescription>
+                          Los clientes recibiran 2 tickets de este tipo.
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </Box>
+          </div>
+        </div>
 
         <Button type="submit" disabled={isLoading}>
           {isLoading ? (

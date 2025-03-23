@@ -47,14 +47,14 @@ export default function EventDetails({ evento }: { evento: Evento }) {
           title={evento.title}
           subtitle="Administra los datos de este evento"
         />
-        <div className="flex items-center gap-2">
+        <div className="flex items-start md:items-center flex-wrap  gap-2">
           <Button variant="outline" size="sm" asChild>
             <Link href="/dashboard">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Volver a Eventos
             </Link>
           </Button>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex flex-wrap items-center gap-2">
             <Button variant="outline" size="sm">
               <Link
                 href={`${SITE_URL}/eventos/${evento.id}`}
@@ -119,7 +119,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="overview">Detalles</TabsTrigger>
                 <TabsTrigger value="tickets">Tickets</TabsTrigger>
-                <TabsTrigger value="attendees">Asistentes</TabsTrigger>
+                <TabsTrigger value="validators">Validadores</TabsTrigger>
               </TabsList>
               <TabsContent value="overview" className="space-y-6">
                 <Card>
@@ -187,6 +187,11 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                   </CardFooter>
                 </Card>
               </TabsContent>
+              <TabsContent value="validators" className="space-y-6">
+                {evento.validatorToken?.map((token) => (
+                  <span key={token.id}>{token.token}</span>
+                ))}
+              </TabsContent>
             </Tabs>
           </div>
           <div className="md:col-span-2 space-y-6">
@@ -226,7 +231,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                       <User className="mr-2 h-4 w-4" />
                       Agregar invitado
                     </Button>
-                    <Button variant="outline" size="sm">
+                    {/* <Button variant="outline" size="sm">
                       <Link
                         href={`/dashboard/evento/${evento.id}/validadores`}
                         className="flex items-center"
@@ -234,7 +239,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                         <KeyIcon className="mr-2 w-4 h-4" />
                         <span>Validadores</span>
                       </Link>
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
               </CardContent>
