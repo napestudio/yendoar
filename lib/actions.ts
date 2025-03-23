@@ -781,7 +781,6 @@ export async function getSoldTicketsByType(eventId: string) {
       { id?: string; title?: string; count?: number }
     > = {};
     const ticketOrders = await getPaidOrdersDataByEvent(eventId);
-    //if (ticketOrders.length == 0) return { "": {count: 0}};
 
     ticketOrders.forEach((ticketOrder: any) => {
       if (!ticketCounts[ticketOrder.ticketTypeId]) {
