@@ -9,6 +9,10 @@ export async function getAllUsersButAdmins() {
   return await db.user.findMany({ where: { type: "SELLER" } });
 }
 
+export async function getUsersByClientId() {
+  return await db.user.findMany();
+}
+
 export async function getUserByEmail(email: string) {
   return await db.user.findFirstOrThrow({
     where: {

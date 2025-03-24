@@ -31,10 +31,6 @@ interface DashboardNavProps {
 
 export default function SideBar({ items, session }: DashboardNavProps) {
   const path = usePathname();
-  const filteredMenuData = menuData.filter(
-    (section) =>
-      !(session.user.type === "SELLER" && section.title === "Cuentas")
-  );
 
   const getIcon = (icon: string) => {
     switch (icon) {

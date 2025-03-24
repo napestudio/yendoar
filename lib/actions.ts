@@ -29,6 +29,7 @@ import {
 import { stat } from "fs";
 import { SITE_NAME } from "./constants";
 import { getPaidOrdersDataByEvent } from "@/lib/api/orders";
+import { User } from "@/types/user";
 
 // Type temporal
 export type Evento = {
@@ -155,7 +156,7 @@ export async function createTicketType(data: TicketType) {
     throw new Error("Error creando el TicketType");
   }
 
-  revalidatePath("/dashboard");
+  revalidatePath(`/dashboard/evento/${data.eventId}/edit`);
 }
 
 export async function updateTicketType(
@@ -164,7 +165,7 @@ export async function updateTicketType(
 ) {
   try {
     const result = await TicketTypes.updateTicketType(ticketId, data);
-    revalidatePath(`/dashboard/evento/`);
+    revalidatePath(`/dashboard/evento/${data.eventId}`);
   } catch (error) {
     throw new Error("Error editando el tipo de ticket");
   }
@@ -207,6 +208,13 @@ export async function updateOrder(data: any, orderId: string) {
   } catch (error) {
     throw new Error("Error editando la order");
   }
+}
+
+export async function getAllUsersByClientId() {
+  try {
+    const result = await Users.getUsersByClientId();
+    return result;
+  } catch (error) {}
 }
 
 export async function getAllUsersButAdmins() {
@@ -603,7 +611,7 @@ export async function deleteTokenById(tokenId: string) {
 export async function createUserInvitation(data: InvitationType) {
   try {
     const result = await UserInvitation.createUserInvitation(data);
-    revalidatePath("/dashboard/clientes/invitaciones");
+    revalidatePath("/dashboard/usuarios");
     return result;
   } catch (error) {
     throw new Error("Error creando la invitación");

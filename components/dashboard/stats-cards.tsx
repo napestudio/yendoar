@@ -1,5 +1,12 @@
-import { Calendar, DollarSign } from "lucide-react";
+import { Calendar, DollarSign, LucideIcon } from "lucide-react";
 import Box from "./box";
+
+interface StatsCardsProps {
+  title: string;
+  content: string;
+  secondary: string;
+  icon: LucideIcon;
+}
 
 export default function StatsCards() {
   return (
