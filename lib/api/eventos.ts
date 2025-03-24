@@ -59,7 +59,9 @@ export const getEventById = cache(async (eventId: string) => {
       user: true,
       ticketTypes: {
         where: {
-          status: "ACTIVE",
+          status: {
+            not: "DELETED",
+          },
         },
       },
       discountCode: true,

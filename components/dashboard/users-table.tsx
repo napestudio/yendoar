@@ -134,7 +134,7 @@ export default function UsersTable({ accounts }: { accounts: User[] }) {
             <TableHeader>
               <TableRow>
                 <TableHead>Usuario</TableHead>
-                <TableHead>Tipo</TableHead>
+                <TableHead>Rol</TableHead>
                 <TableHead>Eventos Creados</TableHead>
                 {/* <TableHead>Revenue Generated</TableHead>
                 <TableHead>Last Active</TableHead> */}
@@ -142,32 +142,32 @@ export default function UsersTable({ accounts }: { accounts: User[] }) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {accounts.map((customer) => (
-                <TableRow key={customer.id}>
+              {accounts.map((account) => (
+                <TableRow key={account.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar>
                         <AvatarImage
-                          src={customer.image || undefined}
-                          alt={customer.name || "Avatar"}
+                          src={account.image || undefined}
+                          alt={account.name || "Avatar"}
                         />
                         <AvatarFallback>
-                          {customer.name!.substring(0, 2).toUpperCase()}
+                          {account.name!.substring(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <div className="font-medium">{customer.name}</div>
+                        <div className="font-medium">{account.name}</div>
                         <div className="text-sm text-muted-foreground">
-                          {customer.email}
+                          {account.email}
                         </div>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
-                    {getRoleBadge(customer.type as UserType | "PRODUCER")}
+                    {getRoleBadge(account.type as UserType | "PRODUCER")}
                   </TableCell>
-                  <TableCell>{customer.events?.length || 0}</TableCell>
-
+                  <TableCell>{account.events?.length || 0}</TableCell>
+                  {/* {customer.type !== "SUPERADMIN" && ( */}
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -181,6 +181,10 @@ export default function UsersTable({ accounts }: { accounts: User[] }) {
 
                         <DropdownMenuItem>
                           <UserPlus className="mr-2 h-4 w-4" />
+                          Editar Rol
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <UserPlus className="mr-2 h-4 w-4" />
                           Editar configuración
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
@@ -192,6 +196,7 @@ export default function UsersTable({ accounts }: { accounts: User[] }) {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
+                  {/* )} */}
                 </TableRow>
               ))}
             </TableBody>
