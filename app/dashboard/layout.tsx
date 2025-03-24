@@ -39,7 +39,7 @@ const dashboardConfig = {
     },
     {
       title: "Usuarios",
-      href: "/dashboard/customers",
+      href: "/dashboard/usuarios",
       icon: "users",
     },
     {

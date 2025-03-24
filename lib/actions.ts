@@ -29,6 +29,7 @@ import {
 import { stat } from "fs";
 import { SITE_NAME } from "./constants";
 import { getPaidOrdersDataByEvent } from "@/lib/api/orders";
+import { User } from "@/types/user";
 
 // Type temporal
 export type Evento = {
@@ -207,6 +208,13 @@ export async function updateOrder(data: any, orderId: string) {
   } catch (error) {
     throw new Error("Error editando la order");
   }
+}
+
+export async function getAllUsersByClientId() {
+  try {
+    const result = await Users.getUsersByClientId();
+    return result;
+  } catch (error) {}
 }
 
 export async function getAllUsersButAdmins() {

@@ -2,26 +2,17 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+
 import { datesFormater } from "@/lib/utils";
 import { UserInvitation } from "@/types/user-invitations";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { MailPlus, Trash, TrashIcon } from "lucide-react";
-import Link from "next/link";
-import AlertRemove from "../../components/alert-remove/alert-remove";
+
+import { TrashIcon } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { removeInvitationById } from "@/lib/actions";
@@ -36,7 +27,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { text } from "stream/consumers";
 
 export default function InvitationsTable({
   invitations,
