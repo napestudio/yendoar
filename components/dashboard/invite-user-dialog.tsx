@@ -1,10 +1,13 @@
 "use client";
 
 import type React from "react";
-
-import { useState } from "react";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { ReactNode, useState } from "react";
 import { CalendarIcon, Loader2 } from "lucide-react";
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
+import { v4 as uuidv4 } from "uuid";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -34,142 +37,232 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+import { toZonedTime } from "date-fns-tz";
+import { createUserInvitation } from "@/lib/actions";
+import { UserType } from "@/types/user";
+import { UserInvitation } from "@/types/user-invitations";
+
+const formSchema = z.object({
+  email: z.string().email().min(5, { message: "Debe ser un email válido" }),
+  role: z.enum(["SELLER", "PRODUCER", "ADMIN", "SUPERADMIN"] as const, {
+    required_error: "Debe seleccionar un rol",
+  }),
+});
 
 interface InviteCustomerDialogProps {
-  children: React.ReactNode;
+  children: ReactNode;
+  userId: string;
+  invitations: UserInvitation[];
 }
 
-export function InviteUserDialog({ children }: InviteCustomerDialogProps) {
+export function InviteUserDialog({
+  children,
+  invitations,
+  userId,
+}: InviteCustomerDialogProps) {
   const [open, setOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
   const [expirationDate, setExpirationDate] = useState<Date | undefined>(
     new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 días a partir de hoy
   );
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      role: undefined,
+    },
+  });
 
-    console.log("Invitation sent:", {
-      email,
-      role,
-      expirationDate,
-    });
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
 
-    setIsSubmitting(false);
-    setOpen(false);
-    resetForm();
-  };
+    // const emailExists = invitations.some(
+    //   (invitation) => invitation.email === values.email
+    // );
 
-  const resetForm = () => {
-    setEmail("");
-    setRole("");
-    setExpirationDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
-  };
+    // if (emailExists) {
+    //   toast({
+    //     variant: "destructive",
+    //     title: "Error en la invitación",
+    //     description: "El email ya ha sido invitado anteriormente.",
+    //   });
+    //   form.reset();
+    //   setIsLoading(false);
+    //   return;
+    // }
+
+    const timeZone = "America/Argentina/Buenos_Aires";
+    const today = toZonedTime(new Date(), timeZone);
+    const tomorrow = addDays(today, 1);
+
+    createUserInvitation({
+      email: values.email,
+      role: values.role as UserType,
+      token: uuidv4(),
+      inviterId: userId,
+      createdAt: today,
+      expiresAt: tomorrow,
+    })
+      .then(() => {
+        // toast({
+        //   title: "Usuario invitado!",
+        // });
+        setOpen(false);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        // toast({
+        //   variant: "destructive",
+        //   title: "Error en la invitación",
+        // });
+        setOpen(false);
+        setIsLoading(false);
+      });
+    form.reset();
+  }
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setIsSubmitting(true);
+
+  //   console.log("Invitation sent:", {
+  //     email,
+  //     role,
+  //     expirationDate,
+  //   });
+
+  //   setIsSubmitting(false);
+  //   setOpen(false);
+  //   resetForm();
+  // };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
-        <form onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle>Invitar nuevo Usuario</DialogTitle>
-            <DialogDescription className="text-left">
-              Invitar a nuevo usuario a la plataforma. Los nuevos usuarios
-              reciben un e-mail con la invitación. Una vez aceptada podrán
-              ingresar.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="user@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit((values) => onSubmit(values))}
+            className="space-y-8 w-full"
+          >
+            <DialogHeader>
+              <DialogTitle className="text-left">
+                Invitar nuevo Usuario
+              </DialogTitle>
+              <DialogDescription className="text-left">
+                Invitar a nuevo usuario a la plataforma. Los nuevos usuarios
+                reciben un e-mail con la invitación. Una vez aceptada podrán
+                ingresar.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>E-mail</FormLabel>
+                    <FormControl>
+                      <Input placeholder="usuario@email.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
+              <div className="grid gap-2">
+                <FormField
+                  control={form.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Rol</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Seleccionar rol" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="PRODUCER">Productor</SelectItem>
+                          <SelectItem value="SELLER">
+                            Punto de venta / Vendedor
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="expiration">Validez de la invitación</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !expirationDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {expirationDate ? (
+                        format(expirationDate, "PPP")
+                      ) : (
+                        <span>Elige una fecha</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={expirationDate}
+                      onSelect={setExpirationDate}
+                      initialFocus
+                      disabled={(date) => date < new Date()}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <p className="text-sm text-muted-foreground">
+                  La invitación será invalia después de esta fecha.
+                </p>
+              </div>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="role">Rol</Label>
-              <Select value={role} onValueChange={setRole} required>
-                <SelectTrigger id="role">
-                  <SelectValue placeholder="Seleccionar Rol" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Admin">Admin</SelectItem>
-                  <SelectItem value="Producer">Productor</SelectItem>
-                  <SelectItem value="Seller">
-                    Punto de venta / Vendedor
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="text-sm text-muted-foreground">
-                {role === "Admin" &&
-                  "Acceso total a las funcionalidades de la plataforma"}
-                {role === "Producer" &&
-                  "Puede crear eventos e invitar vendedores."}
-                {role === "Seller" && "Puede emitir tickets en efectivo."}
-              </p>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="expiration">Validez de la invitación</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !expirationDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {expirationDate ? (
-                      format(expirationDate, "PPP")
-                    ) : (
-                      <span>Elige una fecha</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={expirationDate}
-                    onSelect={setExpirationDate}
-                    initialFocus
-                    disabled={(date) => date < new Date()}
-                  />
-                </PopoverContent>
-              </Popover>
-              <p className="text-sm text-muted-foreground">
-                La invitación será invalia después de esta fecha.
-              </p>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setOpen(false)}
-            >
-              Cancelar
-            </Button>
-            <Button type="submit" disabled={isSubmitting || !email || !role}>
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Enviando...
-                </>
-              ) : (
-                "Enviar invitación"
-              )}
-            </Button>
-          </DialogFooter>
-        </form>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+              >
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Enviando...
+                  </>
+                ) : (
+                  "Enviar invitación"
+                )}
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

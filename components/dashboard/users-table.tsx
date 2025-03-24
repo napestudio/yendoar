@@ -189,7 +189,10 @@ export default function UsersTable({ accounts }: { accounts: User[] }) {
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
 
-                        <DropdownMenuItem className="text-destructive">
+                        <DropdownMenuItem
+                          className="text-destructive"
+                          disabled={account.type === "SUPERADMIN"}
+                        >
                           <Trash className="mr-2 h-4 w-4" />
                           Eliminar cuenta
                         </DropdownMenuItem>

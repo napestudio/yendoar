@@ -611,7 +611,7 @@ export async function deleteTokenById(tokenId: string) {
 export async function createUserInvitation(data: InvitationType) {
   try {
     const result = await UserInvitation.createUserInvitation(data);
-    revalidatePath("/dashboard/clientes/invitaciones");
+    revalidatePath("/dashboard/usuarios");
     return result;
   } catch (error) {
     throw new Error("Error creando la invitación");
