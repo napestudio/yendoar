@@ -8,8 +8,10 @@ import UsersTable from "@/components/dashboard/users-table";
 import { Button } from "@/components/ui/button";
 import { getInvitationsByUser } from "@/lib/actions";
 import { getUsersByClientId } from "@/lib/api/users";
+import { SITE_NAME } from "@/lib/constants";
 import { Plus } from "lucide-react";
 import { getServerSession } from "next-auth";
+import { Metadata } from "next/types";
 
 export default async function UsersPage() {
   const accounts = await getUsersByClientId();

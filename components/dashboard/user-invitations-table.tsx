@@ -25,6 +25,7 @@ import { Button } from "../ui/button";
 import { MoreHorizontal, Trash, UserPlus } from "lucide-react";
 import { Avatar } from "../ui/avatar";
 import { formatDatesByMonth } from "@/lib/utils";
+import { addDays, isAfter, isBefore, isSameDay } from "date-fns";
 
 export default function UserInvitationsTable({
   invitations,
@@ -74,6 +75,17 @@ export default function UserInvitationsTable({
     }).format(amount);
   };
 
+  const getStatus = (accepted: boolean, date: string | Date) => {
+    const dayAfter = addDays(date, 1);
+
+    if (accepted === false && isBefore(new Date(), date)) {
+      return "PENDIENTE";
+    }
+    if (accepted === false && isAfter(dayAfter, date)) {
+      return "VENCIDA";
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -87,6 +99,7 @@ export default function UserInvitationsTable({
                 <TableHead>Usuario</TableHead>
                 <TableHead>Rol</TableHead>
                 <TableHead>Fecha de invitación</TableHead>
+                <TableHead>Vence</TableHead>
                 <TableHead>Estado</TableHead>
                 <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
@@ -112,7 +125,15 @@ export default function UserInvitationsTable({
                     </TableCell>
                   )}
                   <TableCell>
-                    {!invitation.accepted ? "PENDIENTE" : "ACTIVA"}
+                    {format(invitation.expiresAt, "dd MMM yyyy", {
+                      locale: es,
+                    })}
+                  </TableCell>
+                  <TableCell>
+                    {getStatus(
+                      invitation.accepted || false,
+                      invitation.expiresAt
+                    )}
                   </TableCell>
                   {/* {customer.type !== "SUPERADMIN" && ( */}
                   <TableCell className="text-right">
