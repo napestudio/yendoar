@@ -7,6 +7,7 @@ import {
   updateUserConfiguration,
 } from "@/lib/actions";
 import { revalidatePath } from "next/cache";
+import { UserConfiguration } from "@/types/user-configuration";
 
 export default async function ClientConfig({
   params,
@@ -32,7 +33,10 @@ export default async function ClientConfig({
           <CircleUserRound /> {user.name}
         </p>
         {userConfiguration.length > 0 && (
-          <ClientConfigTable config={userConfiguration} userId={params.id} />
+          <ClientConfigTable
+            config={userConfiguration as UserConfiguration[]}
+            userId={params.id}
+          />
         )}
       </div>
     </>
