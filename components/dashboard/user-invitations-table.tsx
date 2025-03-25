@@ -31,8 +31,6 @@ import CancelInvitationAlert from "./cancel-invitation-alert";
 import { removeInvitationById } from "@/lib/actions";
 import { toast } from "../ui/use-toast";
 import { useState } from "react";
-import { UserRoleDialog } from "./user-role-dialog";
-import { InvitationRoleDialog } from "./invitation-role-dialog";
 
 export default function UserInvitationsTable({
   invitations,
