@@ -27,12 +27,20 @@ import { Avatar } from "../ui/avatar";
 import { formatDatesByMonth } from "@/lib/utils";
 import { addDays, isAfter, isBefore, isSameDay } from "date-fns";
 import RoleBadge from "./role-badge";
+import CancelInvitationAlert from "./cancel-invitation-alert";
+import { removeInvitationById } from "@/lib/actions";
+import { toast } from "../ui/use-toast";
+import { useState } from "react";
 
 export default function UserInvitationsTable({
   invitations,
 }: {
   invitations: UserInvitation[];
 }) {
+  const [selectedInvitation, setSelectedInvitation] =
+    useState<UserInvitation>();
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+
   const getStatus = (accepted: boolean, date: string | Date) => {
     const dayAfter = addDays(date, 1);
 
@@ -44,89 +52,126 @@ export default function UserInvitationsTable({
     }
   };
 
+  const handleCancelAlert = (invite: UserInvitation) => {
+    setSelectedInvitation(invite);
+    setIsAlertOpen(true);
+  };
+
+  const handleCancelInvitation = (id: string) => {
+    removeInvitationById(id)
+      .then(() => {
+        toast({
+          title: "Invitación Eliminada",
+          variant: "destructive",
+        });
+      })
+      .catch((error: string) => {
+        toast({
+          variant: "destructive",
+          title: "Error eliminando la invitación",
+        });
+      });
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Lista de invitaciones</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Usuario</TableHead>
-                <TableHead>Rol</TableHead>
-                <TableHead>Fecha de invitación</TableHead>
-                <TableHead>Vence</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead className="text-right">Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {invitations.map((invitation) => (
-                <TableRow key={invitation.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <div>
-                        <div className="font-medium">{invitation.email}</div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <RoleBadge
-                      role={invitation.role as UserType | "PRODUCER"}
-                    />
-                  </TableCell>
-                  {invitation.createdAt && (
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle>Lista de invitaciones</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Usuario</TableHead>
+                  <TableHead>Rol</TableHead>
+                  <TableHead>Fecha de invitación</TableHead>
+                  <TableHead>Vence</TableHead>
+                  <TableHead>Estado</TableHead>
+                  <TableHead className="text-right">Acciones</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {invitations.map((invitation) => (
+                  <TableRow key={invitation.id}>
                     <TableCell>
-                      {format(invitation.createdAt, "dd MMM yyyy", {
+                      <div className="flex items-center gap-3">
+                        <div>
+                          <div className="font-medium">{invitation.email}</div>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <RoleBadge
+                        role={invitation.role as UserType | "PRODUCER"}
+                      />
+                    </TableCell>
+                    {invitation.createdAt && (
+                      <TableCell>
+                        {format(invitation.createdAt, "dd MMM yyyy", {
+                          locale: es,
+                        })}
+                      </TableCell>
+                    )}
+                    <TableCell>
+                      {format(invitation.expiresAt, "dd MMM yyyy", {
                         locale: es,
                       })}
                     </TableCell>
-                  )}
-                  <TableCell>
-                    {format(invitation.expiresAt, "dd MMM yyyy", {
-                      locale: es,
-                    })}
-                  </TableCell>
-                  <TableCell>
-                    {getStatus(
-                      invitation.accepted || false,
-                      invitation.expiresAt
-                    )}
-                  </TableCell>
-                  {/* {customer.type !== "SUPERADMIN" && ( */}
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Abrir menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                    <TableCell>
+                      {getStatus(
+                        invitation.accepted || false,
+                        invitation.expiresAt
+                      )}
+                    </TableCell>
+                    {/* {customer.type !== "SUPERADMIN" && ( */}
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm">
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Abrir menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
 
-                        <DropdownMenuItem>
-                          <UserPlus className="mr-2 h-4 w-4" />
-                          Editar Rol
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
+                          <DropdownMenuItem>
+                            <UserPlus className="mr-2 h-4 w-4" />
+                            Editar Rol
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
 
-                        <DropdownMenuItem className="text-destructive">
-                          <Trash className="mr-2 h-4 w-4" />
-                          Cancelar invitación
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                  {/* )} */}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </CardContent>
-    </Card>
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => handleCancelAlert(invitation)}
+                          >
+                            <Trash className="mr-2 h-4 w-4" />
+                            Cancelar invitation
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                    {/* )} */}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+      {isAlertOpen && selectedInvitation && (
+        <CancelInvitationAlert
+          action={handleCancelInvitation}
+          id={selectedInvitation.id!}
+          actionText="Cancelar Invitación"
+          title="Cancelar Invitación?"
+          onOpenChange={setIsAlertOpen}
+          open={isAlertOpen}
+          text="Esto eliminará la invitación definitivamente. Ésta acción no elimina al usuario si el mismo ya pertenece a la plataforma."
+        />
+      )}
+    </>
   );
 }
