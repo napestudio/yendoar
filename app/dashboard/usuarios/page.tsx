@@ -6,19 +6,19 @@ import UserInvitationsTable from "@/components/dashboard/user-invitations-table"
 
 import UsersTable from "@/components/dashboard/users-table";
 import { Button } from "@/components/ui/button";
-import { getInvitationsByUser } from "@/lib/actions";
+import { getPendingInvitationsByUser } from "@/lib/actions";
 import { getUsersByClientId } from "@/lib/api/users";
-import { SITE_NAME } from "@/lib/constants";
+import { User } from "@/types/user";
+
 import { Plus } from "lucide-react";
 import { getServerSession } from "next-auth";
-import { Metadata } from "next/types";
 
 export default async function UsersPage() {
   const accounts = await getUsersByClientId();
   const session = await getServerSession(authOptions);
   if (!session) return;
   const userId = session.user.id;
-  const invitations = await getInvitationsByUser(userId);
+  const invitations = await getPendingInvitationsByUser(userId);
 
   return (
     <div className="flex flex-col gap-8">
@@ -36,7 +36,7 @@ export default async function UsersPage() {
             Invitar Usuario
           </Button>
         </InviteUserDialog>
-        {accounts && <UsersTable accounts={accounts} />}
+        {accounts && <UsersTable accounts={accounts as User[]} />}
         {invitations && <UserInvitationsTable invitations={invitations} />}
       </div>
     </div>

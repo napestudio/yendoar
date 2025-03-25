@@ -1,4 +1,4 @@
-interface UserConfiguration {
+export interface UserConfiguration {
   id: string;
   userId: string;
   mpAccessToken: string | null;
@@ -7,6 +7,7 @@ interface UserConfiguration {
   eventToBeSoldOutNotification: boolean;
   ticketTypePublishedNotification: boolean;
   serviceCharge?: number | null;
-  maxInvitesAmount?: number | null;
-  maxValidatorsAmount?: number | null;
+  maxInvitesAmount: number;
+  maxValidatorsAmount: number;
+  maxTicketsAmount: number;
 }

@@ -10,7 +10,11 @@ export async function getAllUsersButAdmins() {
 }
 
 export async function getUsersByClientId() {
-  return await db.user.findMany();
+  return await db.user.findMany({
+    include: {
+      configuration: true,
+    },
+  });
 }
 
 export async function getUserByEmail(email: string) {
@@ -39,6 +43,15 @@ export async function updateUser(data: any, email: string) {
   });
 }
 
+export async function updateUserById(data: any, userId: string) {
+  return await db.user.update({
+    where: {
+      id: userId,
+    },
+    data,
+  });
+}
+
 export async function getUserByEmailForRegister(email: string) {
   return await db.user.findUnique({
     where: {
@@ -49,7 +62,11 @@ export async function getUserByEmailForRegister(email: string) {
 
 export async function createUser(data: any) {
   const createdUser = await db.user.create({ data });
-
+  await db.userConfiguration.create({
+    data: {
+      userId: createdUser.id,
+    },
+  });
   const verificationToken = await generateVerificationToken(data.email);
   return createdUser;
 }

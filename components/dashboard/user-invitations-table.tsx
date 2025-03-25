@@ -26,55 +26,13 @@ import { MoreHorizontal, Trash, UserPlus } from "lucide-react";
 import { Avatar } from "../ui/avatar";
 import { formatDatesByMonth } from "@/lib/utils";
 import { addDays, isAfter, isBefore, isSameDay } from "date-fns";
+import RoleBadge from "./role-badge";
 
 export default function UserInvitationsTable({
   invitations,
 }: {
   invitations: UserInvitation[];
 }) {
-  const getRoleBadge = (role: UserType) => {
-    switch (role) {
-      case "SUPERADMIN":
-        return (
-          <Badge variant="outline" className="bg-yellow text-gray-800">
-            SUPERADMIN
-          </Badge>
-        );
-      case "ADMIN":
-        return (
-          <Badge variant="outline" className="bg-purple-500/20 text-purple-700">
-            ADMIN
-          </Badge>
-        );
-      case "PRODUCER":
-        return (
-          <Badge variant="outline" className="bg-green text-white">
-            PRODUCER
-          </Badge>
-        );
-      case "SELLER":
-        return (
-          <Badge variant="outline" className="bg-green-500/20 text-green-700">
-            SELLER
-          </Badge>
-        );
-      default:
-        return <Badge variant="outline">{role}</Badge>;
-    }
-  };
-
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return "Never";
-    return format(new Date(dateString), "MMM d, yyyy 'at' h:mm a");
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
-  };
-
   const getStatus = (accepted: boolean, date: string | Date) => {
     const dayAfter = addDays(date, 1);
 
@@ -115,7 +73,9 @@ export default function UserInvitationsTable({
                     </div>
                   </TableCell>
                   <TableCell>
-                    {getRoleBadge(invitation.role || "PRODUCER")}
+                    <RoleBadge
+                      role={invitation.role as UserType | "PRODUCER"}
+                    />
                   </TableCell>
                   {invitation.createdAt && (
                     <TableCell>

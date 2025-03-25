@@ -97,6 +97,17 @@ export async function getInvitationsByUser(userId: string) {
     },
   });
 }
+export async function getPendingInvitationsByUser(userId: string) {
+  return await db.invitation.findMany({
+    where: {
+      inviterId: userId,
+      accepted: false,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+}
 
 export async function getInvitationsById(invitationId: string) {
   return await db.invitation.findFirst({

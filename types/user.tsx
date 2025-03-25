@@ -1,4 +1,5 @@
 import { Evento } from "./event";
+import { UserConfiguration } from "./user-configuration";
 
 export type UserType = "SELLER" | "PRODUCER" | "ADMIN" | "SUPERADMIN";
 
@@ -14,4 +15,5 @@ export type User = {
   createdAt?: Date | null;
   clientId: string | null;
   events?: Partial<Evento[]> | null;
+  configuration?: UserConfiguration | null;
 };

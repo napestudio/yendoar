@@ -30,6 +30,7 @@ import { stat } from "fs";
 import { SITE_NAME } from "./constants";
 import { getPaidOrdersDataByEvent } from "@/lib/api/orders";
 import { User } from "@/types/user";
+import { UserConfiguration } from "@/types/user-configuration";
 
 // Type temporal
 export type Evento = {
@@ -228,6 +229,16 @@ export async function updateUser(data: any, userEmail: string) {
   try {
     const result = await Users.updateUser(data, userEmail);
     revalidatePath(`/dashboard/evento/${result.id}`);
+  } catch (error) {
+    throw new Error("Error editando el usuario");
+  }
+}
+
+export async function updateUserById(data: Partial<User>, userId: string) {
+  try {
+    const result = await Users.updateUserById(data, userId);
+    revalidatePath(`/dashboard/usuarios/`);
+    return result;
   } catch (error) {
     throw new Error("Error editando el usuario");
   }
@@ -636,6 +647,16 @@ export async function getInvitationsByUser(userId: string) {
     throw new Error("Error trayendo invitations");
   }
 }
+
+export async function getPendingInvitationsByUser(userId: string) {
+  try {
+    const result = await UserInvitation.getPendingInvitationsByUser(userId);
+    return result;
+  } catch (error) {
+    throw new Error("Error trayendo invitations");
+  }
+}
+
 export async function getInvitationsById(invitationId: string) {
   try {
     const result = await UserInvitation.getInvitationsById(invitationId);
