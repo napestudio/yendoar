@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Percent, PercentCircle } from "lucide-react";
 import { updateUserConfiguration } from "@/lib/actions";
 import { useState } from "react";
+import { UserConfiguration } from "@/types/user-configuration";
 
 const FormSchema = z.object({
   serviceCharge: z.number(),
