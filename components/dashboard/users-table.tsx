@@ -46,54 +46,28 @@ import {
 } from "../ui/dropdown-menu";
 import { User, UserType } from "@/types/user";
 import { Badge } from "../ui/badge";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { UserSettingsDialog } from "./user-settings-dialog";
+import { UserRoleDialog } from "./user-role-dialog";
+import RoleBadge from "./role-badge";
 
 export default function UsersTable({ accounts }: { accounts: User[] }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const getRoleBadge = (role: UserType) => {
-    switch (role) {
-      case "SUPERADMIN":
-        return (
-          <Badge variant="outline" className="bg-yellow text-gray-800">
-            SUPERADMIN
-          </Badge>
-        );
-      case "ADMIN":
-        return (
-          <Badge variant="outline" className="bg-purple-500/20 text-purple-700">
-            Admin
-          </Badge>
-        );
-      case "PRODUCER":
-        return (
-          <Badge variant="outline" className="bg-blue-500/20 text-blue-700">
-            Producer
-          </Badge>
-        );
-      case "SELLER":
-        return (
-          <Badge variant="outline" className="bg-green-500/20 text-green-700">
-            Seller
-          </Badge>
-        );
-      default:
-        return <Badge variant="outline">{role}</Badge>;
-    }
+  const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false);
+  const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User>();
+
+  const handleEditSettings = (user: User) => {
+    setSelectedUser(user);
+    setIsSettingsDialogOpen(true);
+  };
+  const handleEditRole = (user: User) => {
+    setSelectedUser(user);
+    setIsRoleDialogOpen(true);
   };
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return "Never";
-    return format(new Date(dateString), "MMM d, yyyy 'at' h:mm a");
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
-  };
   if (accounts.length === 0) return null;
 
   return (
@@ -164,12 +138,12 @@ export default function UsersTable({ accounts }: { accounts: User[] }) {
                     </div>
                   </TableCell>
                   <TableCell>
-                    {getRoleBadge(account.type as UserType | "PRODUCER")}
+                    <RoleBadge role={account.type as UserType | "PRODUCER"} />
                   </TableCell>
                   <TableCell>{account.events?.length || 0}</TableCell>
                   {/* {customer.type !== "SUPERADMIN" && ( */}
                   <TableCell className="text-right">
-                    <DropdownMenu>
+                    <DropdownMenu modal={false}>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="sm">
                           <MoreHorizontal className="h-4 w-4" />
@@ -178,14 +152,23 @@ export default function UsersTable({ accounts }: { accounts: User[] }) {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-
-                        <DropdownMenuItem>
+                        {account.type !== "SUPERADMIN" && (
+                          <DropdownMenuItem
+                            onClick={() => {
+                              handleEditRole(account);
+                            }}
+                          >
+                            <UserPlus className="mr-2 h-4 w-4" />
+                            Editar Rol
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuItem
+                          onClick={() => {
+                            handleEditSettings(account);
+                          }}
+                        >
                           <UserPlus className="mr-2 h-4 w-4" />
-                          Editar Rol
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <UserPlus className="mr-2 h-4 w-4" />
-                          Editar configuración
+                          Editar limites
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
 
@@ -205,6 +188,20 @@ export default function UsersTable({ accounts }: { accounts: User[] }) {
             </TableBody>
           </Table>
         </div>
+        {selectedUser && isSettingsDialogOpen && (
+          <UserSettingsDialog
+            open={isSettingsDialogOpen}
+            onOpenChange={setIsSettingsDialogOpen}
+            user={selectedUser}
+          />
+        )}
+        {selectedUser && isRoleDialogOpen && (
+          <UserRoleDialog
+            open={isRoleDialogOpen}
+            onOpenChange={setIsRoleDialogOpen}
+            user={selectedUser}
+          />
+        )}
       </CardContent>
     </Card>
   );

@@ -11,8 +11,9 @@ import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { TooltipTrigger } from "@radix-ui/react-tooltip";
+
 import { User } from "@/types/user";
 
 import Link from "next/link";

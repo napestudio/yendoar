@@ -3,6 +3,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { getAllUserConfiguration } from "@/lib/actions";
+import { UserConfiguration } from "@/types/user-configuration";
 
 export default async function MercadoPago() {
   const session = await getServerSession(authOptions);
@@ -17,7 +18,10 @@ export default async function MercadoPago() {
           Mercado Pago
         </h2>
         <div className="bg-gray-100 p-5 rounded w-full">
-          <MercadoPagoForm configuration={userConfiguration} userId={id} />
+          <MercadoPagoForm
+            configuration={userConfiguration as UserConfiguration[]}
+            userId={id}
+          />
         </div>
       </>
       {/* )} */}

@@ -115,6 +115,11 @@ export const authOptions: NextAuthOptions = {
         where: { id: user.id },
         data: { emailVerified: new Date() },
       });
+      await db.userConfiguration.create({
+        data: {
+          userId: user.id,
+        },
+      });
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
