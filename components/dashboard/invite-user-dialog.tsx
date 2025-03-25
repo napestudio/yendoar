@@ -40,6 +40,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -55,6 +56,7 @@ const formSchema = z.object({
   role: z.enum(["SELLER", "PRODUCER", "ADMIN", "SUPERADMIN"] as const, {
     required_error: "Debe seleccionar un rol",
   }),
+  expiration: z.date(),
 });
 
 interface InviteCustomerDialogProps {
@@ -76,11 +78,16 @@ export function InviteUserDialog({
     new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 días a partir de hoy
   );
 
+  const timeZone = "America/Argentina/Buenos_Aires";
+  const today = toZonedTime(new Date(), timeZone);
+  const tomorrow = addDays(today, 1);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       role: undefined,
+      expiration: tomorrow,
     },
   });
 
@@ -102,17 +109,13 @@ export function InviteUserDialog({
     //   return;
     // }
 
-    const timeZone = "America/Argentina/Buenos_Aires";
-    const today = toZonedTime(new Date(), timeZone);
-    const tomorrow = addDays(today, 1);
-
     createUserInvitation({
       email: values.email,
       role: values.role as UserType,
       token: uuidv4(),
       inviterId: userId,
       createdAt: today,
-      expiresAt: tomorrow,
+      expiresAt: values.expiration,
     })
       .then(() => {
         // toast({
@@ -197,6 +200,7 @@ export function InviteUserDialog({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
+                          <SelectItem value="PRODUCER">Admin</SelectItem>
                           <SelectItem value="PRODUCER">Productor</SelectItem>
                           <SelectItem value="SELLER">
                             Punto de venta / Vendedor
@@ -209,37 +213,47 @@ export function InviteUserDialog({
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="expiration">Validez de la invitación</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !expirationDate && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {expirationDate ? (
-                        format(expirationDate, "PPP")
-                      ) : (
-                        <span>Elige una fecha</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={expirationDate}
-                      onSelect={setExpirationDate}
-                      initialFocus
-                      disabled={(date) => date < new Date()}
-                    />
-                  </PopoverContent>
-                </Popover>
-                <p className="text-sm text-muted-foreground">
-                  La invitación será invalia después de esta fecha.
-                </p>
+                <FormField
+                  control={form.control}
+                  name="expiration"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Expira el</FormLabel>
+                      <Popover modal>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-[240px] pl-3 text-left font-normal"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "dd/MM/yyyy")
+                              ) : (
+                                <span>Vencimiento</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) => date < new Date()}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormDescription>
+                        La invitación será invalida después de esta fecha.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
             </div>
             <DialogFooter>

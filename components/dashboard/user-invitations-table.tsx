@@ -31,6 +31,8 @@ import CancelInvitationAlert from "./cancel-invitation-alert";
 import { removeInvitationById } from "@/lib/actions";
 import { toast } from "../ui/use-toast";
 import { useState } from "react";
+import { UserRoleDialog } from "./user-role-dialog";
+import { InvitationRoleDialog } from "./invitation-role-dialog";
 
 export default function UserInvitationsTable({
   invitations,
@@ -136,12 +138,6 @@ export default function UserInvitationsTable({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-
-                          <DropdownMenuItem>
-                            <UserPlus className="mr-2 h-4 w-4" />
-                            Editar Rol
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
 
                           <DropdownMenuItem
                             className="text-destructive"

@@ -628,6 +628,21 @@ export async function createUserInvitation(data: InvitationType) {
     throw new Error("Error creando la invitación");
   }
 }
+export async function updateUserInvitationById(
+  data: InvitationType,
+  invitationId: string
+) {
+  try {
+    const result = await UserInvitation.updateInvitationsById(
+      data,
+      invitationId
+    );
+    revalidatePath("/dashboard/usuarios");
+    return result;
+  } catch (error) {
+    throw new Error("Error creando la invitación");
+  }
+}
 
 export async function removeInvitationById(invitadionId: string) {
   try {

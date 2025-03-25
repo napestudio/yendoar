@@ -86,7 +86,17 @@ export async function createUserInvitation(data: UserInvitation) {
 
   return invitation;
 }
-
+export async function updateInvitationsById(
+  data: Partial<UserInvitation>,
+  invitationId: string
+) {
+  return await db.invitation.update({
+    where: {
+      id: invitationId,
+    },
+    data: data,
+  });
+}
 export async function getInvitationsByUser(userId: string) {
   return await db.invitation.findMany({
     where: {
