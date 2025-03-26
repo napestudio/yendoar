@@ -1,5 +1,5 @@
 "use client";
 
 export default function PaymentMethodsTable() {
-  return;
+  return <h1>Pay</h1>;
 }
