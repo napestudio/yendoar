@@ -51,8 +51,9 @@ model User {
   events        Event[]
   invitations   Invitation[]
   configuration UserConfiguration?
-  clientId      String?
-  client        Client?  @relation(fields: [clientId], references: [id])
+  clientId      String
+  client        Client  @relation(fields: [clientId], references: [id])
+  paymentMethods PaymentMethod[]
 }
 
 model Client {
@@ -63,8 +64,8 @@ model Client {
   city      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId    String
   users     User[]
+  paymentMethods PaymentMethod[]
 }
 
 model VerificationToken {
@@ -106,7 +107,7 @@ model Event {
   tickets        TicketOrder[]
   ticketTypes    TicketType[]
   validatorToken ValidatorToken[]
-
+  eventPayments EventPayment[]
   @@map("events")
 }
 
@@ -181,7 +182,7 @@ model TicketOrder {
   event        Event             @relation(fields: [eventId], references: [id], onDelete: Cascade)
   order        Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
   ticketType   TicketType?       @relation(fields: [ticketTypeId], references: [id], onDelete: Cascade)
-
+  isInvitation Boolean           @default(false)
   @@map("ticket_orders")
 }
 
@@ -252,6 +253,38 @@ model Promotion {
   @@map("promotions")
 }
 
+model PaymentMethod {
+  id        String           @id @default(cuid())
+  type      PaymentType
+  name      String?
+  clientId  String
+  userId    String?          // Solo se usa si es CASH
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  client    Client           @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  user      User?            @relation(fields: [userId], references: [id])
+  events    EventPayment[]   // Relación con eventos (puede haber muchos cash, uno digital)
+
+  @@map("payment_methods")
+}
+
+model EventPayment {
+  id               String         @id @default(cuid())
+  eventId          String
+  paymentMethodId  String
+
+  event            Event          @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  paymentMethod    PaymentMethod  @relation(fields: [paymentMethodId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, paymentMethodId])
+  @@map("event_payments")
+}
+
+enum PaymentType {
+  CASH
+  DIGITAL
+}
 model Invitation {
   id        String   @id @default(cuid())
   email     String
