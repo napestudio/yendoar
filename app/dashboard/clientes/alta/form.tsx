@@ -84,6 +84,7 @@ export default function NewClientForm({
       inviterId: userId,
       createdAt: today,
       expiresAt: tomorrow,
+      clientId: "",
     })
       .then(() => {
         toast({
