@@ -59,39 +59,73 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account }: { user: User; account: any }) {
       try {
-        const { name, email } = user;
-        const createdUser: any = await db.user.findUnique({
+        const { name, email, image } = user;
+
+        const existingUser = await db.user.findUnique({
+          where: { email },
+        });
+
+        // Si el usuario ya existe, permitimos el acceso
+        if (existingUser) {
+          return true;
+        }
+
+        // Si no existe, buscamos una invitación válida
+        const invitation = await db.invitation.findFirst({
           where: {
             email,
+            accepted: true, // aseguramos que esté aceptada previamente
           },
         });
 
-        if (!createdUser) {
-          const invitedUser: any = await db.invitation.findFirst({
-            where: {
-              email,
+        if (!invitation || !invitation.clientId) {
+          return false;
+        }
+
+        // Creamos el usuario manualmente
+        const newUser = await db.user.create({
+          data: {
+            name,
+            email,
+            image,
+            emailVerified: null,
+            type: invitation.role,
+            client: {
+              connect: {
+                id: invitation.clientId,
+              },
+            },
+          },
+        });
+
+        // Si el proveedor es Google, también creamos el Account asociado
+        if (account.provider === "google") {
+          await db.account.create({
+            data: {
+              userId: newUser.id,
+              type: account.type,
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+              access_token: account.access_token,
+              token_type: account.token_type,
+              id_token: account.id_token,
+              scope: account.scope,
+              expires_at: account.expires_at,
+              refresh_token: account.refresh_token,
+              session_state: account.session_state,
             },
           });
-
-          if (invitedUser) {
-            if (account.provider !== "google") {
-              const { password, validatedPassword, ...props } = createdUser;
-              return props;
-            }
-            return true;
-          }
-
-          return null;
         }
-
-        if (account.provider !== "google") {
-          const { password, validatedPassword, ...props } = createdUser;
-          return props;
-        }
+        await db.userConfiguration.create({
+          data: {
+            userId: newUser.id,
+          },
+        });
 
         return true;
       } catch (error) {
-        throw new Error("Error sign in");
+        console.error("Error en signIn callback:", error);
+        return false;
       }
     },
     async jwt({ token, user }) {
@@ -126,3 +160,14 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
+
+/**
+ * NOTA IMPORTANTE:
+ * Estamos creando el usuario manualmente en el callback `signIn`
+ * porque necesitamos asociarlo a un Client proveniente de la tabla `Invitation`.
+ * Esto implica que también debemos crear manualmente:
+ * - el `Account` (para evitar OAuthAccountNotLinked)
+ * - la `UserConfiguration`
+ *
+ * Ver más en /docs/auth.md
+ */
