@@ -5,10 +5,19 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Obtener la fecha actual y sumarle dos meses para endDate
-  const today = new Date();
+  const today = new Date("2025-09-09T21:02:30.078Z");
   const endDate = addYears(today, 1); // Sumar dos meses
 
-  // Crear el usuario
+  const client = await prisma.client.upsert({
+    where: { email: "client@yendo.com" },
+    update: {},
+    create: {
+      name: "Cliente de Prueba",
+      email: "client@yendo.com",
+      city: "Rosario",
+    },
+  });
+
   const user = await prisma.user.upsert({
     where: { email: "renzocostarelli@gmail.com" },
     update: {},
@@ -19,7 +28,25 @@ async function main() {
       image:
         "https://lh3.googleusercontent.com/a/ACg8ocLkEO3LxK2FijarutZWmQ6KIdmWQs5iChyyUlyIrK1SF2kKWsRU=s96-c",
       type: "SUPERADMIN",
-      createdAt: new Date("2024-09-09T21:02:30.078Z"),
+      createdAt: new Date("2025-09-09T21:02:30.078Z"),
+      clientId: client.id, // 👈 ahora requerido
+    },
+  });
+
+  await prisma.userConfiguration.upsert({
+    where: { userId: user.id },
+    update: {},
+    create: {
+      userId: user.id,
+      mpAccessToken: "test_token_123",
+      eventSoldOutNotification: true,
+      ticketTypeSoldOutNotification: true,
+      eventToBeSoldOutNotification: false,
+      ticketTypePublishedNotification: false,
+      serviceCharge: 5,
+      maxInvitesAmount: 10,
+      maxValidatorsAmount: 2,
+      maxTicketsAmount: 200,
     },
   });
 

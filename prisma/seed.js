@@ -41,12 +41,23 @@ var date_fns_1 = require("date-fns"); // Puedes usar esta función de date-fns p
 var prisma = new client_1.PrismaClient();
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var today, endDate, user, event;
+        var today, endDate, client, user, event;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    today = new Date();
+                    today = new Date("2025-09-09T21:02:30.078Z");
                     endDate = (0, date_fns_1.addYears)(today, 1);
+                    return [4 /*yield*/, prisma.client.upsert({
+                            where: { email: "client@yendo.com" },
+                            update: {},
+                            create: {
+                                name: "Cliente de Prueba",
+                                email: "client@yendo.com",
+                                city: "Rosario",
+                            },
+                        })];
+                case 1:
+                    client = _a.sent();
                     return [4 /*yield*/, prisma.user.upsert({
                             where: { email: "renzocostarelli@gmail.com" },
                             update: {},
@@ -56,11 +67,30 @@ function main() {
                                 email: "renzocostarelli@gmail.com",
                                 image: "https://lh3.googleusercontent.com/a/ACg8ocLkEO3LxK2FijarutZWmQ6KIdmWQs5iChyyUlyIrK1SF2kKWsRU=s96-c",
                                 type: "SUPERADMIN",
-                                createdAt: new Date("2024-09-09T21:02:30.078Z"),
+                                createdAt: new Date("2025-09-09T21:02:30.078Z"),
+                                clientId: client.id, // 👈 ahora requerido
                             },
                         })];
-                case 1:
+                case 2:
                     user = _a.sent();
+                    return [4 /*yield*/, prisma.userConfiguration.upsert({
+                            where: { userId: user.id },
+                            update: {},
+                            create: {
+                                userId: user.id,
+                                mpAccessToken: "test_token_123",
+                                eventSoldOutNotification: true,
+                                ticketTypeSoldOutNotification: true,
+                                eventToBeSoldOutNotification: false,
+                                ticketTypePublishedNotification: false,
+                                serviceCharge: 5,
+                                maxInvitesAmount: 10,
+                                maxValidatorsAmount: 2,
+                                maxTicketsAmount: 200,
+                            },
+                        })];
+                case 3:
+                    _a.sent();
                     // Crear la cuenta vinculada al usuario
                     return [4 /*yield*/, prisma.account.upsert({
                             where: {
@@ -82,7 +112,7 @@ function main() {
                                 id_token: "eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ3YjkzOTc3MWE3ODAwYzQxM2Y5MDA1MTAxMmQ5NzU5ODE5MTZkNzEiLCJ0eXAiOiJKV1QifQ...",
                             },
                         })];
-                case 2:
+                case 4:
                     // Crear la cuenta vinculada al usuario
                     _a.sent();
                     return [4 /*yield*/, prisma.event.create({
@@ -119,7 +149,7 @@ function main() {
                                 },
                             },
                         })];
-                case 3:
+                case 5:
                     event = _a.sent();
                     console.log("User, Account, Event, and TicketTypes created:", {
                         user: user,
