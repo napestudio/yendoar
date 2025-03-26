@@ -18,8 +18,9 @@ export default async function UsersPage() {
   const session = await getServerSession(authOptions);
   if (!session) return;
   const userId = session.user.id;
+  const clientId = session.user.clientId;
   const invitations = await getPendingInvitationsByUser(userId);
-
+  if (!clientId) return;
   return (
     <div className="flex flex-col gap-8">
       <div className="flex gap-5">
@@ -30,7 +31,11 @@ export default async function UsersPage() {
       </div>
       <div className="w-full space-y-5">
         <StatsCards />
-        <InviteUserDialog invitations={invitations} userId={userId}>
+        <InviteUserDialog
+          invitations={invitations}
+          userId={userId}
+          clientId={clientId}
+        >
           <Button size="sm">
             <Plus className="mr-2 h-4 w-4" />
             Invitar Usuario

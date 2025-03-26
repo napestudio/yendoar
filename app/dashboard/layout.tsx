@@ -34,7 +34,7 @@ const dashboardConfig = {
     },
     {
       title: "Métodos de pago",
-      href: "/dashboard/sales",
+      href: "/dashboard/metodos-de-pago",
       icon: "sales",
     },
     {

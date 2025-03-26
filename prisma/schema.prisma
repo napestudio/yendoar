@@ -296,6 +296,7 @@ model Invitation {
   updatedAt DateTime @updatedAt
   accepted  Boolean  @default(false)
   inviter   User     @relation(fields: [inviterId], references: [id])
+  clientId  String   
 
   @@map("invitations")
 }
