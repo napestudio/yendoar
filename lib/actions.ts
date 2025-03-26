@@ -682,7 +682,7 @@ export async function updateUserInvitationById(
 export async function removeInvitationById(invitadionId: string) {
   try {
     const result = await UserInvitation.removeInvitationById(invitadionId);
-    revalidatePath("/dashboard/clientes/invitaciones");
+    revalidatePath("/dashboard/usuarios");
     return result;
   } catch (error) {
     throw new Error("Error eliminando la invitación");
