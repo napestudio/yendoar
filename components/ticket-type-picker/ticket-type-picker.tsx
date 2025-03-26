@@ -69,7 +69,7 @@ export default function TicketTypePicker({
   discountCode?: Partial<DiscountCode>[];
   serviceCharge?: number;
   soldTickets?: { id?: string; title?: string; count?: number };
-}) {  
+}) {
   const [discountOpen, setDiscountOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [discountInput, setDiscountInput] = useState("");
@@ -298,29 +298,28 @@ export default function TicketTypePicker({
             />
           </div>
           <div>
-            {serviceCharge ||
-              (discount && form.watch("quantity") && (
-                <>
-                  <div className="px-1 text-right text-lg font-medium">
-                    <p>
-                      SUBTOTAL:{" "}
-                      <span className="font-bold">
-                        ${subtotal.toLocaleString("es-ar")}
-                      </span>
-                    </p>
+            {discount && form.watch("quantity") && (
+              <>
+                <div className="px-1 text-right text-lg font-medium">
+                  <p>
+                    SUBTOTAL:{" "}
+                    <span className="font-bold">
+                      ${subtotal.toLocaleString("es-ar")}
+                    </span>
+                  </p>
+                </div>
+                {discount && (
+                  <div className="px-1 text-right text-sm">
+                    <p>- descuento por codigo {discountPer}%</p>
                   </div>
-                  {discount && (
-                    <div className="px-1 text-right text-sm">
-                      <p>- descuento por codigo {discountPer}%</p>
-                    </div>
-                  )}
-                  {serviceCharge && (
-                    <div className="px-1 text-right text-sm">
-                      <p>+ costo de servicio {serviceCharge}%</p>
-                    </div>
-                  )}
-                </>
-              ))}
+                )}
+                {serviceCharge && (
+                  <div className="px-1 text-right text-sm">
+                    <p>+ costo de servicio {serviceCharge}%</p>
+                  </div>
+                )}
+              </>
+            )}
             <p className="font-bold text-2xl text-right">
               TOTAL: $
               <span className="font-extrabold">
