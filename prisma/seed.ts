@@ -84,7 +84,7 @@ async function main() {
       location: "Rosario, Argentina",
       status: "ACTIVE",
       userId: user.id, // Usamos el usuario que creamos arriba
-      dates: JSON.stringify([{ id: 0, date: "2025-10-17T20:03" }]), // Formato JSON para el campo dates en Event
+      dates: JSON.stringify([{ id: 0, date: "2024-10-17T20:03" }]), // Formato JSON para el campo dates en Event
       endDate: endDate.toISOString(), // Convertir endDate a formato ISO string
       ticketTypes: {
         create: [
