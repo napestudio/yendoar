@@ -11,4 +11,5 @@ export interface UserInvitation {
   expiresAt: string | Date;
   updatedAt?: string | Date;
   accepted?: boolean;
+  clientId: string;
 }

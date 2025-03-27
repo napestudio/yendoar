@@ -63,12 +63,14 @@ interface InviteCustomerDialogProps {
   children: ReactNode;
   userId: string;
   invitations: UserInvitation[];
+  clientId: string;
 }
 
 export function InviteUserDialog({
   children,
   invitations,
   userId,
+  clientId,
 }: InviteCustomerDialogProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -116,6 +118,7 @@ export function InviteUserDialog({
       inviterId: userId,
       createdAt: today,
       expiresAt: values.expiration,
+      clientId: clientId,
     })
       .then(() => {
         // toast({
