@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createOrder } from "@/lib/actions";
+import { createCashOrder, createOrder } from "@/lib/actions";
 import { datesFormater } from "@/lib/utils";
 import { Input } from "../ui/input";
 import { DiscountCode } from "@/types/discount-code";
@@ -49,39 +49,36 @@ export type TicketType = {
   buyGet?: number;
 };
 
-type CashOrderType = {
-  ticketTypeId: string;
-  status: "PENDING";
-  quantity: number;
-  hasCode: boolean;
-  discountCode?: number | string | undefined;
-  eventId: string;
-};
+const FormSchema = z
+  .object({
+    ticketType: z.string({
+      required_error: "Por favor selecciona un tipo de ticket.",
+    }),
+    quantity: z.string(),
+    // code: z.string().optional(),
+    name: z.string().min(2, {
+      message: "Debe tener al menos 2 caracteres",
+    }),
+    lastName: z.string().min(2, {
+      message: "Debe tener al menos 2 caracteres",
+    }),
+    email: z.string().email().min(5, { message: "Debe ser un email válido" }),
+    confirmEmail: z
+      .string()
+      .email()
+      .min(5, { message: "Debe ser un email válido" }),
+    phone: z.string(),
+    dni: z
+      .string()
+      .regex(/^[1-9]\d{7}$/, { message: "Debe ser un DNI válido de 8 dígitos" })
+      .max(8, { message: "Debe tener 8 dígitos" }),
+  })
+  .refine((data) => data.email === data.confirmEmail, {
+    message: "Los correos electrónicos deben coincidir",
+    path: ["confirmEmail"],
+  });
 
-type CreateCashOrderType = {
-  ticketTypeId: string;
-  status: string;
-  quantity: number;
-  eventId: string;
-  name: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  dni: string;
-  totalPrice: number;
-  hasCode?: boolean | undefined;
-  discountCode?: string;
-};
-
-const FormSchema = z.object({
-  ticketType: z.string({
-    required_error: "Por favor selecciona un tipo de ticket.",
-  }),
-  quantity: z.string(),
-  // code: z.string().optional(),
-});
-
-export default function TicketTypePicker({
+export default function BuyTicketForm({
   tickets,
   eventId,
   discountCode,
@@ -127,21 +124,42 @@ export default function TicketTypePicker({
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      ticketType: "",
+      quantity: "",
+      name: "",
+      lastName: "",
+      email: "",
+      confirmEmail: "",
+      phone: "",
+      dni: "",
+    },
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
-    const orderData: CashOrderType = {
+    const orderData: any = {
       ticketTypeId: data.ticketType,
-      status: "PENDING",
+      status: "PAID",
       quantity: parseInt(data.quantity),
       hasCode: discount,
       discountCode: addedCode,
       eventId: eventId,
+      name: data.name,
+      lastName: data.lastName,
+      email: data.email,
+      phone: data.phone,
+      dni: data.dni,
+      totalPrice: total,
     };
 
-    createOrder(orderData)
+    createCashOrder(orderData)
       .then(() => {
+        setTotal(0);
+        setIsLoading(false);
+        toast({
+          title: "Venta exitosa.",
+        });
         form.reset();
       })
       .catch((error) => {
@@ -153,6 +171,7 @@ export default function TicketTypePicker({
         throw new Error("Error creando order");
       });
   }
+
   const isPastEndDate = (endDate: Date): boolean => {
     return isBefore(new Date(endDate), new Date());
   };
@@ -201,11 +220,11 @@ export default function TicketTypePicker({
   }, [addedCode, form, tickets]);
 
   return (
-    <div className="p-3 border-4 border-black shadow-hard bg-white w-full flex-1">
+    <div className="mb-10">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="flex gap-2">
-            <div className="w-full">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2 md:col-span-1">
               <FormField
                 control={form.control}
                 name="ticketType"
@@ -226,8 +245,9 @@ export default function TicketTypePicker({
                       }}
                       defaultValue={field.value}
                       disabled={isLoading}
+                      key={form.watch("ticketType")} 
                     >
-                      <FormControl className="border-4 border-black rounded-none p-5">
+                      <FormControl className="">
                         <SelectTrigger>
                           <SelectValue placeholder="Seleccionar tipo de ticket" />
                         </SelectTrigger>
@@ -274,91 +294,212 @@ export default function TicketTypePicker({
                 )}
               />
             </div>
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem className="border-3">
-                  <Select
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      const selectedTicket = tickets.find(
-                        (ticket: any) =>
-                          ticket.id === form.getValues().ticketType
-                      );
-                      if (selectedTicket) {
-                        calculateTotal(selectedTicket.price, parseInt(value));
-                      }
-                    }}
-                    defaultValue={field.value}
-                    disabled={isLoading}
-                    value={discount ? "1" : field.value}
-                  >
-                    <FormControl className="border-4 border-black rounded-none p-5">
-                      <SelectTrigger>
-                        <SelectValue placeholder="0" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="1">1</SelectItem>
-                      {!discount && (
-                        <>
-                          <SelectItem value="2">2</SelectItem>
-                          <SelectItem value="3">3</SelectItem>
-                          <SelectItem value="4">4</SelectItem>
-                          <SelectItem value="5">5</SelectItem>
-                          <SelectItem value="6">6</SelectItem>
-                          <SelectItem value="7">7</SelectItem>
-                          <SelectItem value="8">8</SelectItem>
-                          <SelectItem value="9">9</SelectItem>
-                          <SelectItem value="10">10</SelectItem>
-                        </>
-                      )}
-                    </SelectContent>
-                  </Select>
+            <div className="col-span-2 md:col-span-1">
+              <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                  <FormItem className="">
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        const selectedTicket = tickets.find(
+                          (ticket: any) =>
+                            ticket.id === form.getValues().ticketType
+                        );
+                        if (selectedTicket) {
+                          calculateTotal(selectedTicket.price, parseInt(value));
+                        }
+                      }}
+                      defaultValue={field.value}
+                      disabled={isLoading}
+                      value={discount ? "1" : field.value}
+                    >
+                      <FormControl className="">
+                        <SelectTrigger>
+                          <SelectValue placeholder="0" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="1">1</SelectItem>
+                        {!discount && (
+                          <>
+                            <SelectItem value="2">2</SelectItem>
+                            <SelectItem value="3">3</SelectItem>
+                            <SelectItem value="4">4</SelectItem>
+                            <SelectItem value="5">5</SelectItem>
+                            <SelectItem value="6">6</SelectItem>
+                            <SelectItem value="7">7</SelectItem>
+                            <SelectItem value="8">8</SelectItem>
+                            <SelectItem value="9">9</SelectItem>
+                            <SelectItem value="10">10</SelectItem>
+                          </>
+                        )}
+                      </SelectContent>
+                    </Select>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2 md:col-span-1">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nombre</FormLabel>
+                    <FormControl className="">
+                      <Input
+                        placeholder="Nombre"
+                        {...field}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="col-span-2 md:col-span-1">
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Apellido</FormLabel>
+                    <FormControl className="">
+                      <Input
+                        placeholder="Apellido"
+                        {...field}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2 md:col-span-1">
+              <FormField
+                control={form.control}
+                name="dni"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>DNI</FormLabel>
+                    <FormControl className="">
+                      <Input
+                        placeholder="Dni"
+                        {...field}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="col-span-2 md:col-span-1">
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Telefono</FormLabel>
+                    <FormControl className="">
+                      <Input
+                        placeholder="Telefono"
+                        {...field}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2 md:col-span-1">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>E-mail</FormLabel>
+                    <FormControl className="">
+                      <Input
+                        placeholder="nombre@email.com"
+                        {...field}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="col-span-2 md:col-span-1">
+              <FormField
+                control={form.control}
+                name="confirmEmail"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Reingresar email</FormLabel>
+                    <FormControl className="">
+                      <Input
+                        placeholder="nombre@email.com"
+                        {...field}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
           <div>
             {serviceCharge ||
               (discount && form.watch("quantity") && (
                 <>
-                  <div className="px-1 text-right text-lg font-medium">
+                  <div className="">
                     <p>
                       SUBTOTAL:{" "}
-                      <span className="font-bold">
+                      <span className="">
                         ${subtotal.toLocaleString("es-ar")}
                       </span>
                     </p>
                   </div>
                   {discount && (
-                    <div className="px-1 text-right text-sm">
+                    <div className="">
                       <p>- descuento por codigo {discountPer}%</p>
                     </div>
                   )}
                   {serviceCharge && (
-                    <div className="px-1 text-right text-sm">
+                    <div className="">
                       <p>+ costo de servicio {serviceCharge}%</p>
                     </div>
                   )}
                 </>
               ))}
-            <p className="font-bold text-2xl text-right">
-              TOTAL: $
-              <span className="font-extrabold">
-                {total.toLocaleString("es-ar")}
-              </span>
+            <p className="">
+              TOTAL: $<span className="">{total.toLocaleString("es-ar")}</span>
             </p>
           </div>
 
-          <Button
-            className="w-full bg-red hover:bg-red-light hover:bg-opacity-10 hover:shadow-none transition-all rounded-none py-8 text-2xl border-4 border-black shadow-hard"
-            type="submit"
-            disabled={isLoading}
-          >
+          <Button className="w-full" type="submit" disabled={isLoading}>
             <span className={`${isLoading ? "hidden" : "block"} `}>
               Comprar
             </span>
@@ -375,7 +516,7 @@ export default function TicketTypePicker({
           <>
             <Button
               variant={"outline"}
-              className="w-full mt-4 bg-white font-bold rounded-none"
+              className=""
               type="button"
               onClick={() => setDiscountOpen(!discountOpen)}
               disabled={isLoading}
@@ -383,21 +524,17 @@ export default function TicketTypePicker({
               Tengo un código de descuento
             </Button>
             {discountOpen && (
-              <div className="w-full mt-4">
+              <div className="">
                 <form onSubmit={submitCode}>
                   <Input
-                    className="w-full border-4 border-black rounded-none"
+                    className=""
                     placeholder="Código de descuento"
                     name="discount-code"
                     value={discountInput}
                     onChange={(e) => setDiscountInput(e.target.value)}
                     disabled={isLoading}
                   />
-                  <Button
-                    type="submit"
-                    className="mt-4 inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-black w-full bg-yellow hover:bg-yellow-light hover:bg-opacity-10 hover:shadow-none transition-all rounded-none  border-4 border-black shadow-hard "
-                    disabled={isLoading}
-                  >
+                  <Button type="submit" className="" disabled={isLoading}>
                     Aplicar código
                   </Button>
                 </form>

@@ -19,14 +19,14 @@ async function main() {
   });
 
   const user = await prisma.user.upsert({
-    where: { email: "renzocostarelli@gmail.com" },
+    where: { email: "cannibal5033@gmail.com" },
     update: {},
     create: {
       id: "cm0vhobsu00039p6awxcj4dmt",
-      name: "Renzo",
-      email: "renzocostarelli@gmail.com",
+      name: "cuerojr jr",
+      email: "cannibal5033@gmail.com",
       image:
-        "https://lh3.googleusercontent.com/a/ACg8ocLkEO3LxK2FijarutZWmQ6KIdmWQs5iChyyUlyIrK1SF2kKWsRU=s96-c",
+        "https://lh3.googleusercontent.com/a/ACg8ocJK50KlLj5zqozLrTk8eXu1T74gYes-IYBQ6jHX2Bosbx-nCDo=s96-c",
       type: "SUPERADMIN",
       createdAt: new Date("2025-09-09T21:02:30.078Z"),
       clientId: client.id, // 👈 ahora requerido
@@ -55,7 +55,7 @@ async function main() {
     where: {
       provider_providerAccountId: {
         provider: "google",
-        providerAccountId: "110198927703910120731",
+        providerAccountId: "115806265136504999654",
       },
     },
     update: {},
@@ -63,15 +63,15 @@ async function main() {
       userId: user.id,
       type: "oauth",
       provider: "google",
-      providerAccountId: "110198927703910120731",
+      providerAccountId: "115806265136504999654",
       access_token:
-        "ya29.a0AcM612wTD0k-O-Op2WZxiT7psD1ziJYe8R3LI8GArOWoB72yc8Rd5_v4_3J1z-IXK7iQGTPrBoWWwsLz7UQU4vKQgPmIa7qOA7yCkF_wtA5fFXuZd3E_ofDfiy3FQ_Gfsgef6FMuuNGLjtwf36Ep47u5UlbTH3SvktrEaCgYKAVASARESFQHGX2MiWPjSPlBKqMVROcMyYMCmzA0171",
-      expires_at: 1725919349,
+        "a0AeXRPp6kv7CMDcIUkzTbTz2qyjf70179ZLZLd3Jct59cfoAA6NNXD9qKkg2dVdezTCoPDVT2uIpTl7Fbc2V4j7d7BKffifJH4hsbw5T091Q1lOxx53Xxt8JFyEGRjziqdmD8DLt16YePL71ZG17JuQ9B7DXMVD1qbfQdDLR1aCgYKAc0SARESFQHGX2Mi1BAUzLUqLTccsmpr7fBYqw0175",
+      expires_at: 1742594718,
       token_type: "Bearer",
       scope:
         "openid https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile",
       id_token:
-        "eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ3YjkzOTc3MWE3ODAwYzQxM2Y5MDA1MTAxMmQ5NzU5ODE5MTZkNzEiLCJ0eXAiOiJKV1QifQ...",
+        "yJhbGciOiJSUzI1NiIsImtpZCI6ImVlMTkzZDQ2NDdhYjRhMzU4NWFhOWIyYjNiNDg0YTg3YWE2OGJiNDIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxNjc0ODg2Nzk3NDMtNTUwMGR0Nmp2anRmcnIxdWlqa3M2ajg4cWNhNmE4Z2wuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiIxNjc0ODg2Nzk3NDMtNTUwMGR0Nmp2anRmcnIxdWlqa3M2ajg4cWNhNmE4Z2wuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTU4MDYyNjUxMzY1MDQ5OTk2NTQiLCJlbWFpbCI6ImNhbm5pYmFsNTAzM0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6IjY0NC1HYjBxLVdsNU51RThDM3h0V2ciLCJuYW1lIjoiY3Vlcm9qciBqciIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NKSzUwS2xMajV6cW96THJUazhlWHUxVDc0Z1llcy1JWUJRNmpIWDJCb3NieC1uQ0RvPXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6ImN1ZXJvanIiLCJmYW1pbHlfbmFtZSI6ImpyIiwiaWF0IjoxNzQyNTkxMTE5LCJleHAiOjE3NDI1OTQ3MTl9.hXiG5XpWF-VzN3b6jwdPbcmWxw5YODQNbSmCeyRTIqbJwsHXuGRHxjuFDIsNAjUdSMGQNC2ZVqo9UIWGOlCpgkGCu8AI2bBGrhO8f1tNnU1pjlYriJVtugHjZ1n2gMnm_bdmAmGVkBKuMtU1v6L8Wkwbs05ZRT9ueOqGU6P10MTIB8MZbA0nOpT9Ot-QqpGPKlHXvIOrgnv1cNEN4OGXy8hX-1kIZYZlucwlSGRQGHaCkS_xP8hHuVepaMn52DfkpN_ashJeaJizf2xB8oUyW80xNF3PqLhUraAFpAHLsrb-g4mi1Sl-TkvG_4YsHFk_c6oWyXnp10A15yrBgG78lw...",
     },
   });
 
@@ -84,7 +84,7 @@ async function main() {
       location: "Rosario, Argentina",
       status: "ACTIVE",
       userId: user.id, // Usamos el usuario que creamos arriba
-      dates: JSON.stringify([{ id: 0, date: "2024-10-17T20:03" }]), // Formato JSON para el campo dates en Event
+      dates: JSON.stringify([{ id: 0, date: "2025-10-17T20:03" }]), // Formato JSON para el campo dates en Event
       endDate: endDate.toISOString(), // Convertir endDate a formato ISO string
       ticketTypes: {
         create: [
