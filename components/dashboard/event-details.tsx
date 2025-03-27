@@ -40,6 +40,7 @@ import ValidatorsTable from "./validators-table";
 import { ValidatorToken } from "@/types/validators";
 import NewTokenDialog from "@/app/dashboard/components/new-token-dialog/new-token-dialog";
 import CancelEventButton from "./cancel-event-button";
+import Box from "./box";
 export default function EventDetails({ evento }: { evento: Evento }) {
   const [activeTab, setActiveTab] = useState("overview");
   const groupedDates = datesFormater(evento.dates as string);
@@ -213,6 +214,21 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                 </Card>
               </TabsContent>
             </Tabs>
+            <Card>
+              <CardHeader>
+                <CardTitle>Eliminar evento permanentemente</CardTitle>
+                <CardDescription>
+                  Esta acción no se puede revertir. Por favor, asegúrate de que
+                  deseas eliminar este evento antes de continuar.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button variant="destructive" size="sm">
+                  <Trash className="mr-2 h-4 w-4" />
+                  Eliminar evento
+                </Button>
+              </CardContent>
+            </Card>
           </div>
           <div className="md:col-span-2 space-y-6">
             <Card>

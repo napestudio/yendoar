@@ -76,7 +76,6 @@ export async function cancelEvent(eventId: string) {
     const result = await Eventos.updateEvent(eventId, data as Evento);
     revalidatePath(`/dashboard/evento/${result.id}`);
   } catch (error) {
-    console.log(error);
     throw new Error("Error cancelando el evento");
   }
 }

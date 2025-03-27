@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ReactNode } from "react";
 import { Button } from "../ui/button";
-import { Trash } from "lucide-react";
+import { LucideTicket, Ticket, TicketIcon, Trash, X } from "lucide-react";
 import { cancelEvent, updateEvent } from "@/lib/actions";
 
 type AlertRemoveType = {
@@ -26,7 +26,7 @@ export default async function CancelEventButton({ id }: AlertRemoveType) {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="destructive" size="sm">
-          <Trash className="mr-2 h-4 w-4" />
+          <X className="mr-2 h-4 w-4" />
           Cancelar Evento
         </Button>
       </AlertDialogTrigger>
