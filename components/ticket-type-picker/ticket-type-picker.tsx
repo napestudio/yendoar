@@ -58,21 +58,6 @@ type CashOrderType = {
   eventId: string;
 };
 
-type CreateCashOrderType = {
-  ticketTypeId: string;
-  status: string;
-  quantity: number;
-  eventId: string;
-  name: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  dni: string;
-  totalPrice: number;
-  hasCode?: boolean | undefined;
-  discountCode?: string;
-};
-
 const FormSchema = z.object({
   ticketType: z.string({
     required_error: "Por favor selecciona un tipo de ticket.",
