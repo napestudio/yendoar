@@ -20,6 +20,7 @@
 .DS_Store
 *.pem
 seed.js
+seed.ts
 
 # debug
 npm-debug.log*
