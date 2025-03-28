@@ -34,11 +34,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-interface AddPaymentMethodDialogProps {
-  children: React.ReactNode;
-  sellers?: User[];
-}
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
@@ -59,6 +54,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { Session } from "next-auth";
+import { createPaymentMethod } from "@/lib/actions";
+import { PaymentType } from "@prisma/client";
 
 const paymentMethodSchema = z.object({
   type: z.enum(["mercadopago", "cash"], {
@@ -66,16 +64,23 @@ const paymentMethodSchema = z.object({
   }),
   accountName: z.string().min(1, "Este campo es obligatorio"),
   apiKey: z.string().optional(),
-  secretKey: z.string().optional(),
+  // secretKey: z.string().optional(),
   enabled: z.boolean().default(true),
   seller: z.string(),
 });
 
 type PaymentMethodForm = z.infer<typeof paymentMethodSchema>;
 
+interface AddPaymentMethodDialogProps {
+  children: React.ReactNode;
+  sellers?: User[];
+  session: Session;
+}
+
 export function AddPaymentMethodDialog({
   children,
   sellers,
+  session,
 }: AddPaymentMethodDialogProps) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -90,7 +95,7 @@ export function AddPaymentMethodDialog({
       type: "mercadopago",
       accountName: "",
       apiKey: "",
-      secretKey: "",
+      // secretKey: "",
       enabled: true,
       seller: "",
     },
@@ -102,34 +107,33 @@ export function AddPaymentMethodDialog({
   const onSubmit = async (data: PaymentMethodForm) => {
     setIsSubmitting(true);
 
-    console.log("Submit data", data);
+    try {
+      const payload = {
+        name: data.accountName,
+        type:
+          data.type === "mercadopago"
+            ? ("DIGITAL" as PaymentType)
+            : ("CASH" as PaymentType),
+        clientId: session.user.clientId!,
+        userId: data.type === "cash" ? data.seller : undefined,
+        apiKey: data.type === "mercadopago" ? data.apiKey : null,
+        enabled: data.enabled,
+        creatorId: session.user.id,
+      };
 
-    // Simulación de creación
+      await createPaymentMethod(payload);
+    } catch (error) {
+      console.error("Error creando método de pago", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+    form.reset();
+    setOpen(false);
     await new Promise((r) => setTimeout(r, 1000));
 
     setIsSubmitting(false);
     setOpen(false);
     form.reset();
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    console.log("Adding payment method:", {
-      type: selectedMethod,
-      apiKey,
-      secretKey,
-      accountName,
-      enableIntegration,
-    });
-
-    setIsSubmitting(false);
-    setOpen(false);
-    resetForm();
   };
 
   const resetForm = () => {
@@ -147,24 +151,13 @@ export function AddPaymentMethodDialog({
       description: "Usando MercadoPago Checkout Pro",
       icon: <Wallet className="h-6 w-6" />,
     },
-    // {
-    //   id: "bank",
-    //   name: "Bank Transfer",
-    //   description: "Direct bank account transfers",
-    //   icon: <Bank className="h-6 w-6" />,
-    // },
+
     {
       id: "cash",
       name: "Efectivo | Punto de venta",
       description: "Para cobros en efectivo",
       icon: <DollarSign className="h-6 w-6" />,
     },
-    // {
-    //   id: "other",
-    //   name: "Other Payment Method",
-    //   description: "Custom payment integration",
-    //   icon: <Landmark className="h-6 w-6" />,
-    // },
   ];
 
   return (
@@ -274,7 +267,10 @@ export function AddPaymentMethodDialog({
                             name="seller"
                             render={({ field }) => (
                               <FormItem>
-                                <Select>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                >
                                   <FormControl>
                                     <SelectTrigger>
                                       <SelectValue placeholder="Seleccionar vendedor" />
@@ -284,7 +280,7 @@ export function AddPaymentMethodDialog({
                                     {sellers?.map((seller) => (
                                       <SelectItem
                                         key={seller.id}
-                                        value={seller.id || ""}
+                                        value={seller.id!}
                                       >
                                         {seller.email}
                                       </SelectItem>
@@ -320,7 +316,7 @@ export function AddPaymentMethodDialog({
                           )}
                         />
 
-                        <FormField
+                        {/* <FormField
                           control={form.control}
                           name="secretKey"
                           render={({ field }) => (
@@ -339,7 +335,7 @@ export function AddPaymentMethodDialog({
                               <FormMessage />
                             </FormItem>
                           )}
-                        />
+                        /> */}
                       </>
                     )}
 

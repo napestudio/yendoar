@@ -9,6 +9,8 @@ import * as TicketOrders from "@/lib/api/ticket-orders";
 import * as Code from "@/lib/api/descuento-code";
 import * as ValidatorToken from "@/lib/api/validators-token";
 import * as UserInvitation from "@/lib/api/user-invitations";
+import * as PaymentMethod from "@/lib/api/payment-methods";
+
 import { EventStatus } from "@/types/event";
 import { Product } from "@/types/product";
 import { DatesType, TicketOrderType, TicketType } from "@/types/tickets";
@@ -295,6 +297,43 @@ export async function updateUserById(data: Partial<User>, userId: string) {
     return result;
   } catch (error) {
     throw new Error("Error editando el usuario");
+  }
+}
+
+type PaymentMethodInput = {
+  name?: string;
+  type: "CASH" | "DIGITAL";
+  clientId: string;
+  userId?: string;
+};
+
+export async function createPaymentMethod(data: PaymentMethodInput) {
+  const { type, userId } = data;
+  if (type === "CASH" && !userId) {
+    throw new Error("CASH tiene que contener un userId");
+  }
+  try {
+    const method = await PaymentMethod.createPaymentMethod(data);
+    revalidatePath("/dashboard/payment-methods");
+    return method;
+  } catch (error) {
+    throw new Error(`Error creando Metodo de Pago: ${error}`);
+  }
+}
+
+export async function assignPaymentMethodsToEvent(
+  eventId: string,
+  paymentMethodIds: string
+) {
+  console.log(eventId, paymentMethodIds);
+}
+
+export async function getPaymentMethodsByClientId(clientId: string) {
+  try {
+    const methods = await PaymentMethod.getPaymentMethodsByClientId(clientId);
+    return methods;
+  } catch (error) {
+    throw new Error("Error buscando metodos de pago por clientId");
   }
 }
 

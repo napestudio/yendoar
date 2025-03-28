@@ -45,6 +45,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { PaymentMethod } from "@prisma/client";
 // import { EditPaymentMethodDialog } from "./edit-payment-method-dialog"
 
 // Sample data
@@ -129,81 +130,27 @@ const paymentMethods = [
   },
 ];
 
-export function PaymentMethodsTable() {
+export function PaymentMethodsTable({ methods }: { methods: PaymentMethod[] }) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [typeFilter, setTypeFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<any>(null);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
-  const filteredPaymentMethods = paymentMethods.filter((method) => {
-    const matchesSearch =
-      method.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      method.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (method.connectedAccount &&
-        method.connectedAccount
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()));
-
-    const matchesType = typeFilter === "all" || method.type === typeFilter;
-    const matchesStatus =
-      statusFilter === "all" || method.status === statusFilter;
-
-    return matchesSearch && matchesType && matchesStatus;
-  });
-
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: boolean) => {
     switch (status) {
-      case "Active":
+      case true:
         return (
           <Badge variant="outline" className="bg-green-500/20 text-green-700">
             <CheckCircle2 className="mr-1 h-3 w-3" />
-            Active
+            Activo
           </Badge>
         );
-      case "Inactive":
+      case false:
         return (
           <Badge variant="outline" className="bg-gray-500/20 text-gray-700">
-            Inactive
-          </Badge>
-        );
-      case "Pending":
-        return (
-          <Badge variant="outline" className="bg-yellow-500/20 text-yellow-700">
-            <AlertTriangle className="mr-1 h-3 w-3" />
-            Pending
+            Inactivo
           </Badge>
         );
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
-  };
-
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return "Never";
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
-  };
-
-  const handleEditPaymentMethod = (method: any) => {
-    setSelectedPaymentMethod(method);
-    setIsEditDialogOpen(true);
-  };
-
-  const handleSavePaymentMethod = (updatedMethod: any) => {
-    console.log("Saving payment method:", updatedMethod);
-    // In a real app, you would update the payment method in your database
-    setIsEditDialogOpen(false);
   };
 
   return (
@@ -225,18 +172,6 @@ export function PaymentMethodsTable() {
               className="pl-8"
             />
           </div>
-          <div className="flex items-center gap-2">
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-[160px]">
-                <SelectValue placeholder="Filter by type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tipo</SelectItem>
-                <SelectItem value="Credit Card">Online</SelectItem>
-                <SelectItem value="Digital Wallet">Efectivo</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
         </div>
 
         <div className="rounded-md border">
@@ -251,7 +186,7 @@ export function PaymentMethodsTable() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredPaymentMethods.map((method) => (
+              {methods.map((method) => (
                 <TableRow key={method.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
@@ -264,16 +199,16 @@ export function PaymentMethodsTable() {
                       </div>
                       <div>
                         <div className="font-medium">{method.name}</div>
-                        {method.connectedAccount && (
+                        {method.apiKey && (
                           <div className="text-sm text-muted-foreground truncate max-w-[150px]">
-                            {method.connectedAccount}
+                            {method.apiKey}
                           </div>
                         )}
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>{method.type}</TableCell>
-                  <TableCell>{getStatusBadge(method.status)}</TableCell>
+                  <TableCell>{getStatusBadge(method.enabled)}</TableCell>
 
                   <TableCell className="text-right">
                     <DropdownMenu>
@@ -285,9 +220,7 @@ export function PaymentMethodsTable() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem
-                          onClick={() => handleEditPaymentMethod(method)}
-                        >
+                        <DropdownMenuItem>
                           <Edit className="mr-2 h-4 w-4" />
                           Editar
                         </DropdownMenuItem>
