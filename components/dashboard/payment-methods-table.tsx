@@ -209,9 +209,9 @@ export function PaymentMethodsTable() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Payment Methods</CardTitle>
+        <CardTitle>Métodos de Pago</CardTitle>
         <CardDescription>
-          Manage payment methods that sellers can use to collect payments.
+          Listado de los métodos de pago de la plataforma.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -219,7 +219,7 @@ export function PaymentMethodsTable() {
           <div className="relative flex-1">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search payment methods..."
+              placeholder="Buscar método..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-8"
@@ -231,29 +231,11 @@ export function PaymentMethodsTable() {
                 <SelectValue placeholder="Filter by type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="Credit Card">Credit Card</SelectItem>
-                <SelectItem value="Digital Wallet">Digital Wallet</SelectItem>
-                <SelectItem value="Local Payment">Local Payment</SelectItem>
-                <SelectItem value="Offline">Offline</SelectItem>
-                <SelectItem value="Direct Deposit">Direct Deposit</SelectItem>
+                <SelectItem value="all">Tipo</SelectItem>
+                <SelectItem value="Credit Card">Online</SelectItem>
+                <SelectItem value="Digital Wallet">Efectivo</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[140px]">
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="Active">Active</SelectItem>
-                <SelectItem value="Inactive">Inactive</SelectItem>
-                <SelectItem value="Pending">Pending</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" size="sm">
-              <Filter className="mr-2 h-4 w-4" />
-              More Filters
-            </Button>
           </div>
         </div>
 
@@ -264,10 +246,7 @@ export function PaymentMethodsTable() {
                 <TableHead>Método de pago</TableHead>
                 <TableHead>Tipo</TableHead>
                 <TableHead>Estado</TableHead>
-                {/* <TableHead>Transactions</TableHead>
-                <TableHead>Revenue</TableHead>
-                <TableHead>Fees</TableHead>
-                <TableHead>Last Used</TableHead> */}
+
                 <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
@@ -284,14 +263,7 @@ export function PaymentMethodsTable() {
                         /> */}
                       </div>
                       <div>
-                        <div className="font-medium">
-                          {method.name}
-                          {/* {method.isDefault && (
-                            <Badge variant="secondary" className="ml-2 text-xs">
-                              Default
-                            </Badge>
-                          )} */}
-                        </div>
+                        <div className="font-medium">{method.name}</div>
                         {method.connectedAccount && (
                           <div className="text-sm text-muted-foreground truncate max-w-[150px]">
                             {method.connectedAccount}
@@ -302,12 +274,7 @@ export function PaymentMethodsTable() {
                   </TableCell>
                   <TableCell>{method.type}</TableCell>
                   <TableCell>{getStatusBadge(method.status)}</TableCell>
-                  {/* <TableCell>
-                    {method.transactionsCount.toLocaleString()}
-                  </TableCell>
-                  <TableCell>{formatCurrency(method.revenue)}</TableCell>
-                  <TableCell>{formatCurrency(method.fees)}</TableCell>
-                  <TableCell>{formatDate(method.lastUsed)}</TableCell> */}
+
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -322,27 +289,14 @@ export function PaymentMethodsTable() {
                           onClick={() => handleEditPaymentMethod(method)}
                         >
                           <Edit className="mr-2 h-4 w-4" />
-                          Edit settings
+                          Editar
                         </DropdownMenuItem>
-                        {!method.isDefault && (
-                          <DropdownMenuItem>
-                            <CheckCircle2 className="mr-2 h-4 w-4" />
-                            Set as default
-                          </DropdownMenuItem>
-                        )}
-                        <DropdownMenuItem>
-                          <Link className="mr-2 h-4 w-4" />
-                          View transactions
-                        </DropdownMenuItem>
+
                         <DropdownMenuSeparator />
-                        {method.status === "Active" ? (
-                          <DropdownMenuItem>Deactivate</DropdownMenuItem>
-                        ) : method.status === "Inactive" ? (
-                          <DropdownMenuItem>Activate</DropdownMenuItem>
-                        ) : null}
+
                         <DropdownMenuItem className="text-destructive">
                           <Trash className="mr-2 h-4 w-4" />
-                          Delete
+                          Eliminar
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
