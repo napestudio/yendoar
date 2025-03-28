@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createOrder } from "@/lib/actions";
+import { createOrder, CreateOrderType } from "@/lib/actions";
 import { datesFormater } from "@/lib/utils";
 import { Input } from "../ui/input";
 import { DiscountCode } from "@/types/discount-code";
@@ -47,15 +47,6 @@ export type TicketType = {
   createdAt: Date;
   updatedAt: Date;
   buyGet?: number;
-};
-
-type CashOrderType = {
-  ticketTypeId: string;
-  status: "PENDING";
-  quantity: number;
-  hasCode: boolean;
-  discountCode?: number | string | undefined;
-  eventId: string;
 };
 
 const FormSchema = z.object({
@@ -116,7 +107,7 @@ export default function TicketTypePicker({
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
-    const orderData: CashOrderType = {
+    const orderData: CreateOrderType = {
       ticketTypeId: data.ticketType,
       status: "PENDING",
       quantity: parseInt(data.quantity),

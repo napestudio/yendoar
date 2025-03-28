@@ -247,7 +247,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                   <h4 className="text-sm font-medium">Acciones Rápidas</h4>
                   <div className="grid gap-2">
                     <Button asChild size="sm">
-                      <Link href={`/dashboard/caja/${evento.id}`}>
+                      <Link href={`/dashboard/${evento.id}`}>
                         <Ticket className="mr-2 h-4 w-4" />
                         Vender entrada
                       </Link>

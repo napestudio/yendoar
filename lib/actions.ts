@@ -172,24 +172,16 @@ export async function updateTicketType(
   }
 }
 
-type CreateOrderType = {
+export type CreateOrderType = {
   ticketTypeId: string;
   status: string;
   quantity: number;
   eventId: string;
-};
-
-type CashOrderType = {
-  ticketTypeId: string;
-  status: "PENDING";
-  quantity: number;
   hasCode: boolean;
-  discountCode?: number | string | undefined;
-  eventId: string;
+  discountCode: string | undefined;
 };
 
-
-export async function createOrder(data: CashOrderType) {
+export async function createOrder(data: CreateOrderType) {
   let orderId = null;
   try {
     const result = await Orders.createOrder(data);
