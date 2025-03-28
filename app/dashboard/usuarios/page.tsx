@@ -6,17 +6,20 @@ import UserInvitationsTable from "@/components/dashboard/user-invitations-table"
 
 import UsersTable from "@/components/dashboard/users-table";
 import { Button } from "@/components/ui/button";
-import { getPendingInvitationsByUser } from "@/lib/actions";
-import { getUsersByClientId } from "@/lib/api/users";
+import {
+  getAllUsersByClientId,
+  getPendingInvitationsByUser,
+} from "@/lib/actions";
+
 import { User } from "@/types/user";
 
 import { Plus } from "lucide-react";
 import { getServerSession } from "next-auth";
 
 export default async function UsersPage() {
-  const accounts = await getUsersByClientId();
   const session = await getServerSession(authOptions);
   if (!session) return;
+  const accounts = await getAllUsersByClientId(session.user.clientId!);
   const userId = session.user.id;
   const clientId = session.user.clientId;
   const invitations = await getPendingInvitationsByUser(userId);

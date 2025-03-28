@@ -256,9 +256,9 @@ export async function updateOrder(data: any, orderId: string) {
   }
 }
 
-export async function getAllUsersByClientId() {
+export async function getAllUsersByClientId(clientId: string) {
   try {
-    const result = await Users.getUsersByClientId();
+    const result = await Users.getUsersByClientId(clientId);
     return result;
   } catch (error) {}
 }

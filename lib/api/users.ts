@@ -10,8 +10,11 @@ export async function getAllUsersButAdmins() {
   return await db.user.findMany({ where: { type: "SELLER" } });
 }
 
-export async function getUsersByClientId() {
+export async function getUsersByClientId(clientId: string) {
   return await db.user.findMany({
+    where: {
+      clientId,
+    },
     include: {
       configuration: true,
     },
