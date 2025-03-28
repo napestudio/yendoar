@@ -29,7 +29,7 @@ import {
 import { stat } from "fs";
 import { SITE_NAME } from "./constants";
 import { getPaidOrdersDataByEvent } from "@/lib/api/orders";
-import { User } from "@/types/user";
+import { User, UserType } from "@/types/user";
 import { UserConfiguration } from "@/types/user-configuration";
 
 // Type temporal
@@ -261,6 +261,15 @@ export async function getAllUsersByClientId() {
     const result = await Users.getUsersByClientId();
     return result;
   } catch (error) {}
+}
+
+export async function getUsersByType(clientId: string, type: UserType) {
+  try {
+    const result = await Users.getUsersByType(clientId, type);
+    return result;
+  } catch (error) {
+    throw new Error("Error trayendo usuarios por type");
+  }
 }
 
 export async function getAllUsersButAdmins() {
