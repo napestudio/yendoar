@@ -17,6 +17,13 @@ export async function getPaymentMethodsByClientId(clientId: string) {
     },
   });
 }
+export async function getPaymentMethodsByCreatorId(creatorId: string) {
+  return await db.paymentMethod.findMany({
+    where: {
+      creatorId,
+    },
+  });
+}
 
 export async function assignPaymentMethodsToEvent({
   eventId,

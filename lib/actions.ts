@@ -336,6 +336,14 @@ export async function getPaymentMethodsByClientId(clientId: string) {
     throw new Error("Error buscando metodos de pago por clientId");
   }
 }
+export async function getPaymentMethodsByCreatorId(creatorId: string) {
+  try {
+    const methods = await PaymentMethod.getPaymentMethodsByCreatorId(creatorId);
+    return methods;
+  } catch (error) {
+    throw new Error("Error buscando metodos de pago por creatorId");
+  }
+}
 
 export async function getMercadoPagoTokenByUser(userId: string) {
   try {
