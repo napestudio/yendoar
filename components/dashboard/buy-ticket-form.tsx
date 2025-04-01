@@ -52,10 +52,11 @@ export type TicketType = {
 const FormSchema = z
   .object({
     ticketType: z.string({
-      required_error: "Por favor selecciona un tipo de ticket.",
+      required_error: "Por favor selecciona un tipo de entrada.",
     }),
-    quantity: z.string(),
-    // code: z.string().optional(),
+    quantity: z.string({
+      required_error: "Por favor selecciona la cantidad de entradas.",
+    }),
     name: z.string().min(2, {
       message: "Debe tener al menos 2 caracteres",
     }),
@@ -125,8 +126,8 @@ export default function BuyTicketForm({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      ticketType: "",
-      quantity: "",
+      ticketType: undefined,
+      quantity: undefined,
       name: "",
       lastName: "",
       email: "",
@@ -135,6 +136,7 @@ export default function BuyTicketForm({
       dni: "",
     },
   });
+  
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
@@ -312,8 +314,10 @@ export default function BuyTicketForm({
                         }
                       }}
                       defaultValue={field.value}
-                      disabled={isLoading}
                       value={discount ? "1" : field.value}
+                      key={form.watch("quantity")}
+                      disabled={!form.watch("ticketType") || isLoading}
+
                     >
                       <FormControl className="">
                         <SelectTrigger>
@@ -501,10 +505,10 @@ export default function BuyTicketForm({
 
           <Button className="w-full" type="submit" disabled={isLoading}>
             <span className={`${isLoading ? "hidden" : "block"} `}>
-              Comprar
+              Emitir entradas
             </span>
             <span className={`${!isLoading ? "hidden" : "block"} `}>
-              Comprando...
+              Emitiendo...
             </span>
           </Button>
         </form>
