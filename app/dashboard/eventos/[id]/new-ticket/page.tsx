@@ -1,11 +1,14 @@
 import BuyTicketForm from "@/components/dashboard/buy-ticket-form";
 import DashboardHeader from "@/components/dashboard/dashboard-header";
+import { Button } from "@/components/ui/button";
 import {
   getEventById,
   getServiceCharge,
   getSoldTicketsByType,
 } from "@/lib/actions";
 import { DiscountCode } from "@/types/discount-code";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
 async function getEventData(id: string) {
@@ -31,7 +34,15 @@ async function Caja({ params }: { params: { id: string } }) {
     <>
       <div className="flex flex-col gap-8">
         <div className="flex gap-5">
-          <DashboardHeader title="Caja" subtitle={evento.title} />
+          <DashboardHeader
+            title={`Venta de tickets del evento: ${evento.title}`}
+            subtitle="Completa el formulario para emitir un ticket cobrando en efectivo."
+          />
+          <Button variant="outline" size="sm" asChild>
+            <Link href={`/dashboard/evento/${params.id}`}>
+              <ArrowLeft className="mr-2 h-4 w-4" /> Volver al Evento
+            </Link>
+          </Button>
         </div>
         <div className="w-full space-y-5">
           <BuyTicketForm
