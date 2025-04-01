@@ -52,10 +52,10 @@ export type TicketType = {
 const FormSchema = z
   .object({
     ticketType: z.string({
-      required_error: "Por favor selecciona un tipo de entrada.",
+      required_error: "Por favor seleccioná un tipo de entrada.",
     }),
     quantity: z.string({
-      required_error: "Por favor selecciona la cantidad de tickets.",
+      required_error: "Por favor seleccioná la cantidad de tickets.",
     }),
     name: z.string().min(2, {
       message: "Debe tener al menos 2 caracteres",
@@ -359,7 +359,7 @@ export default function BuyTicketForm({
                     <FormLabel>Nombre</FormLabel>
                     <FormControl className="">
                       <Input
-                        placeholder="Nombre"
+                        placeholder="Juan"
                         {...field}
                         disabled={isLoading}
                       />
@@ -378,7 +378,7 @@ export default function BuyTicketForm({
                     <FormLabel>Apellido</FormLabel>
                     <FormControl className="">
                       <Input
-                        placeholder="Apellido"
+                        placeholder="Perez"
                         {...field}
                         disabled={isLoading}
                       />
@@ -400,7 +400,7 @@ export default function BuyTicketForm({
                     <FormLabel>DNI</FormLabel>
                     <FormControl className="">
                       <Input
-                        placeholder="Dni"
+                        placeholder="12345678"
                         {...field}
                         disabled={isLoading}
                       />
@@ -420,7 +420,7 @@ export default function BuyTicketForm({
                     <FormLabel>Telefono</FormLabel>
                     <FormControl className="">
                       <Input
-                        placeholder="Telefono"
+                        placeholder="Teléfono"
                         {...field}
                         disabled={isLoading}
                       />
