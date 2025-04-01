@@ -55,7 +55,7 @@ const FormSchema = z
       required_error: "Por favor selecciona un tipo de entrada.",
     }),
     quantity: z.string({
-      required_error: "Por favor selecciona la cantidad de entradas.",
+      required_error: "Por favor selecciona la cantidad de tickets.",
     }),
     name: z.string().min(2, {
       message: "Debe tener al menos 2 caracteres",
@@ -505,7 +505,7 @@ export default function BuyTicketForm({
 
           <Button className="w-full" type="submit" disabled={isLoading}>
             <span className={`${isLoading ? "hidden" : "block"} `}>
-              Emitir entradas
+              Emitir tickets
             </span>
             <span className={`${!isLoading ? "hidden" : "block"} `}>
               Emitiendo...
