@@ -42,7 +42,6 @@ import NewTokenDialog from "@/app/dashboard/components/new-token-dialog/new-toke
 import CancelEventButton from "./cancel-event-button";
 import Box from "./box";
 export default function EventDetails({ evento }: { evento: Evento }) {
-  const [activeTab, setActiveTab] = useState("overview");
   const groupedDates = datesFormater(evento.dates as string);
 
   return (
@@ -113,11 +112,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                 </div>
               </CardContent>
             </Card>
-            <Tabs
-              defaultValue="overview"
-              className="w-full"
-              onValueChange={setActiveTab}
-            >
+            <Tabs defaultValue="overview" className="w-full">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="overview">Detalles</TabsTrigger>
                 <TabsTrigger value="tickets">Tickets</TabsTrigger>
@@ -159,6 +154,22 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                   </CardHeader>
                   <CardContent>
                     {/* <SalesChart data={event.recentSales} /> */}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Eliminar evento permanentemente</CardTitle>
+                    <CardDescription>
+                      Esta acción no se puede revertir. Por favor, asegúrate de
+                      que deseas eliminar este evento antes de continuar.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button variant="destructive" size="sm">
+                      <Trash className="mr-2 h-4 w-4" />
+                      Eliminar evento
+                    </Button>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -214,21 +225,6 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                 </Card>
               </TabsContent>
             </Tabs>
-            <Card>
-              <CardHeader>
-                <CardTitle>Eliminar evento permanentemente</CardTitle>
-                <CardDescription>
-                  Esta acción no se puede revertir. Por favor, asegúrate de que
-                  deseas eliminar este evento antes de continuar.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button variant="destructive" size="sm">
-                  <Trash className="mr-2 h-4 w-4" />
-                  Eliminar evento
-                </Button>
-              </CardContent>
-            </Card>
           </div>
           <div className="md:col-span-2 space-y-6">
             <Card>

@@ -1,21 +1,6 @@
 import { getEventById } from "@/lib/actions";
-import EditEventForm from "../../../../components/dashboard/edit-event-form";
 import { Evento } from "@/types/event";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import {
-  ArrowLeft,
-  Calendar,
-  Edit,
-  MapPin,
-  Share2,
-  Trash,
-  Users,
-} from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
 
-import { datesFormater } from "@/lib/utils";
 import EventDetails from "@/components/dashboard/event-details";
 
 export default async function EventPage({
