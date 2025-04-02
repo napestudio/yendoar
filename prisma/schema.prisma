@@ -313,6 +313,7 @@ enum GlobalStatus {
   ACTIVE
   CONCLUDED
   DELETED
+  CANCELED
 }
 
 enum TicketTypes {

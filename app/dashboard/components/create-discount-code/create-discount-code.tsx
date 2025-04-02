@@ -45,7 +45,7 @@ const formSchema = z.object({
   eventId: z.string(),
   expiresAt: z.date(),
   discount: z.number(),
-  status: z.enum(["DRAFT", "ACTIVE", "CONCLUDED", "DELETED"]),
+  status: z.enum(["DRAFT", "ACTIVE", "CANCELED", "CONCLUDED", "DELETED"]),
   //.refine((file) => file?.length == 1, "File is required."),
 });
 

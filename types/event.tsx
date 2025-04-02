@@ -3,7 +3,12 @@ import { DiscountCode } from "./discount-code";
 import { TicketType } from "./tickets";
 import { User } from "./user";
 
-export type EventStatus = "DRAFT" | "ACTIVE" | "CONCLUDED" | "DELETED";
+export type EventStatus =
+  | "DRAFT"
+  | "ACTIVE"
+  | "CANCELED"
+  | "CONCLUDED"
+  | "DELETED";
 
 export interface Evento {
   id: string;

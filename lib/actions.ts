@@ -70,6 +70,17 @@ export async function updateEvent(data: Evento, eventId: string) {
   }
 }
 
+export async function cancelEvent(eventId: string) {
+  const data = { status: "CANCELED" };
+  try {
+    const result = await Eventos.updateEvent(eventId, data as Evento);
+    revalidatePath(`/dashboard/evento/${result.id}`);
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error cancelando el evento");
+  }
+}
+
 export async function deleteEvent(eventId: string) {
   try {
     const data = { status: "DELETED" };

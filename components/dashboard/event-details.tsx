@@ -39,7 +39,7 @@ import { SITE_URL } from "@/lib/constants";
 import ValidatorsTable from "./validators-table";
 import { ValidatorToken } from "@/types/validators";
 import NewTokenDialog from "@/app/dashboard/components/new-token-dialog/new-token-dialog";
-
+import CancelEventButton from "./cancel-event-button";
 export default function EventDetails({ evento }: { evento: Evento }) {
   const [activeTab, setActiveTab] = useState("overview");
   const groupedDates = datesFormater(evento.dates as string);
@@ -77,10 +77,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                 Editar
               </Link>
             </Button>
-            <Button variant="destructive" size="sm">
-              <Trash className="mr-2 h-4 w-4" />
-              Cancelar Evento
-            </Button>
+            <CancelEventButton id={evento.id} />
           </div>
         </div>
         <div className="grid gap-6 md:grid-cols-7">
