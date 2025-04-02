@@ -33,20 +33,20 @@ const dashboardConfig = {
       icon: "calendar",
     },
     {
-      title: "Métodos de pago",
-      href: "/dashboard/metodos-de-pago",
-      icon: "sales",
-    },
-    {
       title: "Usuarios",
       href: "/dashboard/usuarios",
       icon: "users",
     },
     {
-      title: "Settings",
-      href: "/dashboard/settings",
-      icon: "settings",
+      title: "Métodos de pago",
+      href: "/dashboard/metodos-de-pago",
+      icon: "sales",
     },
+    // {
+    //   title: "Settings",
+    //   href: "/dashboard/settings",
+    //   icon: "settings",
+    // },
   ],
 };
 

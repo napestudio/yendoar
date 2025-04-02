@@ -1,7 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { AddPaymentMethodDialog } from "@/components/dashboard/add-payment-method-dialog";
 import DashboardHeader from "@/components/dashboard/dashboard-header";
-import { PaymentMethodsTable } from "@/components/dashboard/payment-methods-table";
+
 import StatsCards from "@/components/dashboard/stats-cards";
 import { Button } from "@/components/ui/button";
 import { getUsersByType } from "@/lib/actions";

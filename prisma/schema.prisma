@@ -259,9 +259,9 @@ model PaymentMethod {
   type      PaymentType
   name      String?
   clientId  String
-  userId    String? // Solo se usa si es CASH
-  creatorId String // Usuario que creó este método
-  apiKey    String? // Solo para métodos tipo DIGITAL (ej: MP)
+  userId    String?     // Solo se usa si es CASH
+  creatorId String      // Usuario que creó este método
+  apiKey    String?     // Solo para métodos tipo DIGITAL (ej: MP)
   enabled   Boolean     @default(true)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt

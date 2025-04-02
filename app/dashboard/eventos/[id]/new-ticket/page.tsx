@@ -32,18 +32,20 @@ async function Caja({ params }: { params: { id: string } }) {
 
   return (
     <>
-      <div className="flex flex-col gap-8">
-        <div className="flex gap-5">
-          <DashboardHeader
-            title={`Venta de tickets del evento: ${evento.title}`}
-            subtitle="Completa el formulario para emitir un ticket cobrando en efectivo."
-          />
+      <div className="space-y-6 pb-8">
+        <DashboardHeader
+          title={`Venta de tickets del evento: ${evento.title}`}
+          subtitle="Completa el formulario para emitir un ticket cobrando en efectivo."
+        />
+        <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" asChild>
             <Link href={`/dashboard/evento/${params.id}`}>
-              <ArrowLeft className="mr-2 h-4 w-4" /> Volver al Evento
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Volver al Evento
             </Link>
           </Button>
         </div>
+
         <div className="w-full space-y-5">
           <BuyTicketForm
             tickets={evento?.ticketTypes}

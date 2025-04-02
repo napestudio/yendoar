@@ -1,19 +1,30 @@
 import { revalidatePath } from "next/cache";
 import db from "../prisma";
 
-type AssignPaymentMethodsInput = {
+interface AssignPaymentMethodsInput {
   eventId: string;
   paymentMethodIds: string[];
-};
+}
 
 export async function createPaymentMethod(data: any) {
   return await db.paymentMethod.create({ data });
+}
+export async function updatePaymentMethod(data: any, paymentMethodId: string) {
+  return await db.paymentMethod.update({
+    where: {
+      id: paymentMethodId,
+    },
+    data,
+  });
 }
 
 export async function getPaymentMethodsByClientId(clientId: string) {
   return await db.paymentMethod.findMany({
     where: {
       clientId,
+    },
+    orderBy: {
+      createdAt: "asc",
     },
   });
 }
@@ -90,6 +101,83 @@ export async function assignPaymentMethodsToEvent({
   });
 
   revalidatePath(`/dashboard/events/${eventId}`);
+
+  return { success: true };
+}
+
+type UnassignInput = {
+  eventId: string;
+  paymentMethodId: string;
+};
+
+export async function unassignPaymentMethodFromEvent({
+  eventId,
+  paymentMethodId,
+}: UnassignInput) {
+  if (!eventId || !paymentMethodId) {
+    throw new Error("Faltan datos para desasignar el método de pago");
+  }
+
+  const existing = await db.eventPayment.findFirst({
+    where: {
+      eventId,
+      paymentMethodId,
+    },
+  });
+
+  if (!existing) {
+    throw new Error("La relación evento - método de pago no existe");
+  }
+
+  await db.eventPayment.delete({
+    where: {
+      id: existing.id,
+    },
+  });
+
+  revalidatePath(`/dashboard/events/${eventId}`);
+
+  return { success: true };
+}
+
+export async function getDigitalPaymentMethodByEvent(eventId: string) {
+  return await db.eventPayment.findMany({
+    where: {
+      eventId,
+      paymentMethod: { type: "DIGITAL" },
+    },
+    include: {
+      paymentMethod: {
+        select: {
+          apiKey: true,
+        },
+      },
+    },
+  });
+}
+
+export async function deletePaymentMethodAction(paymentMethodId: string) {
+  if (!paymentMethodId) {
+    throw new Error("Falta el ID del método de pago");
+  }
+
+  // Verificar si está asociado a algún evento
+  const linkedToEvent = await db.eventPayment.findFirst({
+    where: { paymentMethodId },
+  });
+
+  if (linkedToEvent) {
+    return {
+      error:
+        "No se puede eliminar: el método está asignado a uno o más eventos",
+    };
+  }
+
+  await db.paymentMethod.delete({
+    where: { id: paymentMethodId },
+  });
+
+  revalidatePath("/dashboard/payment-methods");
 
   return { success: true };
 }

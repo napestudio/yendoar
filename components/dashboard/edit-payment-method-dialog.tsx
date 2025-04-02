@@ -56,34 +56,36 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Session } from "next-auth";
-import { createPaymentMethod } from "@/lib/actions";
-import { PaymentType } from "@prisma/client";
+import { createPaymentMethod, updatePaymentMethod } from "@/lib/actions";
+import { PaymentMethod, PaymentType } from "@prisma/client";
+import { toast } from "../ui/use-toast";
 
 const paymentMethodSchema = z.object({
-  type: z.enum(["mercadopago", "cash"], {
+  type: z.enum(["CASH", "DIGITAL"], {
     required_error: "Seleccioná un método de pago",
   }),
   accountName: z.string().min(1, "Este campo es obligatorio"),
   apiKey: z.string().optional(),
-  // secretKey: z.string().optional(),
+
   enabled: z.boolean().default(true),
   seller: z.string(),
 });
 
 type PaymentMethodForm = z.infer<typeof paymentMethodSchema>;
 
-interface AddPaymentMethodDialogProps {
-  children: React.ReactNode;
+interface EditCustomerSettingsDialogProps {
   sellers?: User[];
-  session: Session;
+  paymentMethod: PaymentMethod;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export function AddPaymentMethodDialog({
-  children,
+export function EditPaymentMethodDialog({
   sellers,
-  session,
-}: AddPaymentMethodDialogProps) {
-  const [open, setOpen] = useState(false);
+  paymentMethod,
+  open,
+  onOpenChange,
+}: EditCustomerSettingsDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiKey, setApiKey] = useState("");
   const [secretKey, setSecretKey] = useState("");
@@ -93,17 +95,16 @@ export function AddPaymentMethodDialog({
   const form = useForm<PaymentMethodForm>({
     resolver: zodResolver(paymentMethodSchema),
     defaultValues: {
-      type: "mercadopago",
-      accountName: "",
-      apiKey: "",
+      type: paymentMethod.type,
+      accountName: paymentMethod.name || "",
+      apiKey: paymentMethod.apiKey || "",
       // secretKey: "",
-      enabled: true,
-      seller: "",
+      enabled: paymentMethod.enabled,
+      seller: paymentMethod.userId || "",
     },
   });
 
-  const { watch, setValue } = form;
-  const selectedMethod = watch("type");
+  const selectedMethod = paymentMethod.type;
 
   const onSubmit = async (data: PaymentMethodForm) => {
     setIsSubmitting(true);
@@ -111,38 +112,27 @@ export function AddPaymentMethodDialog({
     try {
       const payload = {
         name: data.accountName,
-        type:
-          data.type === "mercadopago"
-            ? ("DIGITAL" as PaymentType)
-            : ("CASH" as PaymentType),
-        clientId: session.user.clientId!,
-        userId: data.type === "cash" ? data.seller : undefined,
-        apiKey: data.type === "mercadopago" ? data.apiKey : null,
+        type: data.type,
+        clientId: paymentMethod.clientId,
+        userId: data.type === "CASH" ? data.seller : undefined,
+        apiKey: data.type === "DIGITAL" ? data.apiKey : null,
         enabled: data.enabled,
-        creatorId: session.user.id,
+        creatorId: paymentMethod.creatorId,
       };
 
-      await createPaymentMethod(payload);
+      await updatePaymentMethod(payload, paymentMethod.id);
     } catch (error) {
       console.error("Error creando método de pago", error);
     } finally {
+      toast({
+        title: "Datos actualizados correctamente",
+      });
+      onOpenChange(false);
       setIsSubmitting(false);
     }
     form.reset();
-    setOpen(false);
-    await new Promise((r) => setTimeout(r, 1000));
-
+    onOpenChange(false);
     setIsSubmitting(false);
-    setOpen(false);
-    form.reset();
-  };
-
-  const resetForm = () => {
-    // setSelectedMethod(null);
-    setApiKey("");
-    setSecretKey("");
-    setAccountName("");
-    setEnableIntegration(true);
   };
 
   const paymentOptions = [
@@ -162,8 +152,7 @@ export function AddPaymentMethodDialog({
   ];
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-hidden flex flex-col">
         <Form {...form}>
           <form
@@ -172,65 +161,13 @@ export function AddPaymentMethodDialog({
             autoComplete="false"
           >
             <DialogHeader className="text-left">
-              <DialogTitle>Agregar Método de Pago</DialogTitle>
+              <DialogTitle>Editar Método de Pago</DialogTitle>
               <DialogDescription>
-                Agregar un método de pago para los eventos
+                Edita la información de: {paymentMethod.name}
               </DialogDescription>
             </DialogHeader>
 
             <div className="py-4 space-y-6 overflow-y-auto pr-1">
-              <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="text-base">
-                      Seleccionar tipo
-                    </FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="grid grid-cols-1 gap-4 mt-3"
-                      >
-                        {paymentOptions.map((option) => (
-                          <div key={option.id} className="space-y-0">
-                            <FormItem className="flex items-center space-x-0">
-                              <FormControl>
-                                <RadioGroupItem
-                                  value={option.id}
-                                  id={option.id}
-                                  className="sr-only"
-                                />
-                              </FormControl>
-                              <FormLabel
-                                htmlFor={option.id}
-                                className="flex items-center justify-between w-full rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                              >
-                                <div className="flex items-center gap-4">
-                                  <div className="rounded-full bg-muted p-2 text-primary">
-                                    {option.icon}
-                                  </div>
-                                  <div className="space-y-1">
-                                    <p className="text-sm font-medium leading-none">
-                                      {option.name}
-                                    </p>
-                                    <p className="text-sm text-muted-foreground">
-                                      {option.description}
-                                    </p>
-                                  </div>
-                                </div>
-                              </FormLabel>
-                            </FormItem>
-                          </div>
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               {selectedMethod && (
                 <Card>
                   <CardHeader>
@@ -260,7 +197,7 @@ export function AddPaymentMethodDialog({
                         </FormItem>
                       )}
                     />
-                    {selectedMethod === "cash" && (
+                    {selectedMethod === "CASH" && (
                       <>
                         {sellers && (
                           <FormField
@@ -295,7 +232,7 @@ export function AddPaymentMethodDialog({
                       </>
                     )}
 
-                    {selectedMethod !== "cash" && (
+                    {selectedMethod !== "CASH" && (
                       <>
                         <FormField
                           control={form.control}
@@ -375,17 +312,17 @@ export function AddPaymentMethodDialog({
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setOpen(false)}
+                onClick={() => onOpenChange(false)}
               >
                 Cancelar
               </Button>
               <Button
                 type="submit"
                 disabled={
-                  isSubmitting || (selectedMethod === "cash" && !sellers)
+                  isSubmitting || (selectedMethod === "CASH" && !sellers)
                 }
               >
-                {isSubmitting ? "Agregando..." : "Agregar Método"}
+                {isSubmitting ? "Guardando..." : "Guardar cambios"}
               </Button>
             </DialogFooter>
           </form>

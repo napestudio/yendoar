@@ -1,6 +1,9 @@
 import { MercadoPagoConfig, Preference } from "mercadopago";
 import { updateOrder } from "./orders";
-import { getMercadoPagoTokenByUser } from "../actions";
+import {
+  getDigitalPaymentMethodKeyByEvent,
+  getMercadoPagoTokenByUser,
+} from "../actions";
 
 export const mpApi = {
   order: {
@@ -10,9 +13,14 @@ export const mpApi = {
       orderId: string,
       userId: string
     ) {
-      const mercadopagoToken = await getMercadoPagoTokenByUser(userId);
-      
-      if (mercadopagoToken) {
+      // const mercadopagoToken = await getMercadoPagoTokenByUser(userId);
+      const paymentMethod = await getDigitalPaymentMethodKeyByEvent(
+        product.eventId
+      );
+
+      if (paymentMethod && paymentMethod[0].paymentMethod.apiKey) {
+        const mercadopagoToken = paymentMethod[0].paymentMethod.apiKey;
+
         const mercadopago = new MercadoPagoConfig({
           accessToken: mercadopagoToken,
         });
@@ -34,7 +42,7 @@ export const mpApi = {
             back_urls: {
               success: process.env.MP_SITE_URL,
             },
-            notification_url: `${process.env.MP_SITE_URL}/api/mercadopago/pagos?u=${userId}`,
+            notification_url: `${process.env.MP_SITE_URL}/api/mercadopago/pagos?u=${userId}&e=${product.eventId}`,
           },
         });
 

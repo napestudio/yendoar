@@ -43,7 +43,7 @@ async function main() {
       ticketTypeSoldOutNotification: true,
       eventToBeSoldOutNotification: false,
       ticketTypePublishedNotification: false,
-      serviceCharge: 5,
+      serviceCharge: 0,
       maxInvitesAmount: 10,
       maxValidatorsAmount: 2,
       maxTicketsAmount: 200,

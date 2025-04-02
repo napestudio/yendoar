@@ -1,3 +1,4 @@
+"use client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,19 +10,21 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { ReactNode } from "react";
+
 import { Button } from "../ui/button";
-import { LucideTicket, Ticket, TicketIcon, Trash, X } from "lucide-react";
+
 import { cancelEvent, updateEvent } from "@/lib/actions";
+import { X } from "lucide-react";
 
 type AlertRemoveType = {
   id: string;
 };
 
-export default async function CancelEventButton({ id }: AlertRemoveType) {
+export default function CancelEventButton({ id }: AlertRemoveType) {
   const handleCancel = () => {
     cancelEvent(id);
   };
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>

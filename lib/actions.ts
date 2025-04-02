@@ -208,11 +208,10 @@ export async function createOrder(data: CreateOrderType) {
   revalidatePath("/dashboard");
 }
 
-export async function createCashOrder(data: CreateOrderType) {  
+export async function createCashOrder(data: CreateOrderType) {
   try {
     const result = await Orders.createOrder(data);
     if (result) {
-      
       const dates = JSON.parse(result.ticketType.dates!);
       const is2x1 = result.ticketType.buyGet === 2;
       result.quantity = is2x1 ? result.quantity * 2 : result.quantity;
@@ -320,12 +319,75 @@ export async function createPaymentMethod(data: PaymentMethodInput) {
     throw new Error(`Error creando Metodo de Pago: ${error}`);
   }
 }
+export async function updatePaymentMethod(data: any, paymentMethodId: string) {
+  const { type, userId } = data;
 
-export async function assignPaymentMethodsToEvent(
-  eventId: string,
-  paymentMethodIds: string
-) {
-  console.log(eventId, paymentMethodIds);
+  if (type === "CASH" && !userId) {
+    throw new Error("CASH tiene que contener un userId");
+  }
+  try {
+    const method = await PaymentMethod.updatePaymentMethod(
+      data,
+      paymentMethodId
+    );
+    revalidatePath("/dashboard/payment-methods");
+    return method;
+  } catch (error) {
+    throw new Error(`Error creando Metodo de Pago: ${error}`);
+  }
+}
+
+export async function deletePaymentMethod(paymentMethodId: string) {
+  try {
+    const result = await PaymentMethod.deletePaymentMethodAction(
+      paymentMethodId
+    );
+
+    revalidatePath(`/dashboard/metodos-de-pago`);
+    return result;
+  } catch (error) {
+    throw new Error("Error eliminando metodo de pago");
+  }
+}
+
+type AssignPaymentMethodsInput = {
+  eventId: string;
+  paymentMethodIds: string[];
+};
+
+export async function assignPaymentMethodsToEvent({
+  eventId,
+  paymentMethodIds,
+}: AssignPaymentMethodsInput) {
+  try {
+    const methods = await PaymentMethod.assignPaymentMethodsToEvent({
+      eventId,
+      paymentMethodIds,
+    });
+    return methods;
+  } catch (error) {
+    throw new Error("Error asignando método de pago");
+  }
+}
+
+type UnassignInput = {
+  eventId: string;
+  paymentMethodId: string;
+};
+
+export async function unassignPaymentMethodFromEvent({
+  eventId,
+  paymentMethodId,
+}: UnassignInput) {
+  try {
+    const methods = await PaymentMethod.unassignPaymentMethodFromEvent({
+      eventId,
+      paymentMethodId,
+    });
+    return methods;
+  } catch (error) {
+    throw new Error("Error quitando método de pago");
+  }
 }
 
 export async function getPaymentMethodsByClientId(clientId: string) {
@@ -336,6 +398,7 @@ export async function getPaymentMethodsByClientId(clientId: string) {
     throw new Error("Error buscando metodos de pago por clientId");
   }
 }
+
 export async function getPaymentMethodsByCreatorId(creatorId: string) {
   try {
     const methods = await PaymentMethod.getPaymentMethodsByCreatorId(creatorId);
@@ -349,6 +412,15 @@ export async function getMercadoPagoTokenByUser(userId: string) {
   try {
     const result = await Configuration.getAllUserConfiguration(userId);
     return result[0].mpAccessToken;
+  } catch (error) {
+    throw new Error("Error get mercadoPagoTokenByUser");
+  }
+}
+
+export async function getDigitalPaymentMethodKeyByEvent(eventId: string) {
+  try {
+    const result = await PaymentMethod.getDigitalPaymentMethodByEvent(eventId);
+    return result;
   } catch (error) {
     throw new Error("Error get mercadoPagoTokenByUser");
   }
@@ -513,7 +585,7 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
           <h1 style="text-transform: uppercase; color: black; margin: 0">
             <span style="font-weight: 800">¡Hola! </span
             ><span style="font-weight: 400"
-              >Estas son las entradas compradas para ${eventData?.title}</span
+              >Estas son tus entradas compradas para ${eventData?.title}</span
             >
           </h1>
         </div>

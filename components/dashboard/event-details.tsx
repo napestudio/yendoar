@@ -1,4 +1,3 @@
-"use client";
 import { Evento } from "@/types/event";
 
 import { Button } from "@/components/ui/button";
@@ -40,7 +39,9 @@ import ValidatorsTable from "./validators-table";
 import { ValidatorToken } from "@/types/validators";
 import NewTokenDialog from "@/app/dashboard/components/new-token-dialog/new-token-dialog";
 import CancelEventButton from "./cancel-event-button";
-import Box from "./box";
+import PaymentMethodsList from "./payment-methods-list";
+import { PaymentMethod } from "@prisma/client";
+import PaymentMethodsLoader from "@/app/dashboard/metodos-de-pago/methods-loader";
 export default function EventDetails({ evento }: { evento: Evento }) {
   const groupedDates = datesFormater(evento.dates as string);
 
@@ -156,6 +157,21 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                     {/* <SalesChart data={event.recentSales} /> */}
                   </CardContent>
                 </Card>
+
+                {evento.eventPayments && evento.eventPayments?.length > 0 && (
+                  <PaymentMethodsList methods={evento.eventPayments} />
+                )}
+
+                {evento.eventPayments && evento.user?.clientId && (
+                  <>
+                    {evento.eventPayments && (
+                      <PaymentMethodsLoader
+                        clientId={evento.user.clientId}
+                        eventId={evento.id}
+                      />
+                    )}
+                  </>
+                )}
 
                 <Card>
                   <CardHeader>
