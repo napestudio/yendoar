@@ -1,6 +1,5 @@
 "use client";
 import { Evento } from "@/types/event";
-import { getEventById } from "@/lib/actions";
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -40,6 +39,7 @@ import { SITE_URL } from "@/lib/constants";
 import ValidatorsTable from "./validators-table";
 import { ValidatorToken } from "@/types/validators";
 import NewTokenDialog from "@/app/dashboard/components/new-token-dialog/new-token-dialog";
+
 export default function EventDetails({ evento }: { evento: Evento }) {
   const [activeTab, setActiveTab] = useState("overview");
   const groupedDates = datesFormater(evento.dates as string);
@@ -246,9 +246,11 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                 <div className="space-y-2">
                   <h4 className="text-sm font-medium">Acciones Rápidas</h4>
                   <div className="grid gap-2">
-                    <Button size="sm">
-                      <Ticket className="mr-2 h-4 w-4" />
-                      Vender entrada
+                    <Button asChild size="sm">
+                      <Link href={`/dashboard/eventos/${evento.id}/new-ticket`}>
+                        <Ticket className="mr-2 h-4 w-4" />
+                        Vender entrada
+                      </Link>
                     </Button>
                     <Button variant="outline" size="sm">
                       <User className="mr-2 h-4 w-4" />

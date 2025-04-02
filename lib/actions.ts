@@ -171,11 +171,14 @@ export async function updateTicketType(
     throw new Error("Error editando el tipo de ticket");
   }
 }
-type CreateOrderType = {
+
+export type CreateOrderType = {
   ticketTypeId: string;
   status: string;
   quantity: number;
   eventId: string;
+  hasCode: boolean;
+  discountCode: string | undefined;
 };
 
 export async function createOrder(data: CreateOrderType) {
@@ -191,6 +194,38 @@ export async function createOrder(data: CreateOrderType) {
   }
 
   revalidatePath("/dashboard");
+}
+
+export async function createCashOrder(data: CreateOrderType) {  
+  try {
+    const result = await Orders.createOrder(data);
+    if (result) {
+      
+      const dates = JSON.parse(result.ticketType.dates!);
+      const is2x1 = result.ticketType.buyGet === 2;
+      result.quantity = is2x1 ? result.quantity * 2 : result.quantity;
+
+      const ticketsData: TicketOrderType[] = [];
+      dates.forEach((dateObj: DatesType) => {
+        for (let i = 0; i < result.quantity; i++) {
+          ticketsData.push({
+            name: result.name!,
+            lastName: result.lastName!,
+            dni: result.dni!,
+            email: result.email!,
+            base64Qr: "code",
+            date: new Date(dateObj.date),
+            orderId: result.id,
+            eventId: result.eventId,
+            status: "NOT_VALIDATED",
+          });
+        }
+      });
+      await createTicketOrder(ticketsData);
+    }
+  } catch (error) {
+    throw new Error("Error creando la order");
+  }
 }
 
 export async function getOrderById(orderId: string) {

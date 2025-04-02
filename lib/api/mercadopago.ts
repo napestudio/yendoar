@@ -11,6 +11,7 @@ export const mpApi = {
       userId: string
     ) {
       const mercadopagoToken = await getMercadoPagoTokenByUser(userId);
+      
       if (mercadopagoToken) {
         const mercadopago = new MercadoPagoConfig({
           accessToken: mercadopagoToken,
@@ -31,9 +32,9 @@ export const mpApi = {
               orderId: orderId,
             },
             back_urls: {
-              success: "https://wkrm6zc8-3000.brs.devtunnels.ms",
+              success: process.env.MP_SITE_URL,
             },
-            notification_url: `https://wkrm6zc8-3000.brs.devtunnels.ms/api/mercadopago/pagos?u=${userId}`,
+            notification_url: `${process.env.MP_SITE_URL}/api/mercadopago/pagos?u=${userId}`,
           },
         });
 
