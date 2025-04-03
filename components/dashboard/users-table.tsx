@@ -88,7 +88,7 @@ export default function UsersTable({
     if (!selectedUser) return;
 
     try {
-      const result = await deleteUser(selectedUser.id!);
+      const result = await deleteUser(selectedUser.id!, selectedUser.email!);
 
       if ("error" in result) {
         toast({
