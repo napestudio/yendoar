@@ -33,7 +33,7 @@ export default async function UsersPage() {
         />
       </div>
       <div className="w-full space-y-5">
-        <StatsCards />
+        {/* <StatsCards /> */}
         <InviteUserDialog
           invitations={invitations}
           userId={userId}
@@ -45,7 +45,9 @@ export default async function UsersPage() {
           </Button>
         </InviteUserDialog>
         {accounts && <UsersTable accounts={accounts as User[]} />}
-        {invitations && <UserInvitationsTable invitations={invitations} />}
+        {invitations.length > 0 && (
+          <UserInvitationsTable invitations={invitations} />
+        )}
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 import {
   Check,
   Copy,
+  Globe,
   Key,
   MoreHorizontal,
   RefreshCw,
@@ -32,6 +33,7 @@ import { Card, CardContent } from "../ui/card";
 import Box from "./box";
 import { deleteTokenById } from "@/lib/actions";
 import { toast } from "@/components/ui/use-toast";
+import Link from "next/link";
 
 export default function ValidatorsTable({
   tokens,
@@ -107,6 +109,16 @@ export default function ValidatorsTable({
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                        <DropdownMenuItem>
+                          <Link
+                            href={`/validar/${token.eventId}`}
+                            target="_blank"
+                            className="flex"
+                          >
+                            <Globe className="mr-2 h-4 w-4" />
+                            Ir a Validar
+                          </Link>
+                        </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => copyToClipboard(token.id, token.token)}
                         >

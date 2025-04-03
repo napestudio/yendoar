@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/tooltip";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
 import AlertRemove from "../../app/dashboard/components/alert-remove/alert-remove";
-import { datesFormater } from "@/lib/utils";
+import { cn, datesFormater } from "@/lib/utils";
 
 export default function EventCard({ evento }: { evento: Evento }) {
   const groupedDates = datesFormater(evento.dates as string);
@@ -52,7 +52,13 @@ export default function EventCard({ evento }: { evento: Evento }) {
 
   return (
     <>
-      <Card className="w-full text-left overflow-hidden" key={evento.id}>
+      <Card
+        className={cn(
+          "w-full text-left overflow-hidden",
+          evento.status === "CANCELED" && "opacity-50"
+        )}
+        key={evento.id}
+      >
         <CardHeader className="flex gap-2 p-0">
           <div className="relative h-48 w-full ">
             <Image
@@ -61,6 +67,11 @@ export default function EventCard({ evento }: { evento: Evento }) {
               fill
               className="object-cover"
             />
+            {evento.status === "CANCELED" && (
+              <div className="absolute left-2 top-2 bg-red-500 rounded-full text-white px-3 py-1">
+                Cancelado
+              </div>
+            )}
             <div className="absolute right-2 top-2 bg-black rounded-full text-white px-3 py-1">
               {evento.user!.name}
             </div>
@@ -93,67 +104,16 @@ export default function EventCard({ evento }: { evento: Evento }) {
           <Button variant="outline" asChild>
             <Link href={`/dashboard/evento/${evento.id}`}>Detalles</Link>
           </Button>
-          <Button>
-            <Link
-              href={`/dashboard/evento/${evento.id}/edit?tab=tickets`}
-              className="flex items-center gap-2"
-            >
-              <TicketIcon className="w-6 h-6" /> Tickets
-            </Link>
-          </Button>
-          {/* <Link href={`/dashboard/evento/${evento.id}`}>
-            <TooltipProvider delayDuration={300}>
-              <Tooltip>
-                <TooltipTrigger>
-                  <FileEditIcon className="w-6 h-6" />
-                  <span className="sr-only">Editar</span>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Editar evento</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </Link>
-          <Link href={`/dashboard/evento/ticket-types/${evento.id}`}>
-            <TooltipProvider delayDuration={300}>
-              <Tooltip>
-                <TooltipTrigger>
-                  <TicketIcon className="w-6 h-6" />
-                  <span className="sr-only">Tickets</span>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Tickets</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </Link>
-          <Link href={`/dashboard/evento/${evento.id}/estadisticas`}>
-            <TooltipProvider delayDuration={300}>
-              <Tooltip>
-                <TooltipTrigger>
-                  <BarChartIcon className="w-6 h-6" />
-                  <span className="sr-only">Estadisticas</span>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Estadisticas</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </Link>
-
-          <Link href={`/dashboard/evento/${evento.id}/validadores`}>
-            <KeyIcon className="w-6 h-6" />
-            <span className="sr-only">Tokens</span>
-          </Link>
-          <AlertRemove
-            text="Está acción no se puede revertir. El evento se eliminará permanentemente."
-            action={handleDeleteEvent}
-          >
-            <Button size="icon" variant="destructive">
-              <TrashIcon className="w-6 h-6" />
-              <span className="sr-only"> Eliminar </span>
+          {evento.status !== "CANCELED" && (
+            <Button>
+              <Link
+                href={`/dashboard/evento/${evento.id}/edit?tab=tickets`}
+                className="flex items-center gap-2"
+              >
+                <TicketIcon className="w-6 h-6" /> Tickets
+              </Link>
             </Button>
-          </AlertRemove> */}
+          )}
         </CardFooter>
       </Card>
     </>

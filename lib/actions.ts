@@ -299,6 +299,17 @@ export async function updateUserById(data: Partial<User>, userId: string) {
   }
 }
 
+export async function deleteUser(userId: string) {
+  try {
+    const result = await Users.deleteUser(userId);
+
+    revalidatePath(`/dashboard/usuarios`);
+    return result;
+  } catch (error) {
+    throw new Error("Error eliminando el usuario");
+  }
+}
+
 type PaymentMethodInput = {
   name?: string;
   type: "CASH" | "DIGITAL";
@@ -360,11 +371,11 @@ export async function assignPaymentMethodsToEvent({
   paymentMethodIds,
 }: AssignPaymentMethodsInput) {
   try {
-    const methods = await PaymentMethod.assignPaymentMethodsToEvent({
+    const result = await PaymentMethod.assignPaymentMethodsToEvent({
       eventId,
       paymentMethodIds,
     });
-    return methods;
+    return result;
   } catch (error) {
     throw new Error("Error asignando método de pago");
   }

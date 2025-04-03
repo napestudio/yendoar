@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import db from "../prisma";
 import { generateVerificationToken } from "../tokens";
 import { User, UserType } from "@/types/user";
@@ -82,4 +83,32 @@ export async function createUser(data: any) {
   });
   const verificationToken = await generateVerificationToken(data.email);
   return createdUser;
+}
+
+export async function deleteUser(userId: string) {
+  if (!userId) {
+    throw new Error("Falta el ID del usuario");
+  }
+
+  // Verificar si tiene eventos asignados
+  const hasEvents = await db.event.findFirst({
+    where: {
+      userId,
+    },
+  });
+
+  if (hasEvents) {
+    return {
+      error: "Este usuario tiene eventos asignados y no se puede eliminar",
+    };
+  }
+
+  // Eliminar usuario
+  await db.user.delete({
+    where: { id: userId },
+  });
+
+  revalidatePath("/dashboard/usuarios");
+
+  return { success: true };
 }

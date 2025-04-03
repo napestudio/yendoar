@@ -50,6 +50,9 @@ import { useEffect, useState } from "react";
 import { UserSettingsDialog } from "./user-settings-dialog";
 import { UserRoleDialog } from "./user-role-dialog";
 import RoleBadge from "./role-badge";
+import { deleteUser } from "@/lib/actions";
+import { toast } from "../ui/use-toast";
+import RemoveUserAlert from "./remove-user-alert";
 
 export default function UsersTable({ accounts }: { accounts: User[] }) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -57,6 +60,7 @@ export default function UsersTable({ accounts }: { accounts: User[] }) {
   const [statusFilter, setStatusFilter] = useState("all");
   const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false);
   const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User>();
 
   const handleEditSettings = (user: User) => {
@@ -66,6 +70,38 @@ export default function UsersTable({ accounts }: { accounts: User[] }) {
   const handleEditRole = (user: User) => {
     setSelectedUser(user);
     setIsRoleDialogOpen(true);
+  };
+
+  const handleRemoveAlert = (user: User) => {
+    setSelectedUser(user);
+    setIsDeleteAlertOpen(true);
+  };
+
+  const handleRemoveUser = async () => {
+    if (!selectedUser) return;
+
+    try {
+      const result = await deleteUser(selectedUser.id!);
+
+      if ("error" in result) {
+        toast({
+          variant: "destructive",
+          title: "Error eliminando el usuario",
+          description: result.error,
+        });
+        return;
+      }
+
+      toast({
+        title: "Usuario eliminado correctamente",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error inesperado",
+        description: (error as Error).message || "No se pudo eliminar",
+      });
+    }
   };
 
   if (accounts.length === 0) return null;
@@ -175,6 +211,9 @@ export default function UsersTable({ accounts }: { accounts: User[] }) {
                         <DropdownMenuItem
                           className="text-destructive"
                           disabled={account.type === "SUPERADMIN"}
+                          onClick={() => {
+                            handleRemoveAlert(account);
+                          }}
                         >
                           <Trash className="mr-2 h-4 w-4" />
                           Eliminar cuenta
@@ -200,6 +239,13 @@ export default function UsersTable({ accounts }: { accounts: User[] }) {
             open={isRoleDialogOpen}
             onOpenChange={setIsRoleDialogOpen}
             user={selectedUser}
+          />
+        )}
+        {selectedUser && isDeleteAlertOpen && (
+          <RemoveUserAlert
+            open={isDeleteAlertOpen}
+            onOpenChange={setIsDeleteAlertOpen}
+            action={handleRemoveUser}
           />
         )}
       </CardContent>

@@ -1,6 +1,6 @@
-import { EventPayment, ValidatorToken } from "@prisma/client";
+import { EventPayment, TicketOrder, ValidatorToken } from "@prisma/client";
 import { DiscountCode } from "./discount-code";
-import { TicketType } from "./tickets";
+import { TicketOrderType, TicketType } from "./tickets";
 import { User } from "./user";
 
 export type EventStatus =
