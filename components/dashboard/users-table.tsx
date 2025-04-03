@@ -53,8 +53,15 @@ import RoleBadge from "./role-badge";
 import { deleteUser } from "@/lib/actions";
 import { toast } from "../ui/use-toast";
 import RemoveUserAlert from "./remove-user-alert";
+import { Session } from "next-auth";
 
-export default function UsersTable({ accounts }: { accounts: User[] }) {
+export default function UsersTable({
+  accounts,
+  session,
+}: {
+  accounts: User[];
+  session: Session;
+}) {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -81,7 +88,7 @@ export default function UsersTable({ accounts }: { accounts: User[] }) {
     if (!selectedUser) return;
 
     try {
-      const result = await deleteUser(selectedUser.id!);
+      const result = await deleteUser(selectedUser.id!, selectedUser.email!);
 
       if ("error" in result) {
         toast({
@@ -105,7 +112,11 @@ export default function UsersTable({ accounts }: { accounts: User[] }) {
   };
 
   if (accounts.length === 0) return null;
+  const isSuperAdmin = session.user.type === "SUPERADMIN";
 
+  const filteredAccounts = isSuperAdmin
+    ? accounts
+    : accounts.filter((user) => user.type !== "SUPERADMIN");
   return (
     <Card>
       <CardHeader>
@@ -152,7 +163,7 @@ export default function UsersTable({ accounts }: { accounts: User[] }) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {accounts.map((account) => (
+              {filteredAccounts.map((account) => (
                 <TableRow key={account.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">

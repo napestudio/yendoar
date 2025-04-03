@@ -299,9 +299,9 @@ export async function updateUserById(data: Partial<User>, userId: string) {
   }
 }
 
-export async function deleteUser(userId: string) {
+export async function deleteUser(userId: string, userEmail: string) {
   try {
-    const result = await Users.deleteUser(userId);
+    const result = await Users.deleteUser(userId, userEmail);
 
     revalidatePath(`/dashboard/usuarios`);
     return result;

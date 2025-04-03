@@ -11,7 +11,6 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const eventos = await getAllActiveEvents();
-  console.log(eventos);
 
   if (!eventos.length) {
     return (
