@@ -9,11 +9,11 @@ async function main() {
   const endDate = addYears(today, 1); // Sumar dos meses
 
   const client = await prisma.client.upsert({
-    where: { email: "client@yendo.com" },
+    where: { email: "entradas.yendo@gmail.com" },
     update: {},
     create: {
-      name: "Cliente de Prueba",
-      email: "client@yendo.com",
+      name: "Yendo.ar",
+      email: "entradas.yendo@gmail.com",
       city: "Rosario",
     },
   });
@@ -44,9 +44,9 @@ async function main() {
       eventToBeSoldOutNotification: false,
       ticketTypePublishedNotification: false,
       serviceCharge: 0,
-      maxInvitesAmount: 10,
-      maxValidatorsAmount: 2,
-      maxTicketsAmount: 200,
+      maxInvitesAmount: 0,
+      maxValidatorsAmount: 0,
+      maxTicketsAmount: 0,
     },
   });
 

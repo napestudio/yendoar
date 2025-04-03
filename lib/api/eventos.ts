@@ -47,7 +47,7 @@ export const getAllEvents = cache(async () => {
 });
 
 // Get eventos home por client ID
-export const getAllActiveEvents = cache(async () => {
+export const getAllActiveEvents = async () => {
   return db.event.findMany({
     where: {
       status: {
@@ -68,7 +68,7 @@ export const getAllActiveEvents = cache(async () => {
       user: true,
     },
   });
-});
+};
 
 export async function createEvent(data: Evento) {
   return db.event.create({ data });
