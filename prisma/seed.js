@@ -48,11 +48,11 @@ function main() {
                     today = new Date("2025-09-09T21:02:30.078Z");
                     endDate = (0, date_fns_1.addYears)(today, 1);
                     return [4 /*yield*/, prisma.client.upsert({
-                            where: { email: "client@yendo.com" },
+                            where: { email: "entradas.yendo@gmail.com" },
                             update: {},
                             create: {
-                                name: "Cliente de Prueba",
-                                email: "client@yendo.com",
+                                name: "Yendo.ar",
+                                email: "entradas.yendo@gmail.com",
                                 city: "Rosario",
                             },
                         })];
@@ -83,10 +83,10 @@ function main() {
                                 ticketTypeSoldOutNotification: true,
                                 eventToBeSoldOutNotification: false,
                                 ticketTypePublishedNotification: false,
-                                serviceCharge: 5,
-                                maxInvitesAmount: 10,
-                                maxValidatorsAmount: 2,
-                                maxTicketsAmount: 200,
+                                serviceCharge: 0,
+                                maxInvitesAmount: 0,
+                                maxValidatorsAmount: 0,
+                                maxTicketsAmount: 0,
                             },
                         })];
                 case 3:
