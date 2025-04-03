@@ -48,7 +48,7 @@ const formSchema = z.object({
     message: "El código debe tener al menos 5 caracteres.",
   }),
   expiresAt: z.date(),
-  status: z.enum(["DRAFT", "ACTIVE", "CONCLUDED", "DELETED"]),
+  status: z.enum(["DRAFT", "ACTIVE", "CANCELED", "CONCLUDED", "DELETED"]),
   eventId: z.string(),
   discount: z.number(),
   //.refine((file) => file?.length == 1, "File is required."),

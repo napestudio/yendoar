@@ -9,6 +9,8 @@ import * as TicketOrders from "@/lib/api/ticket-orders";
 import * as Code from "@/lib/api/descuento-code";
 import * as ValidatorToken from "@/lib/api/validators-token";
 import * as UserInvitation from "@/lib/api/user-invitations";
+import * as PaymentMethod from "@/lib/api/payment-methods";
+
 import { EventStatus } from "@/types/event";
 import { Product } from "@/types/product";
 import { DatesType, TicketOrderType, TicketType } from "@/types/tickets";
@@ -29,6 +31,8 @@ import {
 import { stat } from "fs";
 import { SITE_NAME } from "./constants";
 import { getPaidOrdersDataByEvent } from "@/lib/api/orders";
+import { User, UserType } from "@/types/user";
+import { UserConfiguration } from "@/types/user-configuration";
 
 // Type temporal
 export type Evento = {
@@ -65,6 +69,16 @@ export async function updateEvent(data: Evento, eventId: string) {
     revalidatePath(`/dashboard/evento/${result.id}`);
   } catch (error) {
     throw new Error("Error editando el evento");
+  }
+}
+
+export async function cancelEvent(eventId: string) {
+  const data = { status: "CANCELED" };
+  try {
+    const result = await Eventos.updateEvent(eventId, data as Evento);
+    revalidatePath(`/dashboard/evento/${result.id}`);
+  } catch (error) {
+    throw new Error("Error cancelando el evento");
   }
 }
 
@@ -155,7 +169,7 @@ export async function createTicketType(data: TicketType) {
     throw new Error("Error creando el TicketType");
   }
 
-  revalidatePath("/dashboard");
+  revalidatePath(`/dashboard/evento/${data.eventId}/edit`);
 }
 
 export async function updateTicketType(
@@ -164,23 +178,25 @@ export async function updateTicketType(
 ) {
   try {
     const result = await TicketTypes.updateTicketType(ticketId, data);
-    revalidatePath(`/dashboard/evento/${result.id}`);
+    revalidatePath(`/dashboard/evento/${data.eventId}`);
   } catch (error) {
     throw new Error("Error editando el tipo de ticket");
   }
 }
-type CreateOrderType = {
+
+export type CreateOrderType = {
   ticketTypeId: string;
   status: string;
   quantity: number;
   eventId: string;
+  hasCode: boolean;
+  discountCode: string | undefined;
 };
 
 export async function createOrder(data: CreateOrderType) {
   let orderId = null;
   try {
     const result = await Orders.createOrder(data);
-
     orderId = result.id;
   } catch (error) {
     throw new Error("Error creando la order");
@@ -190,6 +206,37 @@ export async function createOrder(data: CreateOrderType) {
   }
 
   revalidatePath("/dashboard");
+}
+
+export async function createCashOrder(data: CreateOrderType) {
+  try {
+    const result = await Orders.createOrder(data);
+    if (result) {
+      const dates = JSON.parse(result.ticketType.dates!);
+      const is2x1 = result.ticketType.buyGet === 2;
+      result.quantity = is2x1 ? result.quantity * 2 : result.quantity;
+
+      const ticketsData: TicketOrderType[] = [];
+      dates.forEach((dateObj: DatesType) => {
+        for (let i = 0; i < result.quantity; i++) {
+          ticketsData.push({
+            name: result.name!,
+            lastName: result.lastName!,
+            dni: result.dni!,
+            email: result.email!,
+            base64Qr: "code",
+            date: new Date(dateObj.date),
+            orderId: result.id,
+            eventId: result.eventId,
+            status: "NOT_VALIDATED",
+          });
+        }
+      });
+      await createTicketOrder(ticketsData);
+    }
+  } catch (error) {
+    throw new Error("Error creando la order");
+  }
 }
 
 export async function getOrderById(orderId: string) {
@@ -210,6 +257,22 @@ export async function updateOrder(data: any, orderId: string) {
   }
 }
 
+export async function getAllUsersByClientId(clientId: string) {
+  try {
+    const result = await Users.getUsersByClientId(clientId);
+    return result;
+  } catch (error) {}
+}
+
+export async function getUsersByType(clientId: string, type: UserType) {
+  try {
+    const result = await Users.getUsersByType(clientId, type);
+    return result;
+  } catch (error) {
+    throw new Error("Error trayendo usuarios por type");
+  }
+}
+
 export async function getAllUsersButAdmins() {
   try {
     const result = await Users.getAllUsersButAdmins();
@@ -226,10 +289,149 @@ export async function updateUser(data: any, userEmail: string) {
   }
 }
 
+export async function updateUserById(data: Partial<User>, userId: string) {
+  try {
+    const result = await Users.updateUserById(data, userId);
+    revalidatePath(`/dashboard/usuarios/`);
+    return result;
+  } catch (error) {
+    throw new Error("Error editando el usuario");
+  }
+}
+
+export async function deleteUser(userId: string) {
+  try {
+    const result = await Users.deleteUser(userId);
+
+    revalidatePath(`/dashboard/usuarios`);
+    return result;
+  } catch (error) {
+    throw new Error("Error eliminando el usuario");
+  }
+}
+
+type PaymentMethodInput = {
+  name?: string;
+  type: "CASH" | "DIGITAL";
+  clientId: string;
+  userId?: string;
+};
+
+export async function createPaymentMethod(data: PaymentMethodInput) {
+  const { type, userId } = data;
+  if (type === "CASH" && !userId) {
+    throw new Error("CASH tiene que contener un userId");
+  }
+  try {
+    const method = await PaymentMethod.createPaymentMethod(data);
+    revalidatePath("/dashboard/payment-methods");
+    return method;
+  } catch (error) {
+    throw new Error(`Error creando Metodo de Pago: ${error}`);
+  }
+}
+export async function updatePaymentMethod(data: any, paymentMethodId: string) {
+  const { type, userId } = data;
+
+  if (type === "CASH" && !userId) {
+    throw new Error("CASH tiene que contener un userId");
+  }
+  try {
+    const method = await PaymentMethod.updatePaymentMethod(
+      data,
+      paymentMethodId
+    );
+    revalidatePath("/dashboard/payment-methods");
+    return method;
+  } catch (error) {
+    throw new Error(`Error creando Metodo de Pago: ${error}`);
+  }
+}
+
+export async function deletePaymentMethod(paymentMethodId: string) {
+  try {
+    const result = await PaymentMethod.deletePaymentMethodAction(
+      paymentMethodId
+    );
+
+    revalidatePath(`/dashboard/metodos-de-pago`);
+    return result;
+  } catch (error) {
+    throw new Error("Error eliminando metodo de pago");
+  }
+}
+
+type AssignPaymentMethodsInput = {
+  eventId: string;
+  paymentMethodIds: string[];
+};
+
+export async function assignPaymentMethodsToEvent({
+  eventId,
+  paymentMethodIds,
+}: AssignPaymentMethodsInput) {
+  try {
+    const result = await PaymentMethod.assignPaymentMethodsToEvent({
+      eventId,
+      paymentMethodIds,
+    });
+    return result;
+  } catch (error) {
+    throw new Error("Error asignando método de pago");
+  }
+}
+
+type UnassignInput = {
+  eventId: string;
+  paymentMethodId: string;
+};
+
+export async function unassignPaymentMethodFromEvent({
+  eventId,
+  paymentMethodId,
+}: UnassignInput) {
+  try {
+    const methods = await PaymentMethod.unassignPaymentMethodFromEvent({
+      eventId,
+      paymentMethodId,
+    });
+    return methods;
+  } catch (error) {
+    throw new Error("Error quitando método de pago");
+  }
+}
+
+export async function getPaymentMethodsByClientId(clientId: string) {
+  try {
+    const methods = await PaymentMethod.getPaymentMethodsByClientId(clientId);
+    return methods;
+  } catch (error) {
+    throw new Error("Error buscando metodos de pago por clientId");
+  }
+}
+
+export async function getPaymentMethodsByCreatorId(creatorId: string) {
+  try {
+    const methods = await PaymentMethod.getPaymentMethodsByCreatorId(creatorId);
+    return methods;
+  } catch (error) {
+    throw new Error("Error buscando metodos de pago por creatorId");
+  }
+}
+
 export async function getMercadoPagoTokenByUser(userId: string) {
   try {
     const result = await Configuration.getAllUserConfiguration(userId);
     return result[0].mpAccessToken;
+  } catch (error) {
+    throw new Error("Error get mercadoPagoTokenByUser");
+  }
+}
+
+export async function getDigitalPaymentMethodKeyByEvent(eventId: string) {
+  try {
+    const result = await PaymentMethod.getDigitalPaymentMethodByEvent(eventId);
+    return result;
   } catch (error) {
     throw new Error("Error get mercadoPagoTokenByUser");
   }
@@ -394,7 +596,7 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
           <h1 style="text-transform: uppercase; color: black; margin: 0">
             <span style="font-weight: 800">¡Hola! </span
             ><span style="font-weight: 400"
-              >Estas son las entradas compradas para ${eventData?.title}</span
+              >Estas son tus entradas compradas para ${eventData?.title}</span
             >
           </h1>
         </div>
@@ -576,7 +778,7 @@ export async function getDiscountCodeById(eventId: string) {
 export async function createValidatorToken(data: any) {
   try {
     const result = await ValidatorToken.createValidatorToken(data);
-    revalidatePath("/dashboard");
+    revalidatePath(`/dashboard/evento/${data.eventId}`);
   } catch (error) {
     throw new Error("Error validators token");
   }
@@ -604,7 +806,22 @@ export async function deleteTokenById(tokenId: string) {
 export async function createUserInvitation(data: InvitationType) {
   try {
     const result = await UserInvitation.createUserInvitation(data);
-    revalidatePath("/dashboard/clientes/invitaciones");
+    revalidatePath("/dashboard/usuarios");
+    return result;
+  } catch (error) {
+    throw new Error("Error creando la invitación");
+  }
+}
+export async function updateUserInvitationById(
+  data: InvitationType,
+  invitationId: string
+) {
+  try {
+    const result = await UserInvitation.updateInvitationsById(
+      data,
+      invitationId
+    );
+    revalidatePath("/dashboard/usuarios");
     return result;
   } catch (error) {
     throw new Error("Error creando la invitación");
@@ -614,7 +831,7 @@ export async function createUserInvitation(data: InvitationType) {
 export async function removeInvitationById(invitadionId: string) {
   try {
     const result = await UserInvitation.removeInvitationById(invitadionId);
-    revalidatePath("/dashboard/clientes/invitaciones");
+    revalidatePath("/dashboard/usuarios");
     return result;
   } catch (error) {
     throw new Error("Error eliminando la invitación");
@@ -629,6 +846,16 @@ export async function getInvitationsByUser(userId: string) {
     throw new Error("Error trayendo invitations");
   }
 }
+
+export async function getPendingInvitationsByUser(userId: string) {
+  try {
+    const result = await UserInvitation.getPendingInvitationsByUser(userId);
+    return result;
+  } catch (error) {
+    throw new Error("Error trayendo invitations");
+  }
+}
+
 export async function getInvitationsById(invitationId: string) {
   try {
     const result = await UserInvitation.getInvitationsById(invitationId);
@@ -776,10 +1003,14 @@ export async function getTicketAmountByTicketTypeId(ticketTypeId: string) {
 }
 
 export async function getSoldTicketsByType(eventId: string) {
-  let ticketCounts: any = {};
   try {
+    let ticketCounts: Record<
+      string,
+      { id?: string; title?: string; count?: number }
+    > = {};
     const ticketOrders = await getPaidOrdersDataByEvent(eventId);
-    ticketOrders.forEach((ticketOrder) => {
+
+    ticketOrders.forEach((ticketOrder: any) => {
       if (!ticketCounts[ticketOrder.ticketTypeId]) {
         ticketCounts[ticketOrder.ticketTypeId] = {
           id: ticketOrder.ticketTypeId,

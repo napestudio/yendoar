@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createOrder } from "@/lib/actions";
+import { createOrder, CreateOrderType } from "@/lib/actions";
 import { datesFormater } from "@/lib/utils";
 import { Input } from "../ui/input";
 import { DiscountCode } from "@/types/discount-code";
@@ -68,7 +68,7 @@ export default function TicketTypePicker({
   eventId: string;
   discountCode?: Partial<DiscountCode>[];
   serviceCharge?: number;
-  soldTickets?: { id: string; title: string; count: number };
+  soldTickets?: { id?: string; title?: string; count?: number };
 }) {
   const [discountOpen, setDiscountOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -107,7 +107,7 @@ export default function TicketTypePicker({
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
-    const orderData = {
+    const orderData: CreateOrderType = {
       ticketTypeId: data.ticketType,
       status: "PENDING",
       quantity: parseInt(data.quantity),
@@ -115,6 +115,7 @@ export default function TicketTypePicker({
       discountCode: addedCode,
       eventId: eventId,
     };
+
     createOrder(orderData)
       .then(() => {
         form.reset();
@@ -216,7 +217,7 @@ export default function TicketTypePicker({
                           )
                           .map((ticket: Partial<TicketType>) => {
                             const bGet = ticket.buyGet || 1;
-                            const soldTicketCount = soldTickets
+                            const soldTicketCount = soldTickets?.id
                               ? // @ts-ignore
                                 soldTickets[ticket.id!].count / bGet
                               : 0;
@@ -298,8 +299,8 @@ export default function TicketTypePicker({
             />
           </div>
           <div>
-            {serviceCharge ||
-              (discount && form.watch("quantity") && (
+            {discount ||
+              (serviceCharge && form.watch("quantity") && (
                 <>
                   <div className="px-1 text-right text-lg font-medium">
                     <p>

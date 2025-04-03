@@ -19,7 +19,8 @@
 # misc
 .DS_Store
 *.pem
-seed.js
+prisma/seed.js
+prisma/seed.ts
 
 # debug
 npm-debug.log*

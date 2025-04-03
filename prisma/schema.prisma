@@ -34,37 +34,37 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-
-
 model User {
-  id            String             @id @default(cuid())
-  name          String?
-  email         String?            @unique
-  emailVerified DateTime?
-  image         String?
-  type          UserType           @default(SELLER)
-  password      String?
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
-  accounts      Account[]
-  sessions      Session[]
-  events        Event[]
-  invitations   Invitation[]
-  configuration UserConfiguration?
-  clientId      String?
-  client        Client?  @relation(fields: [clientId], references: [id])
+  id                    String             @id @default(cuid())
+  name                  String?
+  email                 String?            @unique
+  emailVerified         DateTime?
+  image                 String?
+  type                  UserType           @default(SELLER)
+  password              String?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  accounts              Account[]
+  sessions              Session[]
+  events                Event[]
+  invitations           Invitation[]
+  configuration         UserConfiguration?
+  clientId              String
+  client                Client             @relation(fields: [clientId], references: [id])
+  paymentMethods        PaymentMethod[]
+  createdPaymentMethods PaymentMethod[]    @relation("CreatedPaymentMethods")
 }
 
 model Client {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  phone     String?
-  city      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String
-  users     User[]
+  id             String          @id @default(cuid())
+  name           String
+  email          String          @unique
+  phone          String?
+  city           String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  users          User[]
+  paymentMethods PaymentMethod[]
 }
 
 model VerificationToken {
@@ -106,6 +106,7 @@ model Event {
   tickets        TicketOrder[]
   ticketTypes    TicketType[]
   validatorToken ValidatorToken[]
+  eventPayments  EventPayment[]
 
   @@map("events")
 }
@@ -181,6 +182,7 @@ model TicketOrder {
   event        Event             @relation(fields: [eventId], references: [id], onDelete: Cascade)
   order        Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
   ticketType   TicketType?       @relation(fields: [ticketTypeId], references: [id], onDelete: Cascade)
+  isInvitation Boolean           @default(false)
 
   @@map("ticket_orders")
 }
@@ -226,6 +228,7 @@ model UserConfiguration {
   serviceCharge                   Int?    @default(0)
   maxInvitesAmount                Int?    @default(0)
   maxValidatorsAmount             Int?    @default(1)
+  maxTicketsAmount                Int?    @default(0)
   user                            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_configurations")
@@ -251,6 +254,43 @@ model Promotion {
   @@map("promotions")
 }
 
+model PaymentMethod {
+  id        String      @id @default(cuid())
+  type      PaymentType
+  name      String?
+  clientId  String
+  userId    String?     // Solo se usa si es CASH
+  creatorId String      // Usuario que creó este método
+  apiKey    String?     // Solo para métodos tipo DIGITAL (ej: MP)
+  enabled   Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  client  Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  user    User?          @relation(fields: [userId], references: [id])
+  creator User           @relation("CreatedPaymentMethods", fields: [creatorId], references: [id])
+  events  EventPayment[] // Relación con eventos
+
+  @@map("payment_methods")
+}
+
+model EventPayment {
+  id              String @id @default(cuid())
+  eventId         String
+  paymentMethodId String
+
+  event         Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, paymentMethodId])
+  @@map("event_payments")
+}
+
+enum PaymentType {
+  CASH
+  DIGITAL
+}
+
 model Invitation {
   id        String   @id @default(cuid())
   email     String
@@ -262,6 +302,7 @@ model Invitation {
   updatedAt DateTime @updatedAt
   accepted  Boolean  @default(false)
   inviter   User     @relation(fields: [inviterId], references: [id])
+  clientId  String
 
   @@map("invitations")
 }
@@ -278,6 +319,7 @@ enum GlobalStatus {
   ACTIVE
   CONCLUDED
   DELETED
+  CANCELED
 }
 
 enum TicketTypes {

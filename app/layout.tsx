@@ -30,7 +30,7 @@ export default async function RootLayout({
 }) {
   const session = await getServerSession(authOptions);
 
-  let user = {};
+  let user;
   if (session && session.user) {
     user = await getUserByEmail(session?.user?.email as string);
   }

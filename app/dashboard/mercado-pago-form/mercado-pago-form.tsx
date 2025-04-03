@@ -12,8 +12,13 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { toast } from "@/components/ui/use-toast";
-import { updateUser, updateUserConfiguration, createUserConfiguration } from "@/lib/actions";
+import {
+  updateUser,
+  updateUserConfiguration,
+  createUserConfiguration,
+} from "@/lib/actions";
 import { User } from "@/types/user";
+import { UserConfiguration } from "@/types/user-configuration";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -32,11 +37,11 @@ export default function MercadoPagoForm({
   configuration,
   userId,
 }: {
-  configuration: UserConfiguration[],
-  userId: string
+  configuration: UserConfiguration[];
+  userId: string;
 }) {
   const defaultValues: Partial<MpFormValues> = {
-    mpAccessToken: configuration[0]?.mpAccessToken as string || "",
+    mpAccessToken: (configuration[0]?.mpAccessToken as string) || "",
   };
   const form = useForm<MpFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -45,13 +50,13 @@ export default function MercadoPagoForm({
   });
 
   function onSubmit(values: MpFormValues) {
-    try {      
+    try {
       updateUserConfiguration(
         {
           mpAccessToken: values.mpAccessToken,
         },
         configuration[0]?.id as string,
-        userId as string,
+        userId as string
       );
       toast({
         title: "Datos de mercadopago actualizados",

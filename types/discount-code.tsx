@@ -1,6 +1,11 @@
 import { Evento } from "./event";
 
-export type GlobalStatus = "DRAFT" | "ACTIVE" | "CONCLUDED" | "DELETED";
+export type GlobalStatus =
+  | "DRAFT"
+  | "ACTIVE"
+  | "CANCELED"
+  | "CONCLUDED"
+  | "DELETED";
 
 export interface DiscountCode {
   id?: string;

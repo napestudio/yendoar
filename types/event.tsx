@@ -1,7 +1,14 @@
+import { EventPayment, TicketOrder, ValidatorToken } from "@prisma/client";
 import { DiscountCode } from "./discount-code";
+import { TicketOrderType, TicketType } from "./tickets";
 import { User } from "./user";
 
-export type EventStatus = "DRAFT" | "ACTIVE" | "CONCLUDED" | "DELETED";
+export type EventStatus =
+  | "DRAFT"
+  | "ACTIVE"
+  | "CANCELED"
+  | "CONCLUDED"
+  | "DELETED";
 
 export interface Evento {
   id: string;
@@ -15,4 +22,7 @@ export interface Evento {
   status?: EventStatus;
   user?: User;
   discountCode?: DiscountCode[] | undefined;
+  ticketTypes?: TicketType[];
+  validatorToken?: ValidatorToken[];
+  eventPayments?: EventPayment[];
 }

@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 import { updateUserConfiguration } from "@/lib/actions";
+import { UserConfiguration } from "@/types/user-configuration";
 
 const FormSchema = z.object({
   eventSoldOutNotification: z.boolean().default(false).optional(),
@@ -27,7 +28,7 @@ const FormSchema = z.object({
 
 export default function NotificationsForm({
   configuration,
-  userId
+  userId,
 }: {
   configuration: UserConfiguration[];
   userId: string;

@@ -20,7 +20,8 @@ export default function NavBar({
   session: Session;
 }) {
   const pathname = usePathname();
-  if (pathname.startsWith("/validar")) return;
+  if (pathname.startsWith("/validar") || pathname.startsWith("/dashboard"))
+    return;
   return (
     <header className="h-20 w-full px-4 md:px-6 bg-neutral-950 text-white top-0 z-50">
       <div className="container flex items-center h-full">

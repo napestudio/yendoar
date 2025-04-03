@@ -1,6 +1,6 @@
 import EventCard from "@/components/event-card/event-card";
 import EventMarquee from "@/components/marquee/marquee";
-import { getAllEvents } from "@/lib/api/eventos";
+import { getAllActiveEvents, getAllEvents } from "@/lib/api/eventos";
 import { HomeCard } from "@/types/card";
 import { Metadata } from "next/types";
 
@@ -10,7 +10,18 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const eventos = await getAllEvents();
+  const eventos = await getAllActiveEvents();
+
+  if (!eventos.length) {
+    return (
+      <section className="mt-10 h-[75vh]">
+        <p className="text-xl text-white font-bold">
+          No hay eventos disponibles
+        </p>
+      </section>
+    );
+  }
+
   return (
     <>
       <section className="container pb-14">
