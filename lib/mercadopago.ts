@@ -10,7 +10,12 @@ export async function createMercadoPagoOrder(
 ) {
   let url: string | undefined = undefined;
   try {
-    url = await mpApi.order.createPayment(product, orderData, orderId!, userId);
+    url = await mpApi.order.createPayment(
+      product,
+      orderData,
+      orderId!,
+      product.eventId
+    );
   } catch (error) {
     throw new Error("Error generando Orden de mercado pago");
   }

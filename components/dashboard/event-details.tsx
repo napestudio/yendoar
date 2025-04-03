@@ -1,4 +1,3 @@
-"use client";
 import { Evento } from "@/types/event";
 
 import { Button } from "@/components/ui/button";
@@ -39,9 +38,11 @@ import { SITE_URL } from "@/lib/constants";
 import ValidatorsTable from "./validators-table";
 import { ValidatorToken } from "@/types/validators";
 import NewTokenDialog from "@/app/dashboard/components/new-token-dialog/new-token-dialog";
-
+import CancelEventButton from "./cancel-event-button";
+import PaymentMethodsList from "./payment-methods-list";
+import { PaymentMethod } from "@prisma/client";
+import PaymentMethodsLoader from "@/app/dashboard/metodos-de-pago/methods-loader";
 export default function EventDetails({ evento }: { evento: Evento }) {
-  const [activeTab, setActiveTab] = useState("overview");
   const groupedDates = datesFormater(evento.dates as string);
 
   return (
@@ -77,10 +78,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                 Editar
               </Link>
             </Button>
-            <Button variant="destructive" size="sm">
-              <Trash className="mr-2 h-4 w-4" />
-              Cancelar Evento
-            </Button>
+            <CancelEventButton id={evento.id} />
           </div>
         </div>
         <div className="grid gap-6 md:grid-cols-7">
@@ -115,11 +113,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                 </div>
               </CardContent>
             </Card>
-            <Tabs
-              defaultValue="overview"
-              className="w-full"
-              onValueChange={setActiveTab}
-            >
+            <Tabs defaultValue="overview" className="w-full">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="overview">Detalles</TabsTrigger>
                 <TabsTrigger value="tickets">Tickets</TabsTrigger>
@@ -161,6 +155,37 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                   </CardHeader>
                   <CardContent>
                     {/* <SalesChart data={event.recentSales} /> */}
+                  </CardContent>
+                </Card>
+
+                {evento.eventPayments && evento.eventPayments?.length > 0 && (
+                  <PaymentMethodsList methods={evento.eventPayments} />
+                )}
+
+                {evento.eventPayments && evento.user?.clientId && (
+                  <>
+                    {evento.eventPayments && (
+                      <PaymentMethodsLoader
+                        clientId={evento.user.clientId}
+                        eventId={evento.id}
+                      />
+                    )}
+                  </>
+                )}
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Eliminar evento permanentemente</CardTitle>
+                    <CardDescription>
+                      Esta acción no se puede revertir. Por favor, asegúrate de
+                      que deseas eliminar este evento antes de continuar.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button variant="destructive" size="sm">
+                      <Trash className="mr-2 h-4 w-4" />
+                      Eliminar evento
+                    </Button>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -247,7 +272,9 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                   <h4 className="text-sm font-medium">Acciones Rápidas</h4>
                   <div className="grid gap-2">
                     <Button asChild size="sm">
-                      <Link href={`/dashboard/eventos/${evento.id}/new-ticket`}>
+                      <Link
+                        href={`/dashboard/evento/${evento.id}/vender-entrada`}
+                      >
                         <Ticket className="mr-2 h-4 w-4" />
                         Vender entrada
                       </Link>

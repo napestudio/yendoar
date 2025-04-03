@@ -100,6 +100,7 @@ export default function UserDataForm({ order }: { order: Order }) {
       title: order.ticketType!.title,
       price: totalWithDiscount,
       quantity: order.quantity,
+      eventId: order.eventId,
     };
 
     // IF ISFREE SALTEAR MERCADOPAGO

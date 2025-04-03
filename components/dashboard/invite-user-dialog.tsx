@@ -203,7 +203,7 @@ export function InviteUserDialog({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="PRODUCER">Admin</SelectItem>
+                          <SelectItem value="ADMIN">Admin</SelectItem>
                           <SelectItem value="PRODUCER">Productor</SelectItem>
                           <SelectItem value="SELLER">
                             Punto de venta / Vendedor

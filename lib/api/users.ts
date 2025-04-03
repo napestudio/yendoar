@@ -1,5 +1,6 @@
 import db from "../prisma";
 import { generateVerificationToken } from "../tokens";
+import { User, UserType } from "@/types/user";
 
 export async function getAllUsers() {
   return await db.user.findMany();
@@ -9,10 +10,22 @@ export async function getAllUsersButAdmins() {
   return await db.user.findMany({ where: { type: "SELLER" } });
 }
 
-export async function getUsersByClientId() {
+export async function getUsersByClientId(clientId: string) {
   return await db.user.findMany({
+    where: {
+      clientId,
+    },
     include: {
       configuration: true,
+    },
+  });
+}
+
+export async function getUsersByType(clientId: string, type: UserType) {
+  return await db.user.findMany({
+    where: {
+      clientId,
+      type,
     },
   });
 }

@@ -38,6 +38,24 @@ export const getAllEvents = cache(async () => {
   });
 });
 
+export const getAllActiveEvents = cache(async () => {
+  return db.event.findMany({
+    where: {
+      status: {
+        equals: "ACTIVE",
+      },
+      endDate: {
+        not: {
+          lte: new Date(),
+        },
+      },
+    },
+    include: {
+      user: true,
+    },
+  });
+});
+
 export async function createEvent(data: Evento) {
   return db.event.create({ data });
 }
@@ -62,6 +80,11 @@ export const getEventById = cache(async (eventId: string) => {
           status: {
             not: "DELETED",
           },
+        },
+      },
+      eventPayments: {
+        include: {
+          paymentMethod: true,
         },
       },
       discountCode: true,

@@ -17,7 +17,6 @@ export default async function Dashboard() {
   const session = await getServerSession(authOptions);
   if (!session) return;
   const id = session.user.id;
-  console.log(session.user.clientId);
   const eventos = await getEventsByUserId(id);
 
   return (
