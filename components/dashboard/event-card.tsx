@@ -90,12 +90,12 @@ export default function EventCard({ evento }: { evento: Evento }) {
                   <Calendar className="mr-1 h-4 w-4" />
                   {groupedDates}
                 </span>
-                <span className="space-y-2">
+                {/* <span className="space-y-2">
                   <span className="flex justify-between text-sm font-bold">
                     <span>Tickets vendidos</span>
                     <span>100 / 1200</span>
                   </span>
-                </span>
+                </span> */}
               </CardDescription>
             </div>
           </div>

@@ -249,16 +249,16 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                 <CardTitle>Ventas</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Vendidas</span>
                     <span>100 / 1200</span>
                   </div>
-                  {/* <Progress value={soldPercentage} className="h-2" /> */}
+    
                   <p className="text-xs text-muted-foreground">
                     90% de tickets vendidos
                   </p>
-                </div>
+                </div> */}
 
                 <Separator />
 
