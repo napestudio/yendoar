@@ -5,6 +5,7 @@ import "@uploadthing/react/styles.css";
 
 import { authOptions } from "../api/auth/[...nextauth]/options";
 import SideBar from "../../components/dashboard/side-bar";
+import DashboardNavigation from "./components/dashboard-navigation";
 
 const dashboardConfig = {
   mainNav: [
@@ -68,9 +69,6 @@ export default async function DashboardLayout({
   return (
     <>
       <div className="flex min-h-svh gap-8 py-2 p-4 md:py-8 mx-auto w-full bg-white">
-        {/* <div className="hidden md:block">
-          <DashboardNavigation session={session} />
-        </div> */}
         <aside className="hidden w-[200px] flex-col md:flex lg:w-[240px]">
           <SideBar session={session} items={dashboardConfig.sidebarNav} />
         </aside>

@@ -19,10 +19,10 @@ export default function EventsDisplay({ eventos }: { eventos: Evento[] }) {
           <p className="text-sm">Administra tus eventos</p>
         </div>
         <div className="flex space-x-2">
-          <Button variant="outline" size="sm">
+          {/* <Button variant="outline" size="sm">
             <Filter className="mr-2 h-4 w-4" />
             Filtros
-          </Button>
+          </Button> */}
           <Button size="sm">
             <Link href="/dashboard/nuevo-evento" className="flex items-center">
               <Plus className="mr-2 h-4 w-4" /> Evento

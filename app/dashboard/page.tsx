@@ -29,7 +29,7 @@ export default async function Dashboard() {
           />
         </div>
         <div className="w-full space-y-5">
-          <StatsCards />
+          {/* <StatsCards /> */}
           <EventsDisplay eventos={eventos as Evento[]} />
 
           {eventos.length === 0 && (

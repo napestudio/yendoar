@@ -74,6 +74,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                   Ver en la web
                 </Link>
               </Button>
+
               <Button variant="outline" size="sm">
                 <Link
                   href={`/dashboard/evento/${evento.id}/edit`}
