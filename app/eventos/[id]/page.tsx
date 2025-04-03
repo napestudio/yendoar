@@ -1,4 +1,5 @@
 import {
+  getDigitalPaymentMethodKeyByEvent,
   getEventById,
   getServiceCharge,
   getSoldTicketsByType,
@@ -34,7 +35,7 @@ async function getEventData(id: string) {
 
 export default async function Evento({ params }: { params: { id: string } }) {
   const eventData = await getEventData(params.id);
-
+  const paymentMethod = await getDigitalPaymentMethodKeyByEvent(params.id);
   if (!eventData) {
     return <p>Evento no encontrado.</p>;
   }
@@ -54,31 +55,34 @@ export default async function Evento({ params }: { params: { id: string } }) {
       <EventHeader evento={evento as EventoType} dates={groupedDates} />
 
       <section className="w-[50rem] max-w-[95vw] mx-auto py-6 md:py-12 mt-[3rem]">
-        <h2 className="mb-14 mt-10 scroll-m-20 text-4xl tracking-tight lg:text-7xl text-white text-stroke text-center">
-          <span className="font-bold">Comprá tu </span>
-          <span className="font-thin">entrada</span>
-        </h2>
-
-        <div className="md:flex w-[90vw] md:w-full max-w-[90vw] mx-auto align-center justify-center flex-1">
-          {evento?.ticketTypes && (
-            <TicketTypePicker
-              tickets={evento?.ticketTypes}
-              eventId={evento?.id}
-              soldTickets={soldTickets}
-              discountCode={
-                evento?.discountCode &&
-                (evento.discountCode as DiscountCode[]).filter(
-                  (dc) => dc.status !== "DELETED"
-                ).length > 0
-                  ? (evento.discountCode as DiscountCode[]).filter(
+        {paymentMethod.length > 0 && (
+          <>
+            <h2 className="mb-14 mt-10 scroll-m-20 text-4xl tracking-tight lg:text-7xl text-white text-stroke text-center">
+              <span className="font-bold">Comprá tu </span>
+              <span className="font-thin">entrada</span>
+            </h2>
+            <div className="md:flex w-[90vw] md:w-full max-w-[90vw] mx-auto align-center justify-center flex-1">
+              {evento?.ticketTypes && (
+                <TicketTypePicker
+                  tickets={evento?.ticketTypes}
+                  eventId={evento?.id}
+                  soldTickets={soldTickets}
+                  discountCode={
+                    evento?.discountCode &&
+                    (evento.discountCode as DiscountCode[]).filter(
                       (dc) => dc.status !== "DELETED"
-                    )
-                  : undefined
-              }
-              serviceCharge={serviceCharge || undefined}
-            />
-          )}
-        </div>
+                    ).length > 0
+                      ? (evento.discountCode as DiscountCode[]).filter(
+                          (dc) => dc.status !== "DELETED"
+                        )
+                      : undefined
+                  }
+                  serviceCharge={serviceCharge || undefined}
+                />
+              )}
+            </div>
+          </>
+        )}
       </section>
     </Suspense>
   );

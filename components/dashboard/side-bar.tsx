@@ -19,6 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Session } from "next-auth";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { SITE_URL } from "@/lib/constants";
 
 interface DashboardNavProps {
   session: Session;
@@ -54,6 +55,14 @@ export default function SideBar({ items, session }: DashboardNavProps) {
   return (
     <div className="flex flex-col gap-4 justify-between">
       <nav className="grid items-start gap-2">
+        <Link href={SITE_URL}>
+          <Button
+            variant={"ghost"}
+            className={cn("w-full justify-start font-normal")}
+          >
+            Ir a la web
+          </Button>
+        </Link>
         {items.map((item, index) => {
           const isActive = path === item.href;
           return (
