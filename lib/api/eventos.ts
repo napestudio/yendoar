@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { Evento } from "../actions";
 import db from "../prisma";
+import { CLIENT_ID } from "../constants";
 
 export const getEventsByUserId = cache(async (userId: string) => {
   return db.event.findMany({
@@ -38,11 +39,17 @@ export const getAllEvents = cache(async () => {
   });
 });
 
+// Get eventos home por client ID
 export const getAllActiveEvents = cache(async () => {
   return db.event.findMany({
     where: {
       status: {
         equals: "ACTIVE",
+      },
+      user: {
+        clientId: {
+          equals: CLIENT_ID,
+        },
       },
       endDate: {
         not: {

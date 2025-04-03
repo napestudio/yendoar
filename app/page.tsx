@@ -12,6 +12,16 @@ export const metadata: Metadata = {
 export default async function Home() {
   const eventos = await getAllActiveEvents();
 
+  if (!eventos.length) {
+    return (
+      <section className="mt-10 h-[75vh]">
+        <p className="text-xl text-white font-bold">
+          No hay eventos disponibles
+        </p>
+      </section>
+    );
+  }
+
   return (
     <>
       <section className="container pb-14">
