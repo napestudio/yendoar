@@ -23,7 +23,11 @@ async function getEventData(id: string) {
   };
 }
 
-async function Caja({ params }: { params: { id: string } }) {
+export default async function NewCashTicketPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const eventData = await getEventData(params.id);
   if (!eventData) {
     return <p>Evento no encontrado.</p>;
@@ -34,10 +38,10 @@ async function Caja({ params }: { params: { id: string } }) {
     <>
       <div className="space-y-6 pb-8">
         <DashboardHeader
-          title={`Venta de tickets del evento: ${evento.title}`}
+          title={`Vender entrada para: ${evento.title}`}
           subtitle="Completa el formulario para emitir un ticket cobrando en efectivo."
         />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mt-4">
           <Button variant="outline" size="sm" asChild>
             <Link href={`/dashboard/evento/${params.id}`}>
               <ArrowLeft className="mr-2 h-4 w-4" />
@@ -68,5 +72,3 @@ async function Caja({ params }: { params: { id: string } }) {
     </>
   );
 }
-
-export default Caja;
