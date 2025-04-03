@@ -17,7 +17,7 @@ export async function createUserInvitation(data: UserInvitation) {
   <div style="font-family: Inter, Helvetica, sans-serif;margin: 0;">      
       <div style="margin: 0 auto;background-color: #ffffff;overflow: hidden;border: 1px solid #e5e7eb;border-radius: 0.5rem;">
         <div style="padding: 20px;border-bottom:1px solid #e5e7eb;">
-          <h1 style="font-weight:400;color: #222222;">${SITE_NAME} te invita a participar de la ticketera como <span style="padding:4px;border-radius:.3rem;color:#222222;text-transform:uppercase;">${userType[data.role! || ""]}</span></h1>
+          <h1 style="font-weight:400;color: #222222;">${SITE_NAME} te invita a participar de la ticketera como <span style="letter-spacing:1px;font-size:small;padding:.4rem .8rem;background:#019645;border-radius:5rem;color:white;text-transform:uppercase;margin-bottom:4px;"> ${userType[data.role! || ""]}</span></h1>
         </div>
         <div style="padding: 20px; text-align: left">
           <p style="font-size: 1.2rem; line-height: 1; color: #222222">
