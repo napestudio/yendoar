@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 
-import { datesFormater } from "@/lib/utils";
+import { cn, datesFormater } from "@/lib/utils";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { InfoTicketTypeCard } from "./info-ticket-type-card";
@@ -42,9 +42,13 @@ import CancelEventButton from "./cancel-event-button";
 import PaymentMethodsList from "./payment-methods-list";
 import { PaymentMethod } from "@prisma/client";
 import PaymentMethodsLoader from "@/app/dashboard/metodos-de-pago/methods-loader";
+import DeleteEventButton from "./delete-event-button";
+import { redirect } from "next/navigation";
 export default function EventDetails({ evento }: { evento: Evento }) {
   const groupedDates = datesFormater(evento.dates as string);
-
+  if (evento.status === "DELETED") {
+    redirect("/dashboard");
+  }
   return (
     <>
       <div className="space-y-6">
@@ -59,27 +63,30 @@ export default function EventDetails({ evento }: { evento: Evento }) {
               Volver a Eventos
             </Link>
           </Button>
-          <div className="ml-auto flex flex-wrap items-center gap-2">
-            <Button variant="outline" size="sm">
-              <Link
-                href={`${SITE_URL}/eventos/${evento.id}`}
-                className="flex items-center"
-              >
-                <Globe className="mr-2 h-4 w-4" />
-                Ver en la web
-              </Link>
-            </Button>
-            <Button variant="outline" size="sm">
-              <Link
-                href={`/dashboard/evento/${evento.id}/edit`}
-                className="flex items-center"
-              >
-                <Edit className="mr-2 h-4 w-4" />
-                Editar
-              </Link>
-            </Button>
-            <CancelEventButton id={evento.id} />
-          </div>
+          {evento.status !== "CANCELED" && (
+            <div className="ml-auto flex flex-wrap items-center gap-2">
+              <Button variant="outline" size="sm">
+                <Link
+                  href={`${SITE_URL}/eventos/${evento.id}`}
+                  className="flex items-center"
+                >
+                  <Globe className="mr-2 h-4 w-4" />
+                  Ver en la web
+                </Link>
+              </Button>
+              <Button variant="outline" size="sm">
+                <Link
+                  href={`/dashboard/evento/${evento.id}/edit`}
+                  className="flex items-center"
+                >
+                  <Edit className="mr-2 h-4 w-4" />
+                  Editar
+                </Link>
+              </Button>
+
+              <CancelEventButton id={evento.id} />
+            </div>
+          )}
         </div>
         <div className="grid gap-6 md:grid-cols-7">
           <div className="md:col-span-5 space-y-6">
@@ -182,10 +189,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button variant="destructive" size="sm">
-                      <Trash className="mr-2 h-4 w-4" />
-                      Eliminar evento
-                    </Button>
+                    <DeleteEventButton id={evento.id} />
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -225,10 +229,6 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                         Administra los tokens de validación de este evento
                       </CardDescription>
                     </div>
-                    {/* <Button size="sm">
-                      <Plus className="mr-2 h-4 w-4" />
-                      Nuevo Token
-                    </Button> */}
                     <NewTokenDialog eventId={evento.id} />
                   </CardHeader>
                   <CardContent>
@@ -271,15 +271,27 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                 <div className="space-y-2">
                   <h4 className="text-sm font-medium">Acciones Rápidas</h4>
                   <div className="grid gap-2">
-                    <Button asChild size="sm">
+                    <Button
+                      asChild
+                      size="sm"
+                      disabled={evento.status === "CANCELED"}
+                    >
                       <Link
                         href={`/dashboard/evento/${evento.id}/vender-entrada`}
+                        className={cn(
+                          evento.status === "CANCELED" &&
+                            "opacity-50 pointer-events-none"
+                        )}
                       >
                         <Ticket className="mr-2 h-4 w-4" />
                         Vender entrada
                       </Link>
                     </Button>
-                    <Button variant="outline" size="sm">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={evento.status === "CANCELED"}
+                    >
                       <User className="mr-2 h-4 w-4" />
                       Agregar invitado
                     </Button>
