@@ -18,6 +18,7 @@ export async function getUsersByClientId(clientId: string) {
     },
     include: {
       configuration: true,
+      events: true,
     },
   });
 }
