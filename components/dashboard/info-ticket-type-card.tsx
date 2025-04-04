@@ -59,12 +59,12 @@ export function InfoTicketTypeCard({ ticket }: { ticket: TicketType }) {
           </DropdownMenu>
         </div>
 
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span>Vendidas</span>
             <span>100 / 1200</span>
           </div>
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   );
