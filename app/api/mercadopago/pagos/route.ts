@@ -33,7 +33,11 @@ export async function POST(req: Request) {
       const payment = await new Payment(mp).get({ id: body.data.id });
       console.log("payment", payment);
       if (payment.status === "approved") {
-        payOrderHandler(payment.metadata.order_id);
+        try {
+          await payOrderHandler(payment.metadata.order_id);
+        } catch (err) {
+          console.error("Error en payOrderHandler:", err);
+        }
       }
     }
   }
