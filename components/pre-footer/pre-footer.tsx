@@ -3,6 +3,8 @@ import { SITE_NAME } from "@/lib/constants";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Button } from "../ui/button";
+import { Contact } from "lucide-react";
 
 export default function PreFooter() {
   const pathname = usePathname();
@@ -50,6 +52,25 @@ export default function PreFooter() {
               Por consultas o reclamos escribir a{" "}
               <span className="font-bold">entradas.yendo@gmail.com</span>
             </p>
+            <div>
+              <Link
+                href={"/ingresar"}
+                className="flex items-center border-2 w-max p-2 font-semibold rounded-xl gap-2 justify-self-end mt-3 hover:bg-white hover:text-black transition-colors duration-200"
+              >
+                <Contact /> Acceso a backstage
+              </Link>
+            </div>
+            <ul className="mt-4">
+              <li>
+                <Link
+                  className="text-xs hover:underline"
+                  href={"/terminos-y-condiciones"}
+                >
+                  Términos y condiciones de uso
+                </Link>
+              </li>
+              <li></li>
+            </ul>
           </div>
         </div>
       </div>

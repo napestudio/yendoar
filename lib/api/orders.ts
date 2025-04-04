@@ -1,14 +1,17 @@
 import db from "../prisma";
 
 export async function createOrder(data: any) {
-  return await db.order.create({ data, include: {
+  return await db.order.create({
+    data,
+    include: {
       ticketType: true,
       event: {
         include: {
           discountCode: true,
         },
       },
-  } });
+    },
+  });
 }
 
 export async function getOrderById(orderId: string) {

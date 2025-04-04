@@ -7,6 +7,7 @@ import MercadoPagoConfig, { Payment } from "mercadopago";
 
 export async function POST(req: Request) {
   const res = await req.json();
+
   const topic = res.topic || res.type;
   // Algunas veces el topic es payment pero la respuesta no trae el objeto data.
   // Si esto es asi, no lo dejamos pasar
@@ -19,6 +20,7 @@ export async function POST(req: Request) {
   const { searchParams } = new URL(req.url);
   // Obtenemos el id del evento de la URL
   const eventId = searchParams.get("e");
+
   if (eventId) {
     // Obtenemos el token del método de pago
     const paymentMethod = await getDigitalPaymentMethodKeyByEvent(eventId);
@@ -31,7 +33,11 @@ export async function POST(req: Request) {
       const payment = await new Payment(mp).get({ id: body.data.id });
 
       if (payment.status === "approved") {
-        payOrderHandler(payment.metadata.order_id);
+        try {
+          await payOrderHandler(payment.metadata.order_id);
+        } catch (err) {
+          console.error("Error en payOrderHandler:", err);
+        }
       }
     }
   }

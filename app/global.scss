@@ -114,9 +114,9 @@
   .container {
     @apply px-5 md:px-8 lg:px-12 xl:px-16 2xl:px-24;
   }
-  .container-sm {
-    @apply px-5 md:px-14 lg:px-52 xl:px-80;
-  }
+  // .container-sm {
+  //   @apply px-5 md:px-14 lg:px-52 xl:px-80;
+  // }
 }
 .dot-notification {
   height: 12px;

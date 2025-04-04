@@ -20,6 +20,7 @@ export default async function UsersPage() {
   const session = await getServerSession(authOptions);
   if (!session) return;
   const accounts = await getAllUsersByClientId(session.user.clientId!);
+
   const userId = session.user.id;
   const clientId = session.user.clientId;
   const invitations = await getPendingInvitationsByUser(userId);
@@ -44,7 +45,9 @@ export default async function UsersPage() {
             Invitar Usuario
           </Button>
         </InviteUserDialog>
-        {accounts && <UsersTable accounts={accounts as User[]} />}
+        {accounts && (
+          <UsersTable accounts={accounts as User[]} session={session} />
+        )}
         {invitations.length > 0 && (
           <UserInvitationsTable invitations={invitations} />
         )}

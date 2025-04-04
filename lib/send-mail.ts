@@ -8,9 +8,14 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendEmail = async (buyer: string, subject: string, html: string, attachments : any) => {
+export const sendEmail = async (
+  buyer: string,
+  subject: string,
+  html: string,
+  attachments: any
+) => {
   const mailOptions: any = {
-    from: process.env.GMAIL_USER,
+    from: process.env.EMAIL,
     to: [buyer, process.env.EMAIL],
     subject,
     html,
@@ -19,4 +24,5 @@ export const sendEmail = async (buyer: string, subject: string, html: string, at
   };
 
   await transporter.sendMail(mailOptions);
+  return true;
 };
