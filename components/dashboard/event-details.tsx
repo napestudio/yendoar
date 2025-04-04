@@ -288,14 +288,14 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                         Vender entrada
                       </Link>
                     </Button>
-                    <Button
+                    {/* <Button
                       variant="outline"
                       size="sm"
                       disabled={evento.status === "CANCELED"}
                     >
                       <User className="mr-2 h-4 w-4" />
                       Agregar invitado
-                    </Button>
+                    </Button> */}
                     {/* <Button variant="outline" size="sm">
                       <Link
                         href={`/dashboard/evento/${evento.id}/validadores`}
