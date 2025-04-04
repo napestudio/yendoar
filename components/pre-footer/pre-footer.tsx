@@ -50,6 +50,14 @@ export default function PreFooter() {
               Por consultas o reclamos escribir a{" "}
               <span className="font-bold">entradas.yendo@gmail.com</span>
             </p>
+            <ul className="mt-4">
+              <li>
+                <Link className="text-xs hover:underline" href={"/terminos-y-condiciones"}>
+                  Términos y condiciones de uso
+                </Link>
+              </li>
+              <li></li>
+            </ul>
           </div>
         </div>
       </div>
