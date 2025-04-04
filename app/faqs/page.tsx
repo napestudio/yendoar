@@ -18,7 +18,7 @@ export default function FAQS() {
           <p className="text-xl text-white mb-6">
             <strong>1. ¿Cómo compro un ticket?</strong>
             <br />
-            Selecciona el evento en la plataforma, haz clic en "Comprar" y completa tus datos (nombre, DNI y email). El pago se realiza a través de Mercado Pago.
+            Selecciona el evento en la plataforma, haz clic en {"Comprar"} y completa tus datos (nombre, DNI y email). El pago se realiza a través de Mercado Pago.
             <br /><br />
             <strong>2. ¿Puedo transferir o revender mi ticket?</strong>
             <br />
