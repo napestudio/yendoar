@@ -23,7 +23,7 @@ export default async function PaymentMethodsPage() {
         />
       </div>
       <div className="w-full space-y-5">
-        <StatsCards />
+        {/* <StatsCards /> */}
         <AddPaymentMethodDialog sellers={sellers} session={session}>
           <Button size="sm">
             <Plus className="mr-2 h-4 w-4" />

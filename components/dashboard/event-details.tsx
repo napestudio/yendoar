@@ -155,12 +155,12 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                 </Card>
 
                 <Card>
-                  <CardHeader>
+                  {/* <CardHeader>
                     <CardTitle>Ventas</CardTitle>
                     <CardDescription>
                       Venta de tickets a lo largo del tiempo
                     </CardDescription>
-                  </CardHeader>
+                  </CardHeader> */}
                   <CardContent>
                     {/* <SalesChart data={event.recentSales} /> */}
                   </CardContent>
@@ -245,9 +245,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
           </div>
           <div className="md:col-span-2 space-y-6">
             <Card>
-              <CardHeader>
-                <CardTitle>Ventas</CardTitle>
-              </CardHeader>
+              <CardHeader>{/* <CardTitle>Ventas</CardTitle> */}</CardHeader>
               <CardContent className="space-y-4">
                 {/* <div className="space-y-2">
                   <div className="flex justify-between text-sm">
@@ -262,10 +260,10 @@ export default function EventDetails({ evento }: { evento: Evento }) {
 
                 <Separator />
 
-                <div>
+                {/* <div>
                   <h4 className="text-sm font-medium mb-2">Ganancia</h4>
                   <p className="text-2xl font-bold">$200000</p>
-                </div>
+                </div> */}
 
                 <Separator />
 
@@ -288,14 +286,14 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                         Vender entrada
                       </Link>
                     </Button>
-                    <Button
+                    {/* <Button
                       variant="outline"
                       size="sm"
                       disabled={evento.status === "CANCELED"}
                     >
                       <User className="mr-2 h-4 w-4" />
                       Agregar invitado
-                    </Button>
+                    </Button> */}
                     {/* <Button variant="outline" size="sm">
                       <Link
                         href={`/dashboard/evento/${evento.id}/validadores`}
