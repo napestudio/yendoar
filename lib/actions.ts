@@ -517,6 +517,7 @@ export async function payOrderHandler(orderId: string) {
         });
       }
     });
+    console.log("ticketsData", ticketsData);
     await createTicketOrder(ticketsData);
   } catch (error) {
     throw new Error("Error creando free ticket");
@@ -539,6 +540,8 @@ export async function createFreeTicket(
 export async function createTicketOrder(tickets: TicketOrderType[]) {
   try {
     const result = await TicketOrders.createTicketOrder(tickets);
+    console.log("result", result);
+    console.log("tickets", tickets);
     if (result.length > 0) {
       return await sendTicketMail(result as TicketOrderType[]);
     }
