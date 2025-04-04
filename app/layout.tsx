@@ -33,7 +33,6 @@ export default async function RootLayout({
           {children}
         </main>
         <PreFooter />
-        <Toaster />
         <Footer />
       </body>
     </html>
