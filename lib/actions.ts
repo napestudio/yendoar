@@ -600,7 +600,9 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
         >
           <h1 style="text-transform: uppercase; color: black; margin: 0">
             <span style="font-weight: 800">¡Hola! </span>
-            <span style="font-weight: 400">Estas son tus entradas para ${eventData?.title}</span>
+            <span style="font-weight: 400">Estas son tus entradas para ${
+              eventData?.title
+            }</span>
           </h1>
         </div>
         <div style="padding: 20px; text-align: center">
@@ -620,21 +622,27 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
               <div style="display:flex;gap:10px;">
                 <div style="width:75%;padding:1rem">
                   <p style="font-size: 14px; color: black; margin: 0px">
-                    N.:${String(t.code).padStart(5, '0')}
+                    N.:${String(t.code).padStart(5, "0")}
                   </p>
                   <h3 style="font-size: 1.5rem; color: black; margin: 0px">
                     ${eventData?.title}
                   </h3>
                   <p style="font-size: 14px; color: black; margin: 0px">
-                    Lugar: <span style="font-weight:600;">${eventData?.location}</span>
+                    Lugar: <span style="font-weight:600;">${
+                      eventData?.location
+                    }</span>
                   </p>
                   <p style="font-size: 14px; color: black; margin: 0px">
-                    Dirección: <span style="font-weight:600;">${eventData?.address}</span>
+                    Dirección: <span style="font-weight:600;">${
+                      eventData?.address
+                    }</span>
                   </p>
                   <p style="font-size: 14px; color: black; margin: 0px">
-                    Fecha: <span style="font-weight:600;">${new Date(t.date).getDate()}/${
-                  new Date(t.date).getMonth() + 1
-                }/${new Date(t.date).getFullYear()} - ${new Date(t.date)
+                    Fecha: <span style="font-weight:600;">${new Date(
+                      t.date
+                    ).getDate()}/${new Date(t.date).getMonth() + 1}/${new Date(
+                  t.date
+                ).getFullYear()} - ${new Date(t.date)
                   .getHours()
                   .toString()
                   .padStart(2, "0")}:${new Date(t.date)
@@ -644,7 +652,9 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
                   </p>
                 </div>
                 <div style="border-left:1px dashed #e2e8f0;width:25%;text-align:center; overflow: hidden">
-                  <img style="width:100%;height:100%;" alt="${eventData?.title}" src="${t.path}" />
+                  <img style="width:100%;height:100%;" alt="${
+                    eventData?.title
+                  }" src="${t.path}" />
                 </div>
               </div>
             </div>
@@ -652,7 +662,10 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
               )
               .join("")}
           </div>
-          <p>Recordá de llevar tu dni.</p>
+          <p style="font-size: 1.1rem; line-height: 1.5; color: #222222;">Recordá llevar tu dni. ¡Nos vemos ahí!.</p>
+            <p style="font-size: 1.1rem; line-height: 1.5; color: #222222;">
+              <a href="${process.env.BASE_URL}terminos-y-condiciones" style="color: #0f172a; text-decoration: underline;">Términos y Condiciones de Uso</a>.
+            </p>
         </div>
       </div>
     </div>
