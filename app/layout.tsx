@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import "./global.scss";
 import NavBar from "@/components/nav-bar/nav-bar";
-import { Session, User, getServerSession } from "next-auth";
-import SessionProvider from "@/components/session-provider/session-provider";
-import { getUserByEmail } from "@/lib/api/users";
-import { authOptions } from "./api/auth/[...nextauth]/options";
+
 import Footer from "@/components/footer/footer";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -28,25 +25,16 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
-
-  let user;
-  if (session && session.user) {
-    user = await getUserByEmail(session?.user?.email as string);
-  }
-
   return (
     <html lang="en">
       <body className={montserrat.className}>
-        <SessionProvider session={session}>
-          <NavBar user={user} session={session as Session} />
-          <main className="flex flex-col items-center gap-8 bg-blue">
-            {children}
-          </main>
-          <PreFooter />
-          <Toaster />
-          <Footer />
-        </SessionProvider>
+        <NavBar />
+        <main className="flex flex-col items-center gap-8 bg-blue">
+          {children}
+        </main>
+        <PreFooter />
+        <Toaster />
+        <Footer />
       </body>
     </html>
   );
