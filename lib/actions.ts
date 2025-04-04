@@ -486,6 +486,7 @@ export async function getMercadPagoUrl(
 
 export async function payOrderHandler(orderId: string) {
   try {
+    console.log(orderId);
     const order = await getOrderById(orderId);
     if (!order || order.status === "PAID") return;
 
