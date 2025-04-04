@@ -249,6 +249,8 @@ export async function getOrderById(orderId: string) {
 }
 
 export async function updateOrder(data: any, orderId: string) {
+  console.log("data", data);
+  console.log("orderId", orderId);
   try {
     const result = await Orders.updateOrder(orderId, data);
     revalidatePath(`/orders/${result.id}`);

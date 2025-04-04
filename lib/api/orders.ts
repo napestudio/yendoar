@@ -1,14 +1,17 @@
 import db from "../prisma";
 
 export async function createOrder(data: any) {
-  return await db.order.create({ data, include: {
+  return await db.order.create({
+    data,
+    include: {
       ticketType: true,
       event: {
         include: {
           discountCode: true,
         },
       },
-  } });
+    },
+  });
 }
 
 export async function getOrderById(orderId: string) {
@@ -64,6 +67,7 @@ export async function getPaidOrdersDataByEvent(eventId: string) {
 
 // Crear type para order
 export async function updateOrder(orderId: string, orderData: any) {
+  console.log("Updating order with ID:", orderId, "and data:", orderData);
   return await db.order.update({
     where: {
       id: orderId,
