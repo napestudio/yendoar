@@ -86,7 +86,7 @@ export async function createUser(data: any) {
   return createdUser;
 }
 
-export async function deleteUser(userId: string) {
+export async function deleteUser(userId: string, userEmail: string) {
   if (!userId) {
     throw new Error("Falta el ID del usuario");
   }
@@ -98,10 +98,23 @@ export async function deleteUser(userId: string) {
     },
   });
 
+  const hasInvitations = await db.invitation.findFirst({
+    where: {
+      email: userEmail,
+    },
+  });
+
   if (hasEvents) {
     return {
       error: "Este usuario tiene eventos asignados y no se puede eliminar",
     };
+  }
+  if (hasInvitations) {
+    await db.invitation.delete({
+      where: {
+        id: hasInvitations.id,
+      },
+    });
   }
 
   // Eliminar usuario

@@ -6,7 +6,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const formData = await req.formData();
   const id = formData.get("id") as string;
   const token = formData.get("t") as string;
-
+  console.log(formData);
   if (!id || !token) {
     console.error("Missing id or token");
     return NextResponse.json({ error: "Missing id or token" }, { status: 400 });
