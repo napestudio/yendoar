@@ -555,8 +555,15 @@ export async function createTicketOrder(tickets: TicketOrderType[]) {
 export async function sendTicketMail(tickets: TicketOrderType[]) {
   console.log("sendTicketMail", tickets);
   const qrTickets: any[] = [];
-  const eventData = await Eventos.getEventById(tickets[0].eventId!);
-  console.log("eventData", eventData);
+  // const eventData = await Eventos.getEventById(tickets[0].eventId!);
+  // console.log("eventData", eventData);
+  const eventData = {
+    title: "Evento de prueba",
+    description: "Descripcion de prueba",
+    address: "Direccion de prueba",
+    location: "Ubicacion de prueba",
+    image: null,
+  };
   for (let ticket of tickets) {
     const base64Url = await setQrCode(ticket.id);
     const newTicket: any = {
