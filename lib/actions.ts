@@ -553,6 +553,7 @@ export async function createTicketOrder(tickets: TicketOrderType[]) {
 }
 
 export async function sendTicketMail(tickets: TicketOrderType[]) {
+  console.log("sendTicketMail", tickets);
   const qrTickets: any[] = [];
   const eventData = await Eventos.getEventById(tickets[0].eventId!);
 
