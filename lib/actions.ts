@@ -559,7 +559,6 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
     qrTickets.push(newTicket);
   }
 
-  const ticketNumber = eventData?.discountCode;
   const emailSubject = `Gracias por comprar en ${SITE_NAME}`;
   const emailBody = `  
   <div
