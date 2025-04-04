@@ -15,8 +15,8 @@ export default function TerminosYCondiciones() {
         <div>
           <p className="text-xl text-white mb-4">
             1. Aceptación de los Términos Al utilizar la plataforma yendo.ar
-            (en adelante, "la Plataforma"), el usuario (en adelante, "el
-            Organizador" o "el Comprador") acepta estos Términos y Condiciones,
+            (en adelante, 'la Plataforma'), el usuario (en adelante, 'el
+            Organizador' o 'el Comprador') acepta estos Términos y Condiciones,
             que regulan la venta de tickets para eventos. La Plataforma es
             operada por una persona física sin nombre comercial, con base en
             Rosario, Santa Fe, Argentina.
