@@ -35,12 +35,12 @@ export default function NavBar({
           />
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6">
-          {/* <Link
+          <Link
           className="text-sm font-medium hover:underline underline-offset-4 hover:text-green-500"
-          href="#"
+          href="/faqs"
         >
-          FAQ
-        </Link> */}
+          FAQS
+        </Link>
         </nav>
 
         {session && <AdminDropDown user={user as User} session={session} />}
