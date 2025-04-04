@@ -240,7 +240,7 @@ export async function createCashOrder(data: CreateOrderType) {
 }
 
 export async function getOrderById(orderId: string) {
-  try {   
+  try {
     return await Orders.getOrderById(orderId);
   } catch (error) {
     throw new Error("Error get order by id");
@@ -248,8 +248,6 @@ export async function getOrderById(orderId: string) {
 }
 
 export async function updateOrder(data: any, orderId: string) {
-  console.log("data", data);
-  console.log("orderId", orderId);
   try {
     const result = await Orders.updateOrder(orderId, data);
     revalidatePath(`/orders/${result.id}`);
@@ -487,9 +485,7 @@ export async function getMercadPagoUrl(
 
 export async function payOrderHandler(orderId: string) {
   try {
-    console.log("order id", orderId);
     const order = await getOrderById(orderId);
-    console.log("🚀 ~ payOrderHandler ~ order:", order);
 
     if (!order || order.status === "PAID") return;
 
@@ -520,7 +516,7 @@ export async function payOrderHandler(orderId: string) {
         });
       }
     });
-    console.log("ticketsData", ticketsData);
+
     await createTicketOrder(ticketsData);
   } catch (error) {
     throw new Error("Error creando free ticket");
@@ -541,11 +537,9 @@ export async function createFreeTicket(
 }
 
 export async function createTicketOrder(tickets: TicketOrderType[]) {
-  console.log("🚀 ~ createTicketOrder ~ tickets:", tickets)
   try {
     const result = await TicketOrders.createTicketOrder(tickets);
-    console.log("🚀 ~ createTicketOrder ~ result:", result)
-    
+
     if (result.length > 0) {
       await sendTicketMail(result as TicketOrderType[]);
     }
@@ -555,10 +549,8 @@ export async function createTicketOrder(tickets: TicketOrderType[]) {
 }
 
 export async function sendTicketMail(tickets: TicketOrderType[]) {
-  console.log("sendTicketMail", tickets);
   const qrTickets: any[] = [];
   const eventData = await Eventos.getEventById(tickets[0].eventId!);
-  // console.log("eventData", eventData);
 
   for (let ticket of tickets) {
     const base64Url = await setQrCode(ticket.id);
