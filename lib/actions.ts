@@ -240,8 +240,11 @@ export async function createCashOrder(data: CreateOrderType) {
 }
 
 export async function getOrderById(orderId: string) {
+  console.log("🚀 ~ getOrderById ~ orderId:", orderId)
   try {
     const result = await Orders.getOrderById(orderId);
+    console.log("🚀 ~ getOrderById ~ result:", result)
+    
     return result;
   } catch (error) {
     throw new Error("Error get order by id");
