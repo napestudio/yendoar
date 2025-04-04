@@ -136,7 +136,6 @@ export default function BuyTicketForm({
       dni: "",
     },
   });
-  
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
@@ -247,7 +246,7 @@ export default function BuyTicketForm({
                       }}
                       defaultValue={field.value}
                       disabled={isLoading}
-                      key={form.watch("ticketType")} 
+                      key={form.watch("ticketType")}
                     >
                       <FormControl className="">
                         <SelectTrigger>
@@ -317,7 +316,6 @@ export default function BuyTicketForm({
                       value={discount ? "1" : field.value}
                       key={form.watch("quantity")}
                       disabled={!form.watch("ticketType") || isLoading}
-
                     >
                       <FormControl className="">
                         <SelectTrigger>
