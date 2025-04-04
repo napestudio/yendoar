@@ -240,12 +240,8 @@ export async function createCashOrder(data: CreateOrderType) {
 }
 
 export async function getOrderById(orderId: string) {
-  console.log("🚀 ~ getOrderById ~ orderId:", orderId)
-  try {
-    const result = await Orders.getOrderById(orderId);
-    console.log("🚀 ~ getOrderById ~ result:", result)
-    
-    return result;
+  try {   
+    return await Orders.getOrderById(orderId);
   } catch (error) {
     throw new Error("Error get order by id");
   }
@@ -537,8 +533,8 @@ export async function createFreeTicket(
   userId: string
 ) {
   try {
-    updateOrder(orderData, orderId);
-    payOrderHandler(orderId);
+    await updateOrder(orderData, orderId);
+    await payOrderHandler(orderId);
   } catch (error) {
     throw new Error("Error creando free ticket");
   }
