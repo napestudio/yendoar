@@ -15,14 +15,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import DatesPicker from "@/components/dates-picker/dates-picker";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { cn, useUploadThing } from "@/lib/utils";
-import Link from "next/link";
-import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+
 import { useToast } from "@/components/ui/use-toast";
 
 import { CalendarIcon, Loader2 } from "lucide-react";

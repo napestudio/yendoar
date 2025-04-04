@@ -69,6 +69,7 @@ export async function updateEvent(data: Evento, eventId: string) {
     const result = await Eventos.updateEvent(eventId, data);
     revalidatePath(`/dashboard/evento/${result.id}`);
     revalidatePath(`/eventos/${result.id}`);
+    revalidatePath(`/`);
   } catch (error) {
     throw new Error("Error editando el evento");
   }
