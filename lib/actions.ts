@@ -488,8 +488,10 @@ export async function getMercadPagoUrl(
 
 export async function payOrderHandler(orderId: string) {
   try {
-    console.log(orderId);
+    console.log("order id", orderId);
     const order = await getOrderById(orderId);
+    console.log("🚀 ~ payOrderHandler ~ order:", order)
+    
     if (!order || order.status === "PAID") return;
 
     const dates = JSON.parse(order.ticketType.dates!);
