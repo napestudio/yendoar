@@ -547,7 +547,7 @@ export async function createTicketOrder(tickets: TicketOrderType[]) {
     console.log("🚀 ~ createTicketOrder ~ result:", result)
     
     if (result.length > 0) {
-      return await sendTicketMail(result as TicketOrderType[]);
+      await sendTicketMail(result as TicketOrderType[]);
     }
   } catch (error) {
     throw new Error("Error tickets");
