@@ -67,7 +67,6 @@ export async function getPaidOrdersDataByEvent(eventId: string) {
 
 // Crear type para order
 export async function updateOrder(orderId: string, orderData: any) {
-  console.log("Updating order with ID:", orderId, "and data:", orderData);
   return await db.order.update({
     where: {
       id: orderId,
