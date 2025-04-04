@@ -556,7 +556,7 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
   console.log("sendTicketMail", tickets);
   const qrTickets: any[] = [];
   const eventData = await Eventos.getEventById(tickets[0].eventId!);
-
+  console.log("eventData", eventData);
   for (let ticket of tickets) {
     const base64Url = await setQrCode(ticket.id);
     const newTicket: any = {
