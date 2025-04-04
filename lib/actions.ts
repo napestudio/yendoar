@@ -559,6 +559,7 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
     qrTickets.push(newTicket);
   }
 
+  const ticketNumber = eventData?.discountCode;
   const emailSubject = `Gracias por comprar en ${SITE_NAME}`;
   const emailBody = `  
   <div
@@ -577,7 +578,7 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
       </div>
       <div
         style="
-          max-width: 600px;
+          max-width: 1400px;
           margin: 0 auto;
           background-color: #ffffff;
           overflow: hidden;
@@ -594,37 +595,40 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
           "
         >
           <h1 style="text-transform: uppercase; color: black; margin: 0">
-            <span style="font-weight: 800">¡Hola! </span
-            ><span style="font-weight: 400"
-              >Estas son tus entradas compradas para ${eventData?.title}</span
-            >
+            <span style="font-weight: 800">¡Hola! </span>
+            <span style="font-weight: 400">Estas son tus entradas para ${eventData?.title}</span>
           </h1>
         </div>
         <div style="padding: 20px; text-align: center">
-          <div style="display: block; max-width: 300px; margin: 0 auto">
+          <div style="display: block;margin: 0 auto;">
             ${qrTickets
               .map(
                 (t, i) => `
             <div
               class="box"
               style="
-                border: 4px solid black;
-                border-radius: 0.5rem;
+                border: 1px solid #e2e8f0;
                 min-width: 19rem;
                 text-align: left;
                 margin-bottom: 1rem;
               "
             >
-              <div>
-                <div style="padding: 1rem">
+              <div style="display:flex;gap:10px;">
+                <div style="width:75%;padding:1rem">
                   <p style="font-size: 14px; color: black; margin: 0px">
-                    Entrada ${i + 1} para ${eventData?.title}
+                    N.:${String(t.code).padStart(5, '0')}
+                  </p>
+                  <h3 style="font-size: 1.5rem; color: black; margin: 0px">
+                    ${eventData?.title}
+                  </h3>
+                  <p style="font-size: 14px; color: black; margin: 0px">
+                    Lugar: <span style="font-weight:600;">${eventData?.location}</span>
                   </p>
                   <p style="font-size: 14px; color: black; margin: 0px">
-                    Dirección: ${eventData?.location} - ${eventData?.address}
+                    Dirección: <span style="font-weight:600;">${eventData?.address}</span>
                   </p>
                   <p style="font-size: 14px; color: black; margin: 0px">
-                    Fecha: ${new Date(t.date).getDate()}/${
+                    Fecha: <span style="font-weight:600;">${new Date(t.date).getDate()}/${
                   new Date(t.date).getMonth() + 1
                 }/${new Date(t.date).getFullYear()} - ${new Date(t.date)
                   .getHours()
@@ -632,11 +636,11 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
                   .padStart(2, "0")}:${new Date(t.date)
                   .getMinutes()
                   .toString()
-                  .padStart(2, "0")}hs
+                  .padStart(2, "0")}hs</span>
                   </p>
                 </div>
-                <div style="text-align: center; overflow: hidden">
-                  <img alt="${eventData?.title}" src="${t.path}" />
+                <div style="border-left:1px dashed #e2e8f0;width:25%;text-align:center; overflow: hidden">
+                  <img style="width:100%;height:100%;" alt="${eventData?.title}" src="${t.path}" />
                 </div>
               </div>
             </div>
@@ -644,6 +648,7 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
               )
               .join("")}
           </div>
+          <p>Recordá de llevar tu dni.</p>
         </div>
       </div>
     </div>
