@@ -33,7 +33,7 @@ export async function POST(req: Request) {
       const payment = await new Payment(mp).get({ id: body.data.id });
       console.log("payment", payment);
       if (payment.status === "approved") {
-        await payOrderHandler(payment.metadata.order_id);
+        payOrderHandler(payment.metadata.order_id);
       }
     }
   }
