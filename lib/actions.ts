@@ -533,18 +533,19 @@ export async function createFreeTicket(
   userId: string
 ) {
   try {
-    await updateOrder(orderData, orderId);
-    await payOrderHandler(orderId);
+    updateOrder(orderData, orderId);
+    payOrderHandler(orderId);
   } catch (error) {
     throw new Error("Error creando free ticket");
   }
 }
 
 export async function createTicketOrder(tickets: TicketOrderType[]) {
+  console.log("🚀 ~ createTicketOrder ~ tickets:", tickets)
   try {
     const result = await TicketOrders.createTicketOrder(tickets);
-    console.log("result", result);
-    console.log("tickets", tickets);
+    console.log("🚀 ~ createTicketOrder ~ result:", result)
+    
     if (result.length > 0) {
       return await sendTicketMail(result as TicketOrderType[]);
     }
