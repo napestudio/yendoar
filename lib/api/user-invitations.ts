@@ -15,7 +15,7 @@ export async function createUserInvitation(data: UserInvitation) {
   const emailSubject = `Invitación a ${SITE_NAME}`;
   const emailBody = `
   <div style="font-family: Inter, Helvetica, sans-serif; margin: 0;">      
-    <div style="margin: 0 auto; background-color: #ffffff; overflow: hidden; border: 1px solid #e5e7eb; border-radius: 0.5rem;">
+    <div style="max-width:1400px;margin: 0 auto; background-color: #ffffff; overflow: hidden; border: 1px solid #e5e7eb; border-radius: 0.5rem;">
       <div style="padding: 20px; border-bottom: 1px solid #e5e7eb;">
         <h1 style="font-weight: 400; color: #222222;">
           Invitación a <strong>${SITE_NAME}</strong>
