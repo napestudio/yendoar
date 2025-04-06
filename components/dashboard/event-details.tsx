@@ -30,7 +30,7 @@ import Image from "next/image";
 import { cn, datesFormater } from "@/lib/utils";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { InfoTicketTypeCard } from "./info-ticket-type-card";
+import InfoTicketTypeCard from "./info-ticket-type-card";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import DashboardHeader from "./dashboard-header";
