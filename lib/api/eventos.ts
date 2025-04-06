@@ -106,3 +106,37 @@ export const getEventById = cache(async (eventId: string) => {
     },
   });
 });
+
+export async function getStats({
+  ticketTypeId,
+  eventId,
+}: {
+  ticketTypeId?: string;
+  eventId?: string;
+}) {
+  if (!ticketTypeId && !eventId) {
+    throw new Error("No ticketTypeId or eventId");
+  }
+
+  const where = {
+    status: "PAID" as const,
+    ...(ticketTypeId ? { ticketTypeId } : { eventId }),
+  };
+
+  const aggregate = await db.order.aggregate({
+    _sum: {
+      quantity: true,
+      totalPrice: true,
+    },
+    _max: {
+      createdAt: true,
+    },
+    where,
+  });
+
+  return {
+    totalSold: aggregate._sum.quantity ?? 0,
+    totalRevenue: aggregate._sum.totalPrice ?? 0,
+    lastSale: aggregate._max.createdAt ?? null,
+  };
+}

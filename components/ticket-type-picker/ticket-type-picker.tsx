@@ -114,6 +114,7 @@ export default function TicketTypePicker({
       hasCode: discount,
       discountCode: addedCode,
       eventId: eventId,
+      totalPrice: total,
     };
 
     createOrder(orderData)

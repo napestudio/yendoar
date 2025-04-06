@@ -44,11 +44,13 @@ import { PaymentMethod } from "@prisma/client";
 import PaymentMethodsLoader from "@/app/dashboard/metodos-de-pago/methods-loader";
 import DeleteEventButton from "./delete-event-button";
 import { redirect } from "next/navigation";
+import MinimalEventSalesStats from "./mininimal-event-sales-stats";
 export default function EventDetails({ evento }: { evento: Evento }) {
   const groupedDates = datesFormater(evento.dates as string);
   if (evento.status === "DELETED") {
     redirect("/dashboard");
   }
+
   return (
     <>
       <div className="space-y-6">
@@ -245,8 +247,11 @@ export default function EventDetails({ evento }: { evento: Evento }) {
           </div>
           <div className="md:col-span-2 space-y-6">
             <Card>
-              <CardHeader>{/* <CardTitle>Ventas</CardTitle> */}</CardHeader>
+              <CardHeader>
+                <CardTitle>Ventas</CardTitle>{" "}
+              </CardHeader>
               <CardContent className="space-y-4">
+                <MinimalEventSalesStats eventId={evento.id} />
                 {/* <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Vendidas</span>
@@ -259,11 +264,6 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                 </div> */}
 
                 <Separator />
-
-                {/* <div>
-                  <h4 className="text-sm font-medium mb-2">Ganancia</h4>
-                  <p className="text-2xl font-bold">$200000</p>
-                </div> */}
 
                 <Separator />
 
