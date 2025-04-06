@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { TicketType } from "@/types/tickets";
 import Link from "next/link";
+import { getStats } from "@/lib/api/eventos";
 
 interface TicketTypeCardProps {
   ticket: {
@@ -22,8 +23,16 @@ interface TicketTypeCardProps {
   };
 }
 
-export function InfoTicketTypeCard({ ticket }: { ticket: TicketType }) {
+export default async function InfoTicketTypeCard({
+  ticket,
+}: {
+  ticket: TicketType;
+}) {
   //   const soldPercentage = Math.round((ticket.sold / ticket.total) * 100)
+  if (!ticket || !ticket.id) return;
+  const ticketTypeId = ticket.id;
+
+  const stats = await getStats({ ticketTypeId: ticketTypeId });
 
   return (
     <Card>
@@ -51,20 +60,20 @@ export function InfoTicketTypeCard({ ticket }: { ticket: TicketType }) {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Pausar ventas</DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">
+              {/* <DropdownMenuItem>Pausar ventas</DropdownMenuItem> */}
+              {/* <DropdownMenuItem className="text-destructive">
                 Eliminar
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
 
-        {/* <div className="space-y-2">
-          <div className="flex justify-between text-sm">
+        <div className="space-y-2">
+          <div className="flex gap-5 text-sm">
             <span>Vendidas</span>
-            <span>100 / 1200</span>
+            <span>{stats.totalSold | 0}</span>
           </div>
-        </div> */}
+        </div>
       </CardContent>
     </Card>
   );
