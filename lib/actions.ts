@@ -194,6 +194,7 @@ export type CreateOrderType = {
   eventId: string;
   hasCode: boolean;
   discountCode: string | undefined;
+  totalPrice: number;
 };
 
 export async function createOrder(data: CreateOrderType) {
