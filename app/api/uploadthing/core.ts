@@ -18,7 +18,6 @@ const f = createUploadthing({
 export const uploadRouter = {
   profileImage: f({
     image: {
-      maxFileSize: "1MB",
       maxFileCount: 1,
     },
   }).onUploadComplete(({ file, metadata }) => {

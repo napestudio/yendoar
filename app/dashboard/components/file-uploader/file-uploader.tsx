@@ -8,6 +8,7 @@ import { generateClientDropzoneAccept } from "uploadthing/client";
 import { ImagePlus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { toast } from "@/components/ui/use-toast";
 
 type FileUploaderProps = {
   onFieldChange: (url: string) => void;
@@ -26,6 +27,14 @@ export function FileUploader({
 }: FileUploaderProps) {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
+      const file = acceptedFiles[0];
+      if (!file || file.size > 1024 * 1024) {
+        toast({
+          variant: "destructive",
+          title: "La imagen tiene que ser menor de 1MG",
+        });
+        return;
+      }
       setFiles(acceptedFiles);
       onFieldChange(convertFileToUrl(acceptedFiles[0]));
       setDeleteImageValue(false);
@@ -41,9 +50,10 @@ export function FileUploader({
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
+    maxSize: 1024 * 1024, // 1MB
     maxFiles: 1,
     multiple: false,
-    accept: "image/*" ? generateClientDropzoneAccept(["image/*"]) : undefined,
+    accept: generateClientDropzoneAccept(["image/*"]),
   });
 
   return (
