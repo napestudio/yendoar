@@ -131,6 +131,7 @@ export async function getStats({
     _max: {
       createdAt: true,
     },
+
     where,
   });
 
