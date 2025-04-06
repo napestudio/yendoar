@@ -151,7 +151,7 @@ export default function BuyTicketForm({
       email: data.email,
       phone: data.phone,
       dni: data.dni,
-      totalPrice: total,
+      // totalPrice: total,
     };
 
     createCashOrder(orderData)
