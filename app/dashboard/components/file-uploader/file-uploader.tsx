@@ -15,6 +15,7 @@ type FileUploaderProps = {
   imageUrl: string;
   setFiles: Dispatch<SetStateAction<File[]>>;
   setDeleteImageValue: Dispatch<SetStateAction<boolean>>;
+  setFileUpdated: Dispatch<SetStateAction<boolean>>;
 };
 
 const convertFileToUrl = (file: File) => URL.createObjectURL(file);
@@ -24,6 +25,7 @@ export function FileUploader({
   onFieldChange,
   setFiles,
   setDeleteImageValue,
+  setFileUpdated,
 }: FileUploaderProps) {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -35,17 +37,26 @@ export function FileUploader({
         });
         return;
       }
+      setFileUpdated(true);
       setFiles(acceptedFiles);
       onFieldChange(convertFileToUrl(acceptedFiles[0]));
       setDeleteImageValue(false);
     },
-    [setFiles, onFieldChange, setDeleteImageValue]
+    [setFiles, onFieldChange, setDeleteImageValue, setFileUpdated]
   );
 
   const handleDeleteImage = async (url: string) => {
     setFiles([]);
     onFieldChange("");
-    setDeleteImageValue(true);
+    setDeleteImageValue(true);   
+    try {
+      return await fetch("/api/upload", {
+        method: "DELETE",
+        body: JSON.stringify(url),
+      });
+    } catch (error) {
+      throw new Error("Error eliminando imagen");
+    } 
   };
 
   const { getRootProps, getInputProps } = useDropzone({
