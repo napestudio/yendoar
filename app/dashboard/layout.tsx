@@ -75,15 +75,15 @@ export default async function DashboardLayout({
   return (
     <>
       <SessionProvider session={session}>
+        <MobileSidebar items={dashboardConfig.sidebarNav} />
         <div className="flex min-h-svh gap-8 py-2 p-4 md:py-8 mx-auto w-full bg-white">
-          <MobileSidebar items={dashboardConfig.sidebarNav} />
           <aside className="hidden w-[200px] flex-col md:flex lg:w-[240px]">
             <SideBar session={session} items={dashboardConfig.sidebarNav} />
           </aside>
           <div className="flex flex-col flex-1 pb-12">{children}</div>
         </div>
+        <Toaster />
       </SessionProvider>
-      <Toaster />
     </>
   );
 }

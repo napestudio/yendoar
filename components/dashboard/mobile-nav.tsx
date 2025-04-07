@@ -61,11 +61,12 @@ export function MobileSidebar({ items }: MobileSidebarProps) {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger
-        asChild
-        className="absolute bg-black text-white right-5 bottom-5"
-      >
-        <Button variant="ghost" size="icon" className="md:hidden">
+      <SheetTrigger asChild className=" bg-black text-white">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="fixed right-5 bottom-5 md:hidden z-50"
+        >
           <Menu className="h-5 w-5" />
           <span className="sr-only">Toggle Menu</span>
         </Button>

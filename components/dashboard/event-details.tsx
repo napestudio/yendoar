@@ -94,7 +94,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
         <div className="grid gap-6 md:grid-cols-7">
           <div className="md:col-span-5 space-y-6">
             <Card>
-              <div className="relative h-[300px] w-full">
+              <div className="relative h-[180px] md:h-[300px] w-full">
                 <Image
                   src={evento?.image || "/placeholder.svg"}
                   alt={evento.title}
@@ -156,32 +156,22 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                   </CardContent> */}
                 </Card>
 
-                <Card>
-                  {/* <CardHeader>
-                    <CardTitle>Ventas</CardTitle>
-                    <CardDescription>
-                      Venta de tickets a lo largo del tiempo
-                    </CardDescription>
-                  </CardHeader> */}
-                  <CardContent>
-                    {/* <SalesChart data={event.recentSales} /> */}
-                  </CardContent>
-                </Card>
+                <div className="flex flex-col max-w-[90vw] gap-5">
+                  {evento.eventPayments && evento.eventPayments?.length > 0 && (
+                    <PaymentMethodsList methods={evento.eventPayments} />
+                  )}
 
-                {evento.eventPayments && evento.eventPayments?.length > 0 && (
-                  <PaymentMethodsList methods={evento.eventPayments} />
-                )}
-
-                {evento.eventPayments && evento.user?.clientId && (
-                  <>
-                    {evento.eventPayments && (
-                      <PaymentMethodsLoader
-                        clientId={evento.user.clientId}
-                        eventId={evento.id}
-                      />
-                    )}
-                  </>
-                )}
+                  {evento.eventPayments && evento.user?.clientId && (
+                    <>
+                      {evento.eventPayments && (
+                        <PaymentMethodsLoader
+                          clientId={evento.user.clientId}
+                          eventId={evento.id}
+                        />
+                      )}
+                    </>
+                  )}
+                </div>
 
                 <Card>
                   <CardHeader>

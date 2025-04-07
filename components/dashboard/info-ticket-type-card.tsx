@@ -13,6 +13,7 @@ import {
 import { TicketType } from "@/types/tickets";
 import Link from "next/link";
 import { getStats } from "@/lib/api/eventos";
+import InfoTicketTypeCardActions from "./info-ticket-type-card-actions";
 
 interface TicketTypeCardProps {
   ticket: {
@@ -51,19 +52,7 @@ export default async function InfoTicketTypeCard({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-              <DropdownMenuItem asChild>
-                {/* <Edit className="mr-2 h-4 w-4" /> */}
-                <Link
-                  href={`/dashboard/evento/${ticket.eventId}/edit?tab=tickets`}
-                >
-                  Editar ticket
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              {/* <DropdownMenuItem>Pausar ventas</DropdownMenuItem> */}
-              {/* <DropdownMenuItem className="text-destructive">
-                Eliminar
-              </DropdownMenuItem> */}
+              <InfoTicketTypeCardActions ticket={ticket} />
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
