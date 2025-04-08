@@ -123,6 +123,21 @@ export async function getEventIdByToken(token: string) {
   }
 }
 
+export async function getStats({
+  ticketTypeId,
+  eventId,
+}: {
+  ticketTypeId?: string;
+  eventId?: string;
+}) {
+  try {
+    const result = await Eventos.getStats({ ticketTypeId, eventId });
+    return result;
+  } catch (error) {
+    throw new Error("Error trayendo estadisticas");
+  }
+}
+
 export async function getOrdersByEvent(eventId: string) {
   try {
     const result = await Orders.getOrdersByEvent(eventId);

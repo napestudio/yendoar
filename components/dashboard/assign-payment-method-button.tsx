@@ -7,6 +7,7 @@ import {
 
 import { DropdownMenuItem } from "../ui/dropdown-menu";
 import { toast } from "../ui/use-toast";
+import { Plus } from "lucide-react";
 
 type AssignMethodProp = {
   eventId: string;
@@ -43,5 +44,9 @@ export default function AssignPaymentMethodButton({
     }
   };
 
-  return <DropdownMenuItem onClick={handleAssign}>+ Asignar</DropdownMenuItem>;
+  return (
+    <DropdownMenuItem onClick={handleAssign}>
+      <Plus className="h-4 w-4 mr-2" /> Asignar
+    </DropdownMenuItem>
+  );
 }
