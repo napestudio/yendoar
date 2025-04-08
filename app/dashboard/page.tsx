@@ -17,7 +17,7 @@ import { getAllEventByClientId, getEventsByUserId } from "@/lib/api/eventos";
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
   if (!session) return;
-  const { id, type, clientId } = session.user;
+  const { id, type } = session.user;
 
   let eventos: any[];
 
@@ -29,7 +29,7 @@ export default async function Dashboard() {
     case "SELLER":
       eventos = await getEventsBySellerId(id);
       break;
-    default: // Asume que es producer o cualquier otro rol
+    default:
       eventos = await getEventsByUserId(id);
       break;
   }
