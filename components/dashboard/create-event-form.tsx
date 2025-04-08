@@ -3,8 +3,8 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { createEvent } from "@/lib/actions";
-import { useEffect, useState } from "react";
+import { createEvent, uploadEventImage } from "@/lib/actions";
+import {  useState } from "react";
 import Autocomplete from "react-google-autocomplete";
 import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 import {
@@ -19,11 +19,9 @@ import DatesPicker from "@/components/dates-picker/dates-picker";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 
 import { FileUploader } from "@/app/dashboard/components/file-uploader/file-uploader";
-import { useUploadThing } from "@/lib/utils";
 import { Evento } from "@/types/event";
 import { Loader2 } from "lucide-react";
 import Box from "@/components/dashboard/box";
@@ -47,8 +45,8 @@ export default function CreateEventForm({ userId }: { userId: string }) {
   const [files, setFiles] = useState<File[]>([]);
   const [deleteImageValue, setDeleteImageValue] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [fileUpdated, setFileUpdated] = useState(false);
 
-  const { startUpload } = useUploadThing("profileImage");
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -91,10 +89,28 @@ export default function CreateEventForm({ userId }: { userId: string }) {
     const parsedDates = JSON.stringify(dateTimeSelections);
     setIsLoading(true);
 
-    if (files.length > 0) {
-      const uploadedImages = await startUpload(files);
-      if (uploadedImages) {
-        values.image = uploadedImages[0].url;
+    // subir imagen a uploadthings
+    if (fileUpdated && files.length > 0) {
+      try {
+        const formData = new FormData();
+        formData.append("file", files[0]);
+        const res = await uploadEventImage(formData);
+        if (!res) {
+          throw new Error("Oops something went wrong");
+        }
+        if (res.url) {
+          values.image = res.url;
+          setFileUpdated(false);
+        }
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Error subiendo la imagen",
+        });
+        setIsLoading(false);
+        return;
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -238,6 +254,7 @@ export default function CreateEventForm({ userId }: { userId: string }) {
                           imageUrl={field.value}
                           setFiles={setFiles}
                           setDeleteImageValue={setDeleteImageValue}
+                          setFileUpdated={setFileUpdated}
                         />
                       </FormControl>
                       <FormMessage />
