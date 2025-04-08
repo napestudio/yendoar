@@ -31,7 +31,7 @@ export default async function Dashboard() {
         </div>
         <div className="w-full space-y-5">
           {/* <StatsCards /> */}
-          <EventsDisplay eventos={eventos as Evento[]} />
+          <EventsDisplay eventos={eventos as Evento[]} session={session} />
 
           {eventos.length === 0 && (
             <Card className="p-6">

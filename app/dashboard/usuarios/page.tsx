@@ -15,10 +15,12 @@ import { User } from "@/types/user";
 
 import { Plus } from "lucide-react";
 import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
 export default async function UsersPage() {
   const session = await getServerSession(authOptions);
   if (!session) return;
+  if (session.user.type === "SELLER") redirect("/dashboard");
   const accounts = await getAllUsersByClientId(session.user.clientId!);
 
   const userId = session.user.id;

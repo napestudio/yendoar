@@ -45,11 +45,21 @@ import PaymentMethodsLoader from "@/app/dashboard/metodos-de-pago/methods-loader
 import DeleteEventButton from "./delete-event-button";
 import { redirect } from "next/navigation";
 import MinimalEventSalesStats from "./mininimal-event-sales-stats";
-export default function EventDetails({ evento }: { evento: Evento }) {
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+export default async function EventDetails({ evento }: { evento: Evento }) {
+  const session = await getServerSession(authOptions);
+  if (!session) return;
   const groupedDates = datesFormater(evento.dates as string);
   if (evento.status === "DELETED") {
     redirect("/dashboard");
   }
+
+  const isEventOwner =
+    session.user.id === evento.userId ||
+    session.user.type === "ADMIN" ||
+    session.user.type === "SUPERADMIN";
+  const isSeller = session.user.type === "SELLER";
 
   return (
     <>
@@ -76,18 +86,21 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                   Ver en la web
                 </Link>
               </Button>
+              {!isSeller && isEventOwner && (
+                <>
+                  <Button variant="outline" size="sm">
+                    <Link
+                      href={`/dashboard/evento/${evento.id}/edit`}
+                      className="flex items-center"
+                    >
+                      <Edit className="mr-2 h-4 w-4" />
+                      Editar
+                    </Link>
+                  </Button>
 
-              <Button variant="outline" size="sm">
-                <Link
-                  href={`/dashboard/evento/${evento.id}/edit`}
-                  className="flex items-center"
-                >
-                  <Edit className="mr-2 h-4 w-4" />
-                  Editar
-                </Link>
-              </Button>
-
-              <CancelEventButton id={evento.id} />
+                  <CancelEventButton id={evento.id} />
+                </>
+              )}
             </div>
           )}
         </div>
@@ -126,8 +139,18 @@ export default function EventDetails({ evento }: { evento: Evento }) {
             <Tabs defaultValue="overview" className="w-full">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="overview">Detalles</TabsTrigger>
-                <TabsTrigger value="tickets">Tickets</TabsTrigger>
-                <TabsTrigger value="validators">Validadores</TabsTrigger>
+                <TabsTrigger
+                  value="tickets"
+                  disabled={isSeller || !isEventOwner}
+                >
+                  Tickets
+                </TabsTrigger>
+                <TabsTrigger
+                  value="validators"
+                  disabled={isSeller || !isEventOwner}
+                >
+                  Validadores
+                </TabsTrigger>
               </TabsList>
               <TabsContent value="overview" className="space-y-6">
                 <Card>
@@ -155,36 +178,39 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                     </div>
                   </CardContent> */}
                 </Card>
-
-                <div className="flex flex-col max-w-[90vw] gap-5">
-                  {evento.eventPayments && evento.eventPayments?.length > 0 && (
-                    <PaymentMethodsList methods={evento.eventPayments} />
-                  )}
-
-                  {evento.eventPayments && evento.user?.clientId && (
-                    <>
-                      {evento.eventPayments && (
-                        <PaymentMethodsLoader
-                          clientId={evento.user.clientId}
-                          eventId={evento.id}
-                        />
+                {!isSeller && isEventOwner && (
+                  <div className="flex flex-col max-w-[90vw] gap-5">
+                    {evento.eventPayments &&
+                      evento.eventPayments?.length > 0 && (
+                        <PaymentMethodsList methods={evento.eventPayments} />
                       )}
-                    </>
-                  )}
-                </div>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Eliminar evento permanentemente</CardTitle>
-                    <CardDescription>
-                      Esta acción no se puede revertir. Por favor, asegúrate de
-                      que deseas eliminar este evento antes de continuar.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <DeleteEventButton id={evento.id} />
-                  </CardContent>
-                </Card>
+                    {evento.eventPayments && evento.user?.clientId && (
+                      <>
+                        {evento.eventPayments && (
+                          <PaymentMethodsLoader
+                            clientId={evento.user.clientId}
+                            eventId={evento.id}
+                          />
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
+                {!isSeller && isEventOwner && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Eliminar evento permanentemente</CardTitle>
+                      <CardDescription>
+                        Esta acción no se puede revertir. Por favor, asegúrate
+                        de que deseas eliminar este evento antes de continuar.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <DeleteEventButton id={evento.id} />
+                    </CardContent>
+                  </Card>
+                )}
               </TabsContent>
               <TabsContent value="tickets" className="space-y-6">
                 <Card>
@@ -214,7 +240,7 @@ export default function EventDetails({ evento }: { evento: Evento }) {
                 </Card>
               </TabsContent>
               <TabsContent value="validators" className="space-y-6">
-                <Card>
+                <Card className="max-w-[90vw]">
                   <CardHeader className="flex flex-row items-center justify-between">
                     <div>
                       <CardTitle>Tokens de validación</CardTitle>
