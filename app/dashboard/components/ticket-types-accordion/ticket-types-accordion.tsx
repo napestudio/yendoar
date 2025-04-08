@@ -48,7 +48,7 @@ export default function TicketTypeAccordion({
           <h2 className="mt-10 scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
             Nuevo tipo de ticket
           </h2>
-          <Card className="flex items-center gap-1 border-none p-2 bg-black text-emerald-600 leading-none">
+          <Card className="flex items-center gap-1 px-4  leading-none">
             Disponibles<span className="font-bold">{remainingTickets}</span>{" "}
             <Ticket className="w-8 h-8" />
           </Card>
