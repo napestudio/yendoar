@@ -101,3 +101,33 @@ export async function getTicketOrdersByEventId(eventId: string) {
     },
   });
 }
+
+export async function getUsedInvitesByUser(userId: string): Promise<number> {
+  const events = await db.event.findMany({
+    where: { userId },
+    select: {
+      orders: {
+        where: {
+          isInvitation: true,
+        },
+        select: {
+          quantity: true,
+        },
+      },
+    },
+  });
+
+  const totalInvites = events
+    .flatMap((e) => e.orders)
+    .reduce((acc, order) => acc + order.quantity, 0);
+  return totalInvites;
+}
+
+export async function getUserMaxInvites(userId: string): Promise<number> {
+  const config = await db.userConfiguration.findUnique({
+    where: { userId },
+    select: { maxInvitesAmount: true },
+  });
+
+  return config?.maxInvitesAmount ?? 0;
+}

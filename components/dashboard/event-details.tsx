@@ -47,6 +47,7 @@ import { redirect } from "next/navigation";
 import MinimalEventSalesStats from "./mininimal-event-sales-stats";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { getUsedInvitesByUser, getUserMaxInvites } from "@/lib/actions";
 export default async function EventDetails({ evento }: { evento: Evento }) {
   const session = await getServerSession(authOptions);
   if (!session) return;
@@ -61,6 +62,9 @@ export default async function EventDetails({ evento }: { evento: Evento }) {
     session.user.type === "SUPERADMIN";
   const isSeller = session.user.type === "SELLER";
 
+  const maxInvitesAmount = await getUserMaxInvites(evento.userId);
+  const usedInvites = await getUsedInvitesByUser(evento.userId);
+  const remainingInvites = maxInvitesAmount - usedInvites;
   return (
     <>
       <div className="space-y-6">
@@ -302,23 +306,16 @@ export default async function EventDetails({ evento }: { evento: Evento }) {
                         Vender entrada
                       </Link>
                     </Button>
-                    {/* <Button
+                    <Button
                       variant="outline"
                       size="sm"
-                      disabled={evento.status === "CANCELED"}
+                      disabled={
+                        evento.status === "CANCELED" || remainingInvites === 0
+                      }
                     >
                       <User className="mr-2 h-4 w-4" />
                       Agregar invitado
-                    </Button> */}
-                    {/* <Button variant="outline" size="sm">
-                      <Link
-                        href={`/dashboard/evento/${evento.id}/validadores`}
-                        className="flex items-center"
-                      >
-                        <KeyIcon className="mr-2 w-4 h-4" />
-                        <span>Validadores</span>
-                      </Link>
-                    </Button> */}
+                    </Button>
                   </div>
                 </div>
               </CardContent>

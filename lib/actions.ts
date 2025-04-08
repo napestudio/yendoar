@@ -68,7 +68,7 @@ export async function createEvent(data: Evento) {
 
 export async function updateEvent(data: Evento, eventId: string) {
   try {
-    const result = await Eventos.updateEvent(eventId, data);    
+    const result = await Eventos.updateEvent(eventId, data);
     revalidatePath(`/dashboard/evento/${result.id}/edit`);
     revalidatePath(`/dashboard/evento/${result.id}`);
     revalidatePath(`/eventos/${result.id}`);
@@ -197,6 +197,23 @@ export async function getRemainingTicketsByUser(userId: string) {
     return result;
   } catch (error) {
     throw new Error("Error trayendo limite de tickets");
+  }
+}
+export async function getUserMaxInvites(userId: string) {
+  try {
+    const result = await TicketOrders.getUserMaxInvites(userId);
+    return result;
+  } catch (error) {
+    throw new Error("Error trayendo limite de invitaciones");
+  }
+}
+
+export async function getUsedInvitesByUser(userId: string) {
+  try {
+    const result = await TicketOrders.getUsedInvitesByUser(userId);
+    return result;
+  } catch (error) {
+    throw new Error("Error trayendo limite de invitaciones");
   }
 }
 
@@ -1084,12 +1101,16 @@ export async function getSoldTicketsByType(eventId: string) {
 }
 
 export async function uploadEventImage(formData: any) {
-  const file = formData.get("file") as File;  
+  const file = formData.get("file") as File;
   if (!file) return { ok: false, status: 400 };
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
     const fileName = file.name.split(".")[0];
-    const res = (await uploadFile(buffer, `${process.env.CLIENT_ID}`, fileName)) as {
+    const res = (await uploadFile(
+      buffer,
+      `${process.env.CLIENT_ID}`,
+      fileName
+    )) as {
       secure_url: string;
       public_id: string;
       format: string;
@@ -1101,13 +1122,13 @@ export async function uploadEventImage(formData: any) {
     };
   } catch (error) {
     //throw new Error("Error trayendo las entradas vendidas");
-    return { ok: false, status: 400 }
+    return { ok: false, status: 400 };
   }
 }
 
-export async function deleteEventImage(publicId: string) { 
+export async function deleteEventImage(publicId: string) {
   try {
-    return await deleteFile(publicId);     
+    return await deleteFile(publicId);
   } catch (error) {
     throw new Error("Error eliminando la imagen");
   }
