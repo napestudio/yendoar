@@ -34,6 +34,8 @@ import { getPaidOrdersDataByEvent } from "@/lib/api/orders";
 import { User, UserType } from "@/types/user";
 import { UserConfiguration } from "@/types/user-configuration";
 
+import cloudinary, { deleteFile, uploadFile } from "@/lib/cloudinary-upload";
+
 // Type temporal
 export type Evento = {
   title: string;
@@ -66,7 +68,8 @@ export async function createEvent(data: Evento) {
 
 export async function updateEvent(data: Evento, eventId: string) {
   try {
-    const result = await Eventos.updateEvent(eventId, data);
+    const result = await Eventos.updateEvent(eventId, data);    
+    revalidatePath(`/dashboard/evento/${result.id}/edit`);
     revalidatePath(`/dashboard/evento/${result.id}`);
     revalidatePath(`/eventos/${result.id}`);
     revalidatePath(`/`);
@@ -665,7 +668,9 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
           </div>
           <p style="font-size: 1.1rem; line-height: 1.5; color: #222222;">Recordá llevar tu dni. ¡Nos vemos ahí!.</p>
             <p style="font-size: 1.1rem; line-height: 1.5; color: #222222;">
-              <a href="${process.env.BASE_URL}terminos-y-condiciones" style="color: #0f172a; text-decoration: underline;">Términos y Condiciones de Uso</a>.
+              <a href="${
+                process.env.BASE_URL
+              }terminos-y-condiciones" style="color: #0f172a; text-decoration: underline;">Términos y Condiciones de Uso</a>.
             </p>
         </div>
       </div>
@@ -1043,5 +1048,35 @@ export async function getSoldTicketsByType(eventId: string) {
     return ticketCounts;
   } catch (error) {
     throw new Error("Error trayendo la cantidad de entradas vendidas");
+  }
+}
+
+export async function uploadEventImage(formData: any) {
+  const file = formData.get("file") as File;  
+  if (!file) return { ok: false, status: 400 };
+  try {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const fileName = file.name.split(".")[0];
+    const res = (await uploadFile(buffer, `${process.env.CLIENT_ID}`, fileName)) as {
+      secure_url: string;
+      public_id: string;
+      format: string;
+    };
+    return {
+      url: res.secure_url,
+      publicId: res.public_id,
+      format: res.format,
+    };
+  } catch (error) {
+    //throw new Error("Error trayendo las entradas vendidas");
+    return { ok: false, status: 400 }
+  }
+}
+
+export async function deleteEventImage(publicId: string) { 
+  try {
+    return await deleteFile(publicId);     
+  } catch (error) {
+    throw new Error("Error eliminando la imagen");
   }
 }

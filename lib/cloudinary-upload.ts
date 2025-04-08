@@ -7,14 +7,17 @@ cloudinary.config({
   secure: true,
 });
 
-export async function uploadFile(file: Buffer, folder: string) {
+export async function uploadFile(
+  file: Buffer,
+  folder: string,
+  public_id: string
+) {
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
         folder,
-        transformation: [
-          { crop: 'limit', quality: 'auto' },
-        ]
+        public_id,
+        transformation: [{ crop: "scale", quality: "auto", width: "800" }],
       },
       (error, result) => {
         if (result) resolve(result);
@@ -23,6 +26,14 @@ export async function uploadFile(file: Buffer, folder: string) {
     );
     uploadStream.end(file);
   });
+}
+
+export async function deleteFile(publicId: string) {
+  const newUrl = publicId.substring(publicId.lastIndexOf("/") + 1);  
+  return await cloudinary.uploader.destroy(
+    `${process.env.CLIENT_ID}/${newUrl.split(".")[0]}`,
+    {}
+  );  
 }
 
 export default cloudinary;
