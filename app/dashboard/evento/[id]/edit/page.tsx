@@ -6,6 +6,9 @@ import { Evento } from "@/types/event";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import EditEventTabs from "./edit-event-tabs";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { redirect } from "next/navigation";
 
 interface EditEventPageProps {
   params: { id: string };
@@ -16,8 +19,16 @@ export default async function EditEventPage({
   params,
   searchParams,
 }: EditEventPageProps) {
+  const session = await getServerSession(authOptions);
+  if (!session) return;
   const evento = await getEventById(params.id);
+  if (!evento) return;
+  const isEventOwner =
+    session.user.id === evento.userId ||
+    session.user.type === "ADMIN" ||
+    session.user.type === "SUPERADMIN";
   const activeTab = searchParams.tab || "basic";
+  if (session.user.type === "SELLER" || !isEventOwner) redirect("/dashboard");
   return (
     <>
       <div className="space-y-6 pb-8">
