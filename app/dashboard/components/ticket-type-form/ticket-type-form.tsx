@@ -39,27 +39,34 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import Box from "@/components/dashboard/box";
 
-const FormSchema = z.object({
-  selectedDates: z
-    .array(z.string())
-    .refine((value) => value.some((item) => item), {
-      message: "Debes seleccionar al menos una fecha",
-    }),
-  title: z.string(),
-  price: z.number(),
-  quantity: z.number(),
-  discount: z.number().optional(),
-  multi: z.boolean(),
-  isFree: z.boolean().default(false),
-  status: z.enum(["ACTIVE", "INACTIVE", "ENDED", "DELETED", "SOLDOUT"]),
-  endDate: z.date().optional(),
-});
-
-export default function TycketTypeForm({ evento }: { evento: Evento }) {
+export default function TycketTypeForm({
+  evento,
+  remainingTickets,
+}: {
+  evento: Evento;
+  remainingTickets?: number;
+}) {
   const { toast } = useToast();
   const parsedEventDates = JSON.parse(evento.dates);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasDiscount, setHasDiscount] = useState<boolean>(false);
+  const FormSchema = z.object({
+    selectedDates: z
+      .array(z.string())
+      .refine((value) => value.some((item) => item), {
+        message: "Debes seleccionar al menos una fecha",
+      }),
+    title: z.string(),
+    price: z.number(),
+    quantity: z.number().max(remainingTickets || 0, {
+      message: `No podés crear más de tickets de los disponibles.`,
+    }),
+    discount: z.number().optional(),
+    multi: z.boolean(),
+    isFree: z.boolean().default(false),
+    status: z.enum(["ACTIVE", "INACTIVE", "ENDED", "DELETED", "SOLDOUT"]),
+    endDate: z.date().optional(),
+  });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),

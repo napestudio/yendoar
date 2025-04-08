@@ -12,7 +12,6 @@ export default async function TicketType({
 }: {
   params: { eventId: string };
 }) {
-  // get ticket types by eventId
   const evento = await getEventById(params.eventId);
   const eventTicketTypes = await getTicketTypesByEventId(params.eventId);
 

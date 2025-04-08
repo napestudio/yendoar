@@ -1,5 +1,6 @@
 import { TicketType } from "@/types/tickets";
 import db from "../prisma";
+import { isAfter } from "date-fns";
 
 export async function getTicketTypesById(ticketTypeId: string) {
   return await db.ticketType.findUnique({
@@ -36,4 +37,77 @@ export async function updateTicketType(
     },
     data: ticketData,
   });
+}
+
+export async function getRemainingTicketsByUser(userId: string) {
+  const now = new Date();
+
+  const events = await db.event.findMany({
+    where: {
+      userId,
+    },
+    select: {
+      endDate: true,
+      ticketTypes: {
+        where: {
+          NOT: { status: "DELETED" }, // filtramos los borrados
+        },
+        select: {
+          quantity: true,
+          status: true,
+          orders: {
+            select: {
+              quantity: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  let usedTickets = 0;
+
+  for (const event of events) {
+    const isEventActive = event.endDate === null || isAfter(event.endDate, now);
+
+    for (const ticket of event.ticketTypes) {
+      const sold = ticket.orders.reduce(
+        (acc, order) => acc + order.quantity,
+        0
+      );
+
+      if (isEventActive) {
+        usedTickets += ticket.quantity;
+      } else {
+        usedTickets += sold; // solo contamos los que se vendieron
+      }
+    }
+  }
+
+  return usedTickets;
+}
+
+export async function getUserMaxTickets(userId: string): Promise<number> {
+  const config = await db.userConfiguration.findUnique({
+    where: { userId },
+    select: { maxTicketsAmount: true },
+  });
+
+  return config?.maxTicketsAmount ?? 0;
+}
+
+export async function createTicketTypeWithLimit(
+  ticket: TicketType,
+  userId: string
+) {
+  const max = await getUserMaxTickets(userId);
+  const currentUsed = await getRemainingTicketsByUser(userId);
+
+  if (currentUsed + ticket.quantity > max) {
+    throw new Error(
+      `Superaste el límite de tickets disponibles. Ya usaste ${currentUsed} de ${max}.`
+    );
+  }
+
+  return db.ticketType.create({ data: ticket });
 }
