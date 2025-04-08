@@ -8,48 +8,28 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  BadgePercent,
-  BarChartIcon,
-  Calendar,
-  FileEditIcon,
-  KeyIcon,
-  MapPin,
-  TicketIcon,
-  TrashIcon,
-} from "lucide-react";
+import { Calendar, MapPin, TicketIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Evento } from "@/types/event";
-import { deleteEvent } from "@/lib/actions";
-import { toast } from "@/components/ui/use-toast";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-} from "@/components/ui/tooltip";
-import { TooltipTrigger } from "@radix-ui/react-tooltip";
-import AlertRemove from "../../app/dashboard/components/alert-remove/alert-remove";
+
 import { cn, datesFormater } from "@/lib/utils";
+import { Session } from "next-auth";
 
-export default function EventCard({ evento }: { evento: Evento }) {
+export default function EventCard({
+  evento,
+  session,
+}: {
+  evento: Evento;
+  session: Session;
+}) {
   const groupedDates = datesFormater(evento.dates as string);
-  const handleDeleteEvent = () => {
-    deleteEvent(evento.id)
-      .then(() => {
-        toast({
-          title: "Evento Eliminado",
-        });
-      })
-      .catch((error: string) => {
-        toast({
-          variant: "destructive",
-          title: "Error eliminando el evento",
-        });
-      });
-  };
-
+  const isEventOwner =
+    session.user.id === evento.userId ||
+    session.user.type === "ADMIN" ||
+    session.user.type === "SUPERADMIN";
+  const isSeller = session.user.type === "SELLER";
   return (
     <>
       <Card
@@ -104,7 +84,7 @@ export default function EventCard({ evento }: { evento: Evento }) {
           <Button variant="outline" asChild>
             <Link href={`/dashboard/evento/${evento.id}`}>Detalles</Link>
           </Button>
-          {evento.status !== "CANCELED" && (
+          {evento.status !== "CANCELED" && !isSeller && isEventOwner && (
             <Button>
               <Link
                 href={`/dashboard/evento/${evento.id}/edit?tab=tickets`}

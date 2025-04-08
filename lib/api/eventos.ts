@@ -46,6 +46,29 @@ export const getAllEvents = cache(async () => {
   });
 });
 
+export async function getAllEventByClientId() {
+  return db.event.findMany({
+    where: {
+      status: {
+        equals: "ACTIVE",
+      },
+      user: {
+        clientId: {
+          equals: CLIENT_ID,
+        },
+      },
+      endDate: {
+        not: {
+          lte: new Date(),
+        },
+      },
+    },
+    include: {
+      user: true,
+    },
+  });
+}
+
 // Get eventos home por client ID
 export const getAllActiveEvents = async () => {
   return db.event.findMany({
@@ -140,4 +163,26 @@ export async function getStats({
     totalRevenue: aggregate._sum.totalPrice ?? 0,
     lastSale: aggregate._max.createdAt ?? null,
   };
+}
+
+export async function getEventsBySellerId(userId: string) {
+  const events = await db.event.findMany({
+    where: {
+      eventPayments: {
+        some: {
+          paymentMethod: {
+            type: "CASH",
+            userId: userId,
+          },
+        },
+      },
+    },
+    include: {
+      ticketTypes: true,
+      orders: true,
+      user: true,
+    },
+  });
+
+  return events;
 }

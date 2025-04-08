@@ -43,7 +43,7 @@ import UnassignPaymentMethodButton from "./unassign-payment-method";
 
 export default function PaymentMethodsList({ methods }: { methods: any[] }) {
   return (
-    <Card>
+    <Card className="max-w-[100vw] overflow-hidden">
       <CardHeader>
         <CardTitle>Métodos de Pago asignados</CardTitle>
         <CardDescription>

@@ -108,6 +108,14 @@ export async function getEventById(eventId: string) {
     throw new Error("Error");
   }
 }
+export async function getEventsBySellerId(sellerId: string) {
+  try {
+    const result = await Eventos.getEventsBySellerId(sellerId);
+    return result;
+  } catch (error) {
+    throw new Error("Error");
+  }
+}
 
 export async function getEventIdByToken(token: string) {
   try {
@@ -115,6 +123,21 @@ export async function getEventIdByToken(token: string) {
     return result;
   } catch (error) {
     throw new Error("Error");
+  }
+}
+
+export async function getStats({
+  ticketTypeId,
+  eventId,
+}: {
+  ticketTypeId?: string;
+  eventId?: string;
+}) {
+  try {
+    const result = await Eventos.getStats({ ticketTypeId, eventId });
+    return result;
+  } catch (error) {
+    throw new Error("Error trayendo estadisticas");
   }
 }
 

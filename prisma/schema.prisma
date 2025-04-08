@@ -267,7 +267,7 @@ model PaymentMethod {
   updatedAt DateTime    @updatedAt
 
   client  Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  user    User?          @relation(fields: [userId], references: [id])
+  user    User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
   creator User           @relation("CreatedPaymentMethods", fields: [creatorId], references: [id])
   events  EventPayment[] // Relación con eventos
 
