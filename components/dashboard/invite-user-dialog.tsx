@@ -50,6 +50,7 @@ import { toZonedTime } from "date-fns-tz";
 import { createUserInvitation } from "@/lib/actions";
 import { UserType } from "@/types/user";
 import { UserInvitation } from "@/types/user-invitations";
+import { Session } from "next-auth";
 
 const formSchema = z.object({
   email: z.string().email().min(5, { message: "Debe ser un email válido" }),
@@ -64,6 +65,7 @@ interface InviteCustomerDialogProps {
   userId: string;
   invitations: UserInvitation[];
   clientId: string;
+  session: Session;
 }
 
 export function InviteUserDialog({
@@ -71,6 +73,7 @@ export function InviteUserDialog({
   invitations,
   userId,
   clientId,
+  session,
 }: InviteCustomerDialogProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -153,6 +156,17 @@ export function InviteUserDialog({
   //   resetForm();
   // };
 
+  const allowedRoles =
+    session.user.type === "SUPERADMIN"
+      ? ["ADMIN", "PRODUCER", "SELLER"]
+      : session.user.type === "ADMIN"
+      ? ["PRODUCER", "SELLER"]
+      : session.user.type === "PRODUCER"
+      ? ["SELLER"]
+      : [];
+
+  if (session.user.type === "SELLER") return null;
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -203,11 +217,17 @@ export function InviteUserDialog({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="ADMIN">Admin</SelectItem>
-                          <SelectItem value="PRODUCER">Productor</SelectItem>
-                          <SelectItem value="SELLER">
-                            Punto de venta / Vendedor
-                          </SelectItem>
+                          {allowedRoles.includes("SELLER") && (
+                            <SelectItem value="SELLER">
+                              Punto de venta / Vendedor
+                            </SelectItem>
+                          )}
+                          {allowedRoles.includes("PRODUCER") && (
+                            <SelectItem value="PRODUCER">Productor</SelectItem>
+                          )}
+                          {allowedRoles.includes("ADMIN") && (
+                            <SelectItem value="ADMIN">Admin</SelectItem>
+                          )}
                         </SelectContent>
                       </Select>
                       <FormMessage />

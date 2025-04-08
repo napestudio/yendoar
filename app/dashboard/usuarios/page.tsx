@@ -27,6 +27,7 @@ export default async function UsersPage() {
   const clientId = session.user.clientId;
   const invitations = await getPendingInvitationsByUser(userId);
   if (!clientId) return;
+
   return (
     <div className="flex flex-col gap-8">
       <div className="flex gap-5">
@@ -41,6 +42,7 @@ export default async function UsersPage() {
           invitations={invitations}
           userId={userId}
           clientId={clientId}
+          session={session}
         >
           <Button size="sm">
             <Plus className="mr-2 h-4 w-4" />
