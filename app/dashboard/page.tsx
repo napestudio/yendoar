@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 
-import { getEventsByUserId } from "@/lib/api/eventos";
 import { DollarSign, Plus } from "lucide-react";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
@@ -12,14 +11,28 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import StatsCards from "@/components/dashboard/stats-cards";
 import EventsDisplay from "@/components/dashboard/events-display";
 import DashboardHeader from "@/components/dashboard/dashboard-header";
+import { getEventsBySellerId } from "@/lib/actions";
+import { getAllEventByClientId, getEventsByUserId } from "@/lib/api/eventos";
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
   if (!session) return;
-  const id = session.user.id;
+  const { id, type, clientId } = session.user;
 
-  const eventos = await getEventsByUserId(id);
+  let eventos: any[];
 
+  switch (type) {
+    case "ADMIN":
+    case "SUPERADMIN":
+      eventos = await getAllEventByClientId();
+      break;
+    case "SELLER":
+      eventos = await getEventsBySellerId(id);
+      break;
+    default: // Asume que es producer o cualquier otro rol
+      eventos = await getEventsByUserId(id);
+      break;
+  }
   return (
     <>
       <div className="flex flex-col gap-8">

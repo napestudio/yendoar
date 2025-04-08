@@ -105,6 +105,14 @@ export async function getEventById(eventId: string) {
     throw new Error("Error");
   }
 }
+export async function getEventsBySellerId(sellerId: string) {
+  try {
+    const result = await Eventos.getEventsBySellerId(sellerId);
+    return result;
+  } catch (error) {
+    throw new Error("Error");
+  }
+}
 
 export async function getEventIdByToken(token: string) {
   try {
@@ -665,7 +673,9 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
           </div>
           <p style="font-size: 1.1rem; line-height: 1.5; color: #222222;">Recordá llevar tu dni. ¡Nos vemos ahí!.</p>
             <p style="font-size: 1.1rem; line-height: 1.5; color: #222222;">
-              <a href="${process.env.BASE_URL}terminos-y-condiciones" style="color: #0f172a; text-decoration: underline;">Términos y Condiciones de Uso</a>.
+              <a href="${
+                process.env.BASE_URL
+              }terminos-y-condiciones" style="color: #0f172a; text-decoration: underline;">Términos y Condiciones de Uso</a>.
             </p>
         </div>
       </div>
