@@ -33,7 +33,9 @@ export async function createUserInvitation(data: UserInvitation) {
         </p>
         <p style="font-size: 1.1rem; line-height: 1.5; color: #222222;">
           Para completar tu registro y acceder a la plataforma, es necesario que leas y aceptes nuestros 
-          <a href="${process.env.BASE_URL}terminos-y-condiciones" style="color: #0f172a; text-decoration: underline;">Términos y Condiciones de Uso</a>.
+          <a href="${
+            process.env.BASE_URL
+          }terminos-y-condiciones" style="color: #0f172a; text-decoration: underline;">Términos y Condiciones de Uso</a>.
         </p>
         <p style="font-size: 1.1rem; line-height: 1.5; color: #222222;">
           Al hacer clic en el siguiente botón, confirmas que has leído y aceptas los Términos y Condiciones de Uso de ${SITE_NAME}.
@@ -58,11 +60,11 @@ export async function createUserInvitation(data: UserInvitation) {
   </div>
 `;
 
-
   await sendEmail(data.email, emailSubject, emailBody);
 
   return invitation;
 }
+
 export async function updateInvitationsById(
   data: Partial<UserInvitation>,
   invitationId: string

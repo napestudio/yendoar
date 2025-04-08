@@ -7,10 +7,17 @@ import EventCard from "@/components/dashboard/event-card";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import Link from "next/link";
+import { Session } from "next-auth";
 
-export default function EventsDisplay({ eventos }: { eventos: Evento[] }) {
+export default function EventsDisplay({
+  eventos,
+  session,
+}: {
+  eventos: Evento[];
+  session: Session;
+}) {
   const [activeTab, setActiveTab] = useState("upcoming");
-
+  const isSeller = session.user.type === "SELLER";
   return (
     <Box>
       <div className="flex items-center justify-between mb-4">
@@ -23,11 +30,16 @@ export default function EventsDisplay({ eventos }: { eventos: Evento[] }) {
             <Filter className="mr-2 h-4 w-4" />
             Filtros
           </Button> */}
-          <Button size="sm">
-            <Link href="/dashboard/nuevo-evento" className="flex items-center">
-              <Plus className="mr-2 h-4 w-4" /> Evento
-            </Link>
-          </Button>
+          {!isSeller && (
+            <Button size="sm">
+              <Link
+                href="/dashboard/nuevo-evento"
+                className="flex items-center"
+              >
+                <Plus className="mr-2 h-4 w-4" /> Evento
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
       <Tabs
@@ -43,7 +55,11 @@ export default function EventsDisplay({ eventos }: { eventos: Evento[] }) {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 grid-cols-1 gap-4">
             {eventos &&
               eventos.map((evento) => (
-                <EventCard evento={evento as Evento} key={evento.id} />
+                <EventCard
+                  evento={evento as Evento}
+                  key={evento.id}
+                  session={session}
+                />
               ))}
           </div>
         </TabsContent>

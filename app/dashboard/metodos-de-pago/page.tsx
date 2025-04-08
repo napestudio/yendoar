@@ -8,10 +8,12 @@ import { getUsersByType } from "@/lib/actions";
 import { Plus } from "lucide-react";
 import { getServerSession } from "next-auth";
 import PaymentMethodsLoader from "./methods-loader";
+import { redirect } from "next/navigation";
 
 export default async function PaymentMethodsPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user.clientId) return;
+  if (session.user.type === "SELLER") redirect("/dashboard");
   const sellers = await getUsersByType(session?.user.clientId, "SELLER");
 
   return (
