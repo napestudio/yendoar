@@ -15,7 +15,7 @@ export const sendEmail = async (
   attachments: any
 ) => {
   const mailOptions: any = {
-    from: process.env.EMAIL,
+    from: process.env.GMAIL_USER,
     to: [buyer, process.env.EMAIL],
     subject,
     html,
