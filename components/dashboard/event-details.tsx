@@ -65,6 +65,7 @@ export default async function EventDetails({ evento }: { evento: Evento }) {
   const maxInvitesAmount = await getUserMaxInvites(evento.userId);
   const usedInvites = await getUsedInvitesByUser(evento.userId);
   const remainingInvites = maxInvitesAmount - usedInvites;
+  console.log(maxInvitesAmount, usedInvites, remainingInvites);
   return (
     <>
       <div className="space-y-6">

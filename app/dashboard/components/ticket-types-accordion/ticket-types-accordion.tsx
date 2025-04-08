@@ -12,6 +12,9 @@ import EditTycketTypeForm from "../edit-ticket-type-form/edit-ticket-type-form";
 import { TicketType } from "@/types/tickets";
 import TycketTypeForm from "../ticket-type-form/ticket-type-form";
 import { useState } from "react";
+import Box from "@/components/dashboard/box";
+import { Ticket } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 export default function TicketTypeAccordion({
   evento,
@@ -20,7 +23,7 @@ export default function TicketTypeAccordion({
 }: {
   ticketTypes: TicketType[];
   evento: Evento;
-  remainingTickets?: number;
+  remainingTickets: number;
 }) {
   return (
     <div className="w-full mx-auto text-left">
@@ -41,12 +44,18 @@ export default function TicketTypeAccordion({
             <h1>No hay tickets creados</h1>
           )}
         </div>
-        <h2 className="mt-10 scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-          Nuevo tipo de ticket
-        </h2>
-        <p>Tickets disponibles: {remainingTickets}</p>
+        <div className="flex justify-between">
+          <h2 className="mt-10 scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+            Nuevo tipo de ticket
+          </h2>
+          <Card className="flex items-center gap-1 border-none p-2 bg-black text-emerald-600 leading-none">
+            Disponibles<span className="font-bold">{remainingTickets}</span>{" "}
+            <Ticket className="w-8 h-8" />
+          </Card>
+        </div>
+
         <div>
-          <TycketTypeForm evento={evento} />
+          <TycketTypeForm evento={evento} remainingTickets={remainingTickets} />
         </div>
       </div>
     </div>
