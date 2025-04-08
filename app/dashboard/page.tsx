@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 
-import { getEventsByUserId } from "@/lib/api/eventos";
 import { DollarSign, Plus } from "lucide-react";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
@@ -12,13 +11,28 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import StatsCards from "@/components/dashboard/stats-cards";
 import EventsDisplay from "@/components/dashboard/events-display";
 import DashboardHeader from "@/components/dashboard/dashboard-header";
+import { getEventsBySellerId } from "@/lib/actions";
+import { getAllEventByClientId, getEventsByUserId } from "@/lib/api/eventos";
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
   if (!session) return;
-  const id = session.user.id;
-  const eventos = await getEventsByUserId(id);
+  const { id, type } = session.user;
 
+  let eventos: any[];
+
+  switch (type) {
+    case "ADMIN":
+    case "SUPERADMIN":
+      eventos = await getAllEventByClientId();
+      break;
+    case "SELLER":
+      eventos = await getEventsBySellerId(id);
+      break;
+    default:
+      eventos = await getEventsByUserId(id);
+      break;
+  }
   return (
     <>
       <div className="flex flex-col gap-8">
@@ -30,7 +44,7 @@ export default async function Dashboard() {
         </div>
         <div className="w-full space-y-5">
           {/* <StatsCards /> */}
-          <EventsDisplay eventos={eventos as Evento[]} />
+          <EventsDisplay eventos={eventos as Evento[]} session={session} />
 
           {eventos.length === 0 && (
             <Card className="p-6">

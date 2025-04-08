@@ -383,7 +383,7 @@ export default function EditTycketTypeForm({
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="ACTIVE">Publicado</SelectItem>
-                  <SelectItem value="INACTIVE">Borrador</SelectItem>
+                  <SelectItem value="INACTIVE">Pausado</SelectItem>
                   <SelectItem value="SOLDOUT">Agotado</SelectItem>
                 </SelectContent>
               </Select>

@@ -13,7 +13,6 @@ Reeller.use(ScrollerPlugin);
 export default function EventMarquee({ eventos }: { eventos: HomeCard[] }) {
   const reelRef = useRef<HTMLDivElement>(null);
   const reellerRef = useRef<Reeller | null>(null);
-  const [originalSpeed, setOriginalSpeed] = useState(20);
 
   useEffect(() => {
     if (reelRef.current) {
@@ -21,7 +20,7 @@ export default function EventMarquee({ eventos }: { eventos: HomeCard[] }) {
         container: ".my-reel",
         wrapper: ".my-reel-wrap",
         itemSelector: ".my-reel-item",
-        speed: originalSpeed,
+        speed: 20,
         paused: false,
         autoStop: true,
         plugins: {
@@ -39,6 +38,7 @@ export default function EventMarquee({ eventos }: { eventos: HomeCard[] }) {
     }
   }, []);
 
+  if (eventos.length < 2) return;
   return (
     <div className="my-reel py-2" ref={reelRef}>
       <div className="my-reel-wrap flex gap-5">
