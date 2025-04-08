@@ -188,6 +188,15 @@ export async function getTyicketTypeById(ticketTypeId: string) {
   }
 }
 
+export async function getRemainingTicketsByUser(userId: string) {
+  try {
+    const result = await TicketTypes.getRemainingTicketsByUser(userId);
+    return result;
+  } catch (error) {
+    throw new Error("Error trayendo limite de tickets");
+  }
+}
+
 export async function createTicketType(data: TicketType) {
   try {
     const result = await TicketTypes.createTicketType(data);

@@ -16,9 +16,11 @@ import { useState } from "react";
 export default function TicketTypeAccordion({
   evento,
   ticketTypes,
+  remainingTickets,
 }: {
   ticketTypes: TicketType[];
   evento: Evento;
+  remainingTickets?: number;
 }) {
   return (
     <div className="w-full mx-auto text-left">
@@ -42,6 +44,7 @@ export default function TicketTypeAccordion({
         <h2 className="mt-10 scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
           Nuevo tipo de ticket
         </h2>
+        <p>Tickets disponibles: {remainingTickets}</p>
         <div>
           <TycketTypeForm evento={evento} />
         </div>

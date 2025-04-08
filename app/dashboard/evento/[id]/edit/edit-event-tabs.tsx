@@ -10,9 +10,14 @@ import { useEffect, useState } from "react";
 interface EditEventTabsProps {
   evento: Evento;
   tab?: string;
+  remainingTickets: number;
 }
 
-export default function EditEventTabs({ evento, tab }: EditEventTabsProps) {
+export default function EditEventTabs({
+  evento,
+  tab,
+  remainingTickets,
+}: EditEventTabsProps) {
   const [activeTab, setActiveTab] = useState(tab || "basic");
 
   return (
@@ -33,6 +38,7 @@ export default function EditEventTabs({ evento, tab }: EditEventTabsProps) {
         <TicketTypeAccordion
           ticketTypes={evento.ticketTypes as TicketType[]}
           evento={evento as Evento}
+          remainingTickets={remainingTickets}
         />
       </TabsContent>
     </Tabs>
