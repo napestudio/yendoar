@@ -13,6 +13,7 @@ import { Suspense } from "react";
 import Loader from "../loader";
 import { Metadata, ResolvingMetadata } from "next";
 import { getAllEvents } from "@/lib/api/eventos";
+import { SITE_NAME, SITE_URL } from "@/lib/constants";
 
 // export async function generateStaticParams() {
 //   const events = await getAllEvents();
@@ -20,6 +21,45 @@ import { getAllEvents } from "@/lib/api/eventos";
 //     id: evento.id,
 //   }));
 // }
+
+export async function generateMetadata(
+  { params }: { params: { id: string } },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const eventData = await getEventData(params.id);
+  if (!eventData) {
+    return {
+      title: "Evento no encontrado",
+      description: "Este evento no está disponible.",
+    };
+  }
+
+  const { evento } = eventData;
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: `${SITE_NAME} | ${evento.title} | Entradas`,
+    description: evento.description?.slice(0, 160),
+    openGraph: {
+      title: evento.title,
+      description: evento.description,
+      images: [
+        {
+          url: evento.image || "/placeholder.svg",
+          width: 1200,
+          height: 630,
+          alt: evento.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: evento.title,
+      description: evento.description,
+      images: [evento.image || "/placeholder.svg"],
+    },
+  };
+}
 
 async function getEventData(id: string) {
   const evento = await getEventById(id);
