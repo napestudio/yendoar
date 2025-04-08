@@ -55,7 +55,11 @@ export default function EventsDisplay({
           <div className="grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 grid-cols-1 gap-4">
             {eventos &&
               eventos.map((evento) => (
-                <EventCard evento={evento as Evento} key={evento.id} />
+                <EventCard
+                  evento={evento as Evento}
+                  key={evento.id}
+                  session={session}
+                />
               ))}
           </div>
         </TabsContent>

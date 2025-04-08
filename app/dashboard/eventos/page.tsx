@@ -8,17 +8,17 @@ export default async function EventosPage() {
   const session = await getServerSession(authOptions);
   if (!session) return;
   const id = session.user.id;
-  const eventos =
-    session?.user.type !== "SELLER"
-      ? await getAllEvents()
-      : await getEventsByUserId(id);
+  const eventos = await getAllEvents();
+  session?.user.type !== "SELLER"
+    ? await getAllEvents()
+    : await getEventsByUserId(id);
 
   return (
     <>
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
         EVENTOS
       </h1>
-      <EventsHandler eventos={eventos as Evento[]} />
+      <EventsHandler eventos={eventos as Evento[]} session={session} />
     </>
   );
 }

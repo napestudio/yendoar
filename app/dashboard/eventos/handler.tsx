@@ -4,8 +4,15 @@ import EventFilters from "../components/event-filters";
 import EventCard from "../../../components/dashboard/event-card";
 import { Card } from "@/components/ui/card";
 import { useState } from "react";
+import { Session } from "next-auth";
 
-export default function EventsHandler({ eventos }: { eventos: Evento[] }) {
+export default function EventsHandler({
+  eventos,
+  session,
+}: {
+  eventos: Evento[];
+  session: Session;
+}) {
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
   const users = eventos.reduce((acc: any[], evento: any) => {
@@ -32,7 +39,11 @@ export default function EventsHandler({ eventos }: { eventos: Evento[] }) {
       <EventFilters users={users} action={handleUserSelect} />
       {eventos &&
         filteredEvents.map((evento) => (
-          <EventCard evento={evento as Evento} key={evento.id} />
+          <EventCard
+            evento={evento as Evento}
+            key={evento.id}
+            session={session}
+          />
         ))}
       {eventos.length == 0 && (
         <Card className="p-6">No hay eventos creados.</Card>
