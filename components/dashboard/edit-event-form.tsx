@@ -114,7 +114,13 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     const parsedDates = JSON.stringify(dateTimeSelections);
-    
+
+    if (deleteImageValue) {
+      const res = await deleteEventImage(evento.image);      
+      if (res.result === "ok") values.image = "";
+      setDeleteImageValue(false);
+    }
+
     if (fileUpdated && files.length > 0) {
       try {
         const formData = new FormData();
@@ -139,11 +145,7 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
       }
     }
     
-    if (deleteImageValue) {
-      const res = await deleteEventImage(evento.image);
-      if (res.result === "ok") values.image = "";
-      setDeleteImageValue(false);
-    }
+    
 
     updateEvent(
       {
