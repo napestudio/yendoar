@@ -9,12 +9,14 @@ import { ImagePlus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { toast } from "@/components/ui/use-toast";
+import { deleteEventImage } from "@/lib/actions";
 
 type FileUploaderProps = {
   onFieldChange: (url: string) => void;
   imageUrl: string;
   setFiles: Dispatch<SetStateAction<File[]>>;
   setDeleteImageValue: Dispatch<SetStateAction<boolean>>;
+  setFileUpdated: Dispatch<SetStateAction<boolean>>;
 };
 
 const convertFileToUrl = (file: File) => URL.createObjectURL(file);
@@ -24,33 +26,30 @@ export function FileUploader({
   onFieldChange,
   setFiles,
   setDeleteImageValue,
+  setFileUpdated,
 }: FileUploaderProps) {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0];
-      if (!file || file.size > 1024 * 1024) {
-        toast({
-          variant: "destructive",
-          title: "La imagen tiene que ser menor de 1MG",
-        });
-        return;
-      }
+      setFileUpdated(true);
       setFiles(acceptedFiles);
       onFieldChange(convertFileToUrl(acceptedFiles[0]));
-      setDeleteImageValue(false);
     },
-    [setFiles, onFieldChange, setDeleteImageValue]
+    [setFiles, onFieldChange, setDeleteImageValue, setFileUpdated]
   );
 
   const handleDeleteImage = async (url: string) => {
     setFiles([]);
     onFieldChange("");
     setDeleteImageValue(true);
+    try {
+      await deleteEventImage(url);
+    } catch (error) {
+      throw new Error("Error eliminando imagen");
+    } 
   };
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    maxSize: 1024 * 1024, // 1MB
     maxFiles: 1,
     multiple: false,
     accept: generateClientDropzoneAccept(["image/*"]),

@@ -3,7 +3,7 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { updateEvent } from "@/lib/actions";
+import { deleteEventImage, updateEvent, uploadEventImage } from "@/lib/actions";
 import { useState } from "react";
 import Autocomplete from "react-google-autocomplete";
 
@@ -20,7 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Evento } from "@/types/event";
-import { cn, useUploadThing } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
@@ -52,10 +52,9 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
   const [files, setFiles] = useState<File[]>([]);
   const [deleteImageValue, setDeleteImageValue] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [fileUpdated, setFileUpdated] = useState<boolean>(false);
 
   const { toast } = useToast();
-
-  const { startUpload } = useUploadThing("profileImage");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -93,16 +92,13 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
     setDateTimeSelections(updatedSelections);
   };
 
-  const handleDeleteImage = async (url: string) => {
-    try {
-      return await fetch("/api/uploadthing", {
-        method: "DELETE",
-        body: JSON.stringify(url),
-      });
-    } catch (error) {
-      throw new Error("Error eliminando imagen");
-    }
-  };
+  // const handleDeleteImage = async (url: string) => {
+  //   try {
+  //     await deleteEventImage(evento.image);
+  //   } catch (error) {
+  //     throw new Error("Error eliminando imagen");
+  //   }
+  // };
 
   // Encontrar la última fecha seleccionada
   const lastDate = dateTimeSelections.reduce((latest: any, selection: any) => {
@@ -119,17 +115,35 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
     setIsLoading(true);
     const parsedDates = JSON.stringify(dateTimeSelections);
 
-    if (files.length > 0) {
-      const uploadedImages = await startUpload(files);
-      if (uploadedImages) {
-        handleDeleteImage(evento.image);
-        values.image = uploadedImages[0].url;
-      }
+    if (deleteImageValue) {
+      const res = await deleteEventImage(evento.image);      
+      if (res.result === "ok") values.image = "";
+      setDeleteImageValue(false);
     }
 
-    if (deleteImageValue) {
-      values.image = "";
-    }
+    if (fileUpdated && files.length > 0) {
+      try {
+        const formData = new FormData();
+        formData.append("file", files[0]);
+        const res = await uploadEventImage(formData);
+        if (!res) {
+          throw new Error("Oops something went wrong");
+        }
+        if (res.url) {
+          values.image = res.url;
+          setFileUpdated(false);
+        }
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Error subiendo la imagen",
+        });
+        setIsLoading(false);
+        return;
+      } finally {
+        setIsLoading(false);
+      }
+    }      
 
     updateEvent(
       {
@@ -145,7 +159,7 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
       },
       evento.id
     )
-      .then(() => {
+      .then((res) => {
         toast({
           title: "Evento editado!",
         });
@@ -166,7 +180,12 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
           onSubmit={form.handleSubmit((values) => onSubmit(values))}
           className="space-y-8 w-full"
         >
-          <div className="grid lg:grid-cols-3 gap-5">
+          <div
+            className={cn(
+              "grid lg:grid-cols-3 gap-5",
+              isLoading && "opacity-50 pointer-events-none"
+            )}
+          >
             <div className="lg:col-span-2 space-y-5">
               <Box>
                 <div className="space-y-4">
@@ -176,7 +195,7 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
                     name="title"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-medium">Titulo</FormLabel>
+                        <FormLabel className="font-medium">Título</FormLabel>
                         <FormControl>
                           <Input placeholder="Titulo del evento" {...field} />
                         </FormControl>
@@ -270,6 +289,7 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
                             imageUrl={field.value}
                             setFiles={setFiles}
                             setDeleteImageValue={setDeleteImageValue}
+                            setFileUpdated={setFileUpdated}
                           />
                         </FormControl>
                         <FormMessage />
