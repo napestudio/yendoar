@@ -143,9 +143,7 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
       } finally {
         setIsLoading(false);
       }
-    }
-    
-    
+    }      
 
     updateEvent(
       {
