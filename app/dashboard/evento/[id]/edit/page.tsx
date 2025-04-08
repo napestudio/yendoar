@@ -1,7 +1,7 @@
 import DashboardHeader from "@/components/dashboard/dashboard-header";
 import EditEventForm from "@/components/dashboard/edit-event-form";
 import { Button } from "@/components/ui/button";
-import { getEventById } from "@/lib/actions";
+import { getEventById, getRemainingTicketsByUser } from "@/lib/actions";
 import { Evento } from "@/types/event";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -29,6 +29,11 @@ export default async function EditEventPage({
     session.user.type === "SUPERADMIN";
   const activeTab = searchParams.tab || "basic";
   if (session.user.type === "SELLER" || !isEventOwner) redirect("/dashboard");
+
+  const remainingTickets = await getRemainingTicketsByUser(
+    evento?.userId || ""
+  );
+
   return (
     <>
       <div className="space-y-6 pb-8">
@@ -44,7 +49,11 @@ export default async function EditEventPage({
             </Link>
           </Button>
         </div>
-        <EditEventTabs evento={evento as Evento} tab={activeTab} />
+        <EditEventTabs
+          evento={evento as Evento}
+          tab={activeTab}
+          remainingTickets={remainingTickets}
+        />
       </div>
     </>
   );
