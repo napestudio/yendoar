@@ -150,8 +150,7 @@ export function AddInvitationMethodDialog({
             <DialogHeader className="text-left">
               <DialogTitle>Crear invitación</DialogTitle>
               <DialogDescription>
-                Enviar una invitación para el evento {evento?.title} -{" "}
-                {remainingInvites}
+                Enviar una invitación para el evento {evento?.title}
               </DialogDescription>
             </DialogHeader>
 
