@@ -1138,10 +1138,17 @@ export async function deleteEventImage(publicId: string) {
   }
 }
 
-type InvitationMethodInput = {
+export type InvitationMethodInput = {
+  quantity: number;
   email: string;
-  quantity: string;
-  ticketType: string;
+  ticketTypeId: string;
+  isInvitation: boolean;
+  status: string;
+  eventId: string | undefined;
+  name: string;
+  lastName: string;
+  dni: string;
+  totalPrice: number;
 };
 
 export async function inviteUserToEvent(data: InvitationMethodInput) {

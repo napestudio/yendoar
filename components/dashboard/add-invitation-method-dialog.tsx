@@ -39,15 +39,26 @@ import {
   SelectValue,
 } from "../ui/select";
 
-import { createPaymentMethod, inviteUserToEvent } from "@/lib/actions";
+import {
+  createPaymentMethod,
+  InvitationMethodInput,
+  inviteUserToEvent,
+} from "@/lib/actions";
 
 import { Evento } from "@/types/event";
 import { toast } from "../ui/use-toast";
 
 const invitationMethodSchema = z.object({
-  email: z.string().email({ message: "Debe ser un email válido" }),
-  quantity: z.string().min(1, "Este campo es obligatorio"),
-  ticketType: z.string().min(1, "Este campo es obligatorio"),
+  email: z.string().email().min(5, { message: "Debe ser un email válido" }),
+  quantity: z.string({
+    required_error: "Por favor seleccioná la cantidad de entradas.",
+  }),
+  name: z.string().min(2, { message: "Debe tener al menos 2 caracteres" }),
+  lastName: z.string().min(2, { message: "Debe tener al menos 2 caracteres" }),
+  ticketType: z.string({
+    required_error: "Por favor seleccioná un tipo de entrada.",
+  }),
+  dni: z.string().min(1, "Este campo es obligatorio"),
 });
 
 type InvitationMethodForm = z.infer<typeof invitationMethodSchema>;
@@ -72,6 +83,9 @@ export function AddInvitationMethodDialog({
     resolver: zodResolver(invitationMethodSchema),
     defaultValues: {
       email: "",
+      name: "",
+      lastName: "",
+      dni: "",
       quantity: "",
       ticketType: "",
     },
@@ -83,23 +97,24 @@ export function AddInvitationMethodDialog({
   const onSubmit = async (data: InvitationMethodForm) => {
     setIsSubmitting(true);
     try {
-      const payload: any = {
+      const payload: InvitationMethodInput = {
         quantity: +data.quantity,
         email: data.email,
         ticketTypeId: data.ticketType,
         isInvitation: true,
         status: "PAID",
         eventId: evento?.id,
-        name: session.user.name,
-        lastName: "Invitación",
+        name: data.name,
+        lastName: data.lastName,
+        dni: data.dni,
         totalPrice: 0,
       };
 
       if (remainingInvites < +data.quantity) {
         toast({
-            description: `Solo quedan ${remainingInvites} invitaciones disponibles`,
-            variant: "destructive",
-        })
+          description: `Solo quedan ${remainingInvites} invitaciones disponibles`,
+          variant: "destructive",
+        });
         return;
       }
       await inviteUserToEvent(payload);
@@ -145,6 +160,45 @@ export function AddInvitationMethodDialog({
                 <CardContent className="space-y-4 mt-4">
                   <FormField
                     control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nombre del invitado</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Juan" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Apellido del invitado</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Perez" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="dni"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>DNI del invitado</FormLabel>
+                        <FormControl>
+                          <Input placeholder="12345678" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
                     name="email"
                     render={({ field }) => (
                       <FormItem>
@@ -152,9 +206,6 @@ export function AddInvitationMethodDialog({
                         <FormControl>
                           <Input placeholder="invitado@gmail.com" {...field} />
                         </FormControl>
-                        <FormDescription className="hidden">
-                          Este nombre se utiliza para identificar la cuenta.
-                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -169,9 +220,6 @@ export function AddInvitationMethodDialog({
                         <FormControl>
                           <Input placeholder="0" {...field} />
                         </FormControl>
-                        <FormDescription className="hidden">
-                          Este nombre se utiliza para identificar la cuenta.
-                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
