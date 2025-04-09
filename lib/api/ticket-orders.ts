@@ -5,7 +5,15 @@ import { isAfter } from "date-fns";
 
 export async function createTicketOrder(data: TicketOrderType[]) {
   const createdOrders = await db.$transaction(
-    data.map((order) => db.ticketOrder.create({ data: order }))
+    data.map((order) =>
+      db.ticketOrder.create({
+        data: order,
+        include: {
+          ticketType: true,
+          event: true,
+        },
+      })
+    )
   );
   return createdOrders;
 }
