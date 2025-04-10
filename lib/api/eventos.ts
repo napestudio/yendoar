@@ -49,6 +49,20 @@ export const getAllEvents = cache(async () => {
 export async function getAllEventByClientId() {
   return db.event.findMany({
     where: {
+      user: {
+        clientId: {
+          equals: CLIENT_ID,
+        },
+      },
+    },
+    include: {
+      user: true,
+    },
+  });
+}
+export async function getAllActiveEventByClientId() {
+  return db.event.findMany({
+    where: {
       status: {
         equals: "ACTIVE",
       },
