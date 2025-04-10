@@ -124,7 +124,13 @@ export const getEventById = cache(async (eventId: string) => {
           paymentMethod: true,
         },
       },
-      discountCode: true,
+      discountCode: {
+        where: {
+          status: {
+            not: "DELETED",
+          },
+        },
+      },
       validatorToken: true,
     },
   });

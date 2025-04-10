@@ -1,64 +1,38 @@
 "use client";
 
 import type React from "react";
-import Link from "next/link";
 
 import { useEffect, useState } from "react";
-import {
-  Loader2,
-  CreditCard,
-  Wallet,
-  BanknoteIcon as Bank,
-  Landmark,
-  DollarSign,
-  CalendarIcon,
-} from "lucide-react";
+import { Loader2, BanknoteIcon as Bank, CalendarIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Switch } from "@/components/ui/switch";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "../../ui/form";
-import { User } from "@/types/user";
+
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../ui/select";
-import { Session } from "next-auth";
-import { createDiscountCode, createPaymentMethod } from "@/lib/actions";
-import { PaymentType } from "@prisma/client";
+  createDiscountCode,
+  deleteDiscountCode,
+  updateDiscountCode,
+} from "@/lib/actions";
 import { toast } from "@/components/ui/use-toast";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -70,6 +44,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Evento } from "@/types/event";
 import { DiscountCode } from "@/types/discount-code";
+import RemoveDiscountCodeAlert from "./remove-discount-code-alert";
 
 const formSchema = z.object({
   code: z.string().min(5, {
@@ -94,8 +69,8 @@ export function DiscountCodeDialog({
   code,
 }: DiscountCodeDialogProps) {
   const [open, setOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -104,49 +79,103 @@ export function DiscountCodeDialog({
       eventId: code?.eventId || "",
       discount: code?.discount || 0,
       status: "ACTIVE",
+      expiresAt: code?.expiresAt || undefined,
     },
   });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+
+    if (code) {
+      updateDiscountCode(
+        {
+          code: values.code,
+          expiresAt: new Date(values.expiresAt),
+          status: "ACTIVE",
+          discount: values.discount,
+          eventId: evento.id,
+        },
+        code.id as string
+      )
+        .then(() => {
+          setIsLoading(false);
+          setOpen(false);
+          toast({
+            title: "Código editado!",
+          });
+        })
+        .catch((error) => {
+          toast({
+            variant: "destructive",
+            title: "error editado código",
+          });
+          setOpen(false);
+          setIsLoading(false);
+        });
+    } else {
+      createDiscountCode({
+        code: values.code,
+        expiresAt: new Date(values.expiresAt),
+        status: "ACTIVE",
+        discount: values.discount,
+        eventId: evento.id,
+      })
+        .then(() => {
+          form.reset();
+          setOpen(false);
+          setIsLoading(false);
+          toast({
+            title: "Código creado!",
+          });
+        })
+        .catch((error) => {
+          toast({
+            variant: "destructive",
+            title: "error creando código",
+          });
+          setIsLoading(false);
+        });
+    }
+    form.reset();
+  }
 
   useEffect(() => {
     if (code) {
       form.reset();
     }
-  }, [code, form]);
+  }, [code, code?.code, form]);
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
-
-    createDiscountCode({
-      code: values.code,
-      expiresAt: new Date(values.expiresAt),
-      status: "ACTIVE",
-      discount: values.discount,
-      eventId: evento.id,
-    })
-      .then(() => {
-        form.reset();
-        setIsLoading(false);
-        toast({
-          title: "Código creado!",
+  const handleDeleteCode = () => {
+    if (!code) return;
+    try {
+      deleteDiscountCode(code.id as string)
+        .then(() => {
+          setOpen(false);
+          toast({
+            title: "Código borrado!",
+          });
+        })
+        .catch((error: string) => {
+          setOpen(false);
+          toast({
+            variant: "destructive",
+            title: "Error eliminado el codigo",
+          });
         });
-      })
-      .catch((error) => {
-        toast({
-          variant: "destructive",
-          title: "error creando código",
-        });
-        setIsLoading(false);
-      });
-  }
-
+    } catch (error) {}
+  };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-hidden flex flex-col">
         <DialogHeader className="text-left">
-          <DialogTitle>Agregar Código de Descuento</DialogTitle>
+          <DialogTitle>
+            {code ? "Editar" : "Agregar"} Código de Descuento
+          </DialogTitle>
           <DialogDescription>
-            Agregar un código de descuento para este evento
+            {code
+              ? "Editar o eliminar este código"
+              : "Este código agrega un porcentaje de descuento en la compra de cualquier tipo de ticket"}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -223,30 +252,32 @@ export function DiscountCodeDialog({
                 </FormItem>
               )}
             />
-
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Guardando...
-                </>
-              ) : (
-                "Guardar codigo"
-              )}
-            </Button>
-
-            {code && (
-              <Button variant="destructive" disabled={isLoading}>
+            <div className="flex justify-between">
+              <Button type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Eliminando...
+                    Guardando...
                   </>
                 ) : (
-                  "Eliminar codigo"
+                  "Guardar codigo"
                 )}
               </Button>
-            )}
+
+              {code && (
+                // <Button variant="destructive" disabled={isLoading}>
+                //   {isLoading ? (
+                //     <>
+                //       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                //       Eliminando...
+                //     </>
+                //   ) : (
+                //     "Eliminar codigo"
+                //   )}
+                // </Button>
+                <RemoveDiscountCodeAlert action={handleDeleteCode} />
+              )}
+            </div>
           </form>
         </Form>
       </DialogContent>
