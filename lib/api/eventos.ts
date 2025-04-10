@@ -124,7 +124,39 @@ export const getEventById = cache(async (eventId: string) => {
           paymentMethod: true,
         },
       },
-      discountCode: true,
+      discountCode: {
+        where: {
+          status: {
+            not: "DELETED",
+          },
+        },
+      },
+      tickets: {
+        select: {
+          name: true,
+          lastName: true,
+          dni: true,
+          id: true,
+          code: true,
+          isInvitation: true,
+          email: true,
+          createdAt: true,
+          ticketType: {
+            select: {
+              title: true,
+            },
+          },
+          order: {
+            select: {
+              ticketType: {
+                select: {
+                  title: true,
+                },
+              },
+            },
+          },
+        },
+      },
       validatorToken: true,
     },
   });

@@ -473,8 +473,8 @@ export default function BuyTicketForm({
           </div>
 
           <div>
-            {serviceCharge ||
-              (discount && form.watch("quantity") && (
+            {discount ||
+              (serviceCharge && form.watch("quantity") && (
                 <>
                   <div className="">
                     <p>

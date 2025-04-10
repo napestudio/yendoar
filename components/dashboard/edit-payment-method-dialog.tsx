@@ -87,10 +87,6 @@ export function EditPaymentMethodDialog({
   onOpenChange,
 }: EditCustomerSettingsDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [apiKey, setApiKey] = useState("");
-  const [secretKey, setSecretKey] = useState("");
-  const [accountName, setAccountName] = useState("");
-  const [enableIntegration, setEnableIntegration] = useState(true);
 
   const form = useForm<PaymentMethodForm>({
     resolver: zodResolver(paymentMethodSchema),
@@ -134,22 +130,6 @@ export function EditPaymentMethodDialog({
     onOpenChange(false);
     setIsSubmitting(false);
   };
-
-  const paymentOptions = [
-    {
-      id: "mercadopago",
-      name: "MercadoPago",
-      description: "Usando MercadoPago Checkout Pro",
-      icon: <Wallet className="h-6 w-6" />,
-    },
-
-    {
-      id: "cash",
-      name: "Efectivo | Punto de venta",
-      description: "Para cobros en efectivo",
-      icon: <DollarSign className="h-6 w-6" />,
-    },
-  ];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

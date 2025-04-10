@@ -1,7 +1,18 @@
-import { TicketOrderType, TicketType } from "@/types/tickets";
 import db from "../prisma";
-import { title } from "process";
-import { isAfter } from "date-fns";
+
+type TicketOrderType = {
+  id?: string;
+  name: string;
+  lastName: string;
+  dni: string;
+  email: string;
+  base64Qr: string;
+  date: Date;
+  orderId: string;
+  eventId: string;
+  ticketTypeId?: string;
+  status: "NOT_VALIDATED" | "VALIDATED";
+};
 
 export async function createTicketOrder(data: TicketOrderType[]) {
   const createdOrders = await db.$transaction(
@@ -100,4 +111,34 @@ export async function getTicketOrdersByEventId(eventId: string) {
       event: { select: { title: true } },
     },
   });
+}
+
+export async function getUsedInvitesByUser(userId: string): Promise<number> {
+  const events = await db.event.findMany({
+    where: { userId },
+    select: {
+      orders: {
+        where: {
+          isInvitation: true,
+        },
+        select: {
+          quantity: true,
+        },
+      },
+    },
+  });
+
+  const totalInvites = events
+    .flatMap((e) => e.orders)
+    .reduce((acc, order) => acc + order.quantity, 0);
+  return totalInvites;
+}
+
+export async function getUserMaxInvites(userId: string): Promise<number> {
+  const config = await db.userConfiguration.findUnique({
+    where: { userId },
+    select: { maxInvitesAmount: true },
+  });
+
+  return config?.maxInvitesAmount ?? 0;
 }
