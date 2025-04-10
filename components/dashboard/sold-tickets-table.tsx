@@ -17,14 +17,14 @@ import {
 } from "../ui/dropdown-menu";
 import { useState } from "react";
 import Box from "./box";
-import { TicketOrderType } from "@/types/tickets";
+import { TicketOrderTableProps, TicketOrderType } from "@/types/tickets";
 import { format } from "date-fns";
 import { Input } from "../ui/input";
 
 export default function SoldTicketsTable({
   tickets,
 }: {
-  tickets: TicketOrderType[];
+  tickets: TicketOrderTableProps[];
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showOnlyInvitations, setShowOnlyInvitations] = useState(false);
