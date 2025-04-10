@@ -22,6 +22,7 @@ import ValidatorsTab from "./validators-tab";
 import DetailsTab from "./details-tab";
 import Navigation from "./navigation";
 import SideBar from "./side-bar";
+import SoldTicketsTab from "./sold-tickets-tab";
 export default async function EventDetails({ evento }: { evento: Evento }) {
   const session = await getServerSession(authOptions);
   if (!session) return;
@@ -84,25 +85,31 @@ export default async function EventDetails({ evento }: { evento: Evento }) {
                 </div>
               </CardContent>
             </Card>
+
             <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="grid w-full md:grid-cols-4 grid-cols-1 h-max">
-                <TabsTrigger value="overview">Detalles</TabsTrigger>
-                <TabsTrigger
-                  value="tickets"
-                  disabled={isSeller || !isEventOwner}
-                >
-                  Tickets
-                </TabsTrigger>
-                <TabsTrigger
-                  value="validators"
-                  disabled={isSeller || !isEventOwner}
-                >
-                  Validadores
-                </TabsTrigger>
-                <TabsTrigger value="list" disabled={isSeller || !isEventOwner}>
-                  Entradas Vendidas
-                </TabsTrigger>
-              </TabsList>
+              <div className="overflow-x-auto max-w-[90vw] w-full">
+                <TabsList>
+                  <TabsTrigger value="overview">Detalles</TabsTrigger>
+                  <TabsTrigger
+                    value="tickets"
+                    disabled={isSeller || !isEventOwner}
+                  >
+                    Tickets
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="validators"
+                    disabled={isSeller || !isEventOwner}
+                  >
+                    Validadores
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="soldList"
+                    disabled={isSeller || !isEventOwner}
+                  >
+                    Entradas Vendidas
+                  </TabsTrigger>
+                </TabsList>
+              </div>
               <TabsContent value="overview" className="space-y-6">
                 <DetailsTab
                   isEventOwner={isEventOwner}
@@ -115,6 +122,9 @@ export default async function EventDetails({ evento }: { evento: Evento }) {
               </TabsContent>
               <TabsContent value="validators" className="space-y-6">
                 <ValidatorsTab evento={evento} />
+              </TabsContent>
+              <TabsContent value="soldList" className="space-y-6">
+                <SoldTicketsTab evento={evento} />
               </TabsContent>
             </Tabs>
           </div>

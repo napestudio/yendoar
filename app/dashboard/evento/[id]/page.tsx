@@ -1,7 +1,7 @@
 import { getEventById } from "@/lib/actions";
-import { Evento } from "@/types/event";
 
 import EventDetails from "@/components/dashboard/event-details";
+import { Evento } from "@/types/event";
 
 export default async function EventPage({
   params,

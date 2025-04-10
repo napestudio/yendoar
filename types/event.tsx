@@ -25,4 +25,5 @@ export interface Evento {
   ticketTypes?: TicketType[];
   validatorToken?: ValidatorToken[];
   eventPayments?: EventPayment[];
+  tickets?: Partial<TicketOrderType>[];
 }
