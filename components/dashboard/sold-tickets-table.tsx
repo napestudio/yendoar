@@ -53,12 +53,11 @@ export default function SoldTicketsTable({
         event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         event.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
         event.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        event.ticketType
+        event.order?.ticketType
           ?.title!.toLowerCase()
           .includes(searchQuery.toLowerCase())
     )
     .filter((event) => (showOnlyInvitations ? event.isInvitation : true));
-
   console.log(tickets);
   return (
     <div className="space-y-6">
@@ -102,7 +101,7 @@ export default function SoldTicketsTable({
                     </TableCell>
                     <TableCell className="font-medium">{ticket.dni}</TableCell>
                     <TableCell className="font-medium">
-                      {ticket.ticketType?.title}
+                      {ticket.order?.ticketType?.title}
                     </TableCell>
                     <TableCell className="font-medium">
                       {format(ticket.createdAt!, "dd/MM/yyyy")}

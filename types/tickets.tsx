@@ -1,3 +1,4 @@
+import { Order } from "./order";
 import { Promotion } from "./promotion";
 
 type TicketTypeStatus = "ACTIVE" | "INACTIVE" | "ENDED" | "DELETED" | "SOLDOUT";
@@ -51,4 +52,5 @@ export type TicketOrderType = {
   ticketType?: Partial<TicketType>;
   createdAt?: Date;
   isInvitation?: boolean;
+  order?: Order;
 };

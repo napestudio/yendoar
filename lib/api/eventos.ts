@@ -146,6 +146,15 @@ export const getEventById = cache(async (eventId: string) => {
               title: true,
             },
           },
+          order: {
+            select: {
+              ticketType: {
+                select: {
+                  title: true,
+                },
+              },
+            },
+          },
         },
       },
       validatorToken: true,
