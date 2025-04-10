@@ -66,14 +66,12 @@ type InvitationMethodForm = z.infer<typeof invitationMethodSchema>;
 interface AddInvitationMethodDialogProps {
   children: React.ReactNode;
   evento?: Evento;
-  session: Session;
   remainingInvites: number;
 }
 
 export function AddInvitationMethodDialog({
   children,
   evento,
-  session,
   remainingInvites,
 }: AddInvitationMethodDialogProps) {
   const [open, setOpen] = useState(false);

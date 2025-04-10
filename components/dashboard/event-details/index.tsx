@@ -29,26 +29,26 @@ import Image from "next/image";
 
 import { cn, datesFormater } from "@/lib/utils";
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import InfoTicketTypeCard from "./info-ticket-type-card";
-import { Badge } from "../ui/badge";
-import { Separator } from "../ui/separator";
-import DashboardHeader from "./dashboard-header";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
+import InfoTicketTypeCard from "../info-ticket-type-card";
+import { Badge } from "../../ui/badge";
+import { Separator } from "../../ui/separator";
+import DashboardHeader from "../dashboard-header";
 import { SITE_URL } from "@/lib/constants";
-import ValidatorsTable from "./validators-table";
+import ValidatorsTable from "../validators-table";
 import { ValidatorToken } from "@/types/validators";
 import NewTokenDialog from "@/app/dashboard/components/new-token-dialog/new-token-dialog";
-import CancelEventButton from "./cancel-event-button";
-import PaymentMethodsList from "./payment-methods-list";
+import CancelEventButton from "../cancel-event-button";
+import PaymentMethodsList from "../payment-methods-list";
 import { PaymentMethod } from "@prisma/client";
 import PaymentMethodsLoader from "@/app/dashboard/metodos-de-pago/methods-loader";
-import DeleteEventButton from "./delete-event-button";
+import DeleteEventButton from "../delete-event-button";
 import { redirect } from "next/navigation";
-import MinimalEventSalesStats from "./mininimal-event-sales-stats";
+import MinimalEventSalesStats from "../mininimal-event-sales-stats";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { getUsedInvitesByUser, getUserMaxInvites } from "@/lib/actions";
-import { AddInvitationMethodDialog } from "./add-invitation-method-dialog";
+import { AddInvitationMethodDialog } from "../add-invitation-method-dialog";
 
 export default async function EventDetails({ evento }: { evento: Evento }) {
   const session = await getServerSession(authOptions);
@@ -310,7 +310,6 @@ export default async function EventDetails({ evento }: { evento: Evento }) {
                       </Link>
                     </Button>
                     <AddInvitationMethodDialog
-                      session={session}
                       evento={evento}
                       remainingInvites={remainingInvites}
                     >
@@ -319,8 +318,8 @@ export default async function EventDetails({ evento }: { evento: Evento }) {
                         size="sm"
                         disabled={
                           evento.status === "CANCELED" ||
-                          remainingInvites === 0 ||
-                          session.user.type === "SELLER"
+                          remainingInvites <= 0 ||
+                          isSeller
                         }
                       >
                         <User className="mr-2 h-4 w-4" />
