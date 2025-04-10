@@ -50,7 +50,9 @@ import { toast } from "../ui/use-toast";
 
 const invitationMethodSchema = z.object({
   email: z.string().email().min(5, { message: "Debe ser un email válido" }),
-  quantity: z.number().min(1, { message: "Por favor seleccioná la cantidad de entradas", }),
+  quantity: z
+    .number({ required_error: "Por favor seleccioná la cantidad de entradas" })
+    .nonnegative(),
   name: z.string().min(2, { message: "Debe tener al menos 2 caracteres" }),
   lastName: z.string().min(2, { message: "Debe tener al menos 2 caracteres" }),
   ticketType: z.string({
@@ -128,11 +130,6 @@ export function AddInvitationMethodDialog({
     setIsSubmitting(false);
     setOpen(false);
     form.reset();
-  };
-
-  const resetForm = () => {
-    // setSelectedMethod(null);
-    //setEnableIntegration(true);
   };
 
   return (
@@ -215,7 +212,14 @@ export function AddInvitationMethodDialog({
                       <FormItem>
                         <FormLabel>Cantidad de entradas</FormLabel>
                         <FormControl>
-                          <Input placeholder="0" {...field} />
+                          <Input
+                            type="number"
+                            placeholder="0"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(Number(e.target.value))
+                            }
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
