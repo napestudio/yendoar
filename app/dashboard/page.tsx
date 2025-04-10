@@ -14,6 +14,7 @@ import DashboardHeader from "@/components/dashboard/dashboard-header";
 import { getEventsBySellerId } from "@/lib/actions";
 import {
   getAllActiveEventByClientId,
+  getAllEventByClientId,
   getEventsByUserId,
 } from "@/lib/api/eventos";
 
