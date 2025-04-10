@@ -50,13 +50,11 @@ import { toast } from "../ui/use-toast";
 
 const invitationMethodSchema = z.object({
   email: z.string().email().min(5, { message: "Debe ser un email válido" }),
-  quantity: z.string({
-    required_error: "Por favor seleccioná la cantidad de entradas.",
-  }),
+  quantity: z.number().min(1, { message: "Por favor seleccioná la cantidad de entradas", }),
   name: z.string().min(2, { message: "Debe tener al menos 2 caracteres" }),
   lastName: z.string().min(2, { message: "Debe tener al menos 2 caracteres" }),
   ticketType: z.string({
-    required_error: "Por favor seleccioná un tipo de entrada.",
+    required_error: "Por favor seleccioná un tipo de entrada",
   }),
   dni: z.string().min(1, "Este campo es obligatorio"),
 });
@@ -86,7 +84,7 @@ export function AddInvitationMethodDialog({
       name: "",
       lastName: "",
       dni: "",
-      quantity: "",
+      quantity: 0,
       ticketType: "",
     },
   });
@@ -98,7 +96,7 @@ export function AddInvitationMethodDialog({
     setIsSubmitting(true);
     try {
       const payload: InvitationMethodInput = {
-        quantity: +data.quantity,
+        quantity: data.quantity,
         email: data.email,
         ticketTypeId: data.ticketType,
         isInvitation: true,
@@ -110,7 +108,7 @@ export function AddInvitationMethodDialog({
         totalPrice: 0,
       };
 
-      if (remainingInvites < +data.quantity) {
+      if (remainingInvites < data.quantity) {
         toast({
           description: `Solo quedan ${remainingInvites} invitaciones disponibles`,
           variant: "destructive",
