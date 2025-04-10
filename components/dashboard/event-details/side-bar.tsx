@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { DiscountCodeDialog } from "./discount-code-dialog";
+import { AddInvitationDialog } from "../add-invitation-dialog";
 
 interface SideBarProps {
   evento: Evento;
@@ -64,14 +65,23 @@ export default function SideBar({
                   Vender entrada
                 </Link>
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={evento.status === "CANCELED" || remainingInvites <= 0}
+              <AddInvitationDialog
+                evento={evento}
+                remainingInvites={remainingInvites}
               >
-                <User className="mr-2 h-4 w-4" />
-                Agregar invitado
-              </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={
+                    evento.status === "CANCELED" ||
+                    remainingInvites <= 0 ||
+                    isSeller
+                  }
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  Agregar invitado
+                </Button>
+              </AddInvitationDialog>
             </div>
           </div>
           {!isSeller && isEventOwner && (

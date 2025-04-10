@@ -74,3 +74,12 @@ export async function updateOrder(orderId: string, orderData: any) {
     data: orderData,
   });
 }
+
+export async function createInvitationOrder(data: any) {
+  return await db.order.create({
+    data,
+    include: {
+      ticketType: true,
+    },
+  });
+}

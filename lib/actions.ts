@@ -1133,3 +1133,49 @@ export async function deleteEventImage(publicId: string) {
     throw new Error("Error eliminando la imagen");
   }
 }
+
+export type InvitationMethodInput = {
+  quantity: number;
+  email: string;
+  ticketTypeId: string;
+  isInvitation: boolean;
+  status: string;
+  eventId: string | undefined;
+  name: string;
+  lastName: string;
+  dni: string;
+  totalPrice: number;
+};
+
+export async function inviteUserToEvent(data: InvitationMethodInput) {
+  try {
+    const result = await Orders.createInvitationOrder(data);
+    if (result) {
+      const dates = JSON.parse(result.ticketType.dates!);
+      const is2x1 = result.ticketType.buyGet === 2;
+      result.quantity = is2x1 ? result.quantity * 2 : result.quantity;
+
+      const ticketsData: TicketOrderType[] = [];
+      dates.forEach((dateObj: DatesType) => {
+        for (let i = 0; i < result.quantity; i++) {
+          ticketsData.push({
+            name: result.name!,
+            lastName: result.lastName!,
+            dni: result.dni!,
+            email: result.email!,
+            base64Qr: "code",
+            date: new Date(dateObj.date),
+            orderId: result.id,
+            eventId: result.eventId,
+            status: "NOT_VALIDATED",
+            ticketTypeId: result.ticketTypeId,
+          });
+        }
+      });
+      await createTicketOrder(ticketsData);
+      revalidatePath(`/dashboard/evento/${result.eventId}/edit`);
+    }
+  } catch (error) {
+    throw new Error("Error creando la invitacion");
+  }
+}
