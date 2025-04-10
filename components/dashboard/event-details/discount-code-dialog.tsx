@@ -3,7 +3,7 @@
 import type React from "react";
 import Link from "next/link";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Loader2,
   CreditCard,
@@ -69,6 +69,7 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Evento } from "@/types/event";
+import { DiscountCode } from "@/types/discount-code";
 
 const formSchema = z.object({
   code: z.string().min(5, {
@@ -84,11 +85,13 @@ const formSchema = z.object({
 interface DiscountCodeDialogProps {
   children: React.ReactNode;
   evento: Evento;
+  code?: DiscountCode;
 }
 
 export function DiscountCodeDialog({
   children,
   evento,
+  code,
 }: DiscountCodeDialogProps) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -97,12 +100,18 @@ export function DiscountCodeDialog({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      code: "",
-      eventId: "",
-      discount: 0,
+      code: code?.code || "",
+      eventId: code?.eventId || "",
+      discount: code?.discount || 0,
       status: "ACTIVE",
     },
   });
+
+  useEffect(() => {
+    if (code) {
+      form.reset();
+    }
+  }, [code, form]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
@@ -225,6 +234,19 @@ export function DiscountCodeDialog({
                 "Guardar codigo"
               )}
             </Button>
+
+            {code && (
+              <Button variant="destructive" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Eliminando...
+                  </>
+                ) : (
+                  "Eliminar codigo"
+                )}
+              </Button>
+            )}
           </form>
         </Form>
       </DialogContent>

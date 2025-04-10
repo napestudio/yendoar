@@ -85,7 +85,7 @@ export default async function EventDetails({ evento }: { evento: Evento }) {
               </CardContent>
             </Card>
             <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full md:grid-cols-4 grid-cols-1 h-max">
                 <TabsTrigger value="overview">Detalles</TabsTrigger>
                 <TabsTrigger
                   value="tickets"
@@ -98,6 +98,9 @@ export default async function EventDetails({ evento }: { evento: Evento }) {
                   disabled={isSeller || !isEventOwner}
                 >
                   Validadores
+                </TabsTrigger>
+                <TabsTrigger value="list" disabled={isSeller || !isEventOwner}>
+                  Entradas Vendidas
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="overview" className="space-y-6">
