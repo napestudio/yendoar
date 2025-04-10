@@ -44,7 +44,7 @@ export default function TycketTypeForm({
   remainingTickets,
 }: {
   evento: Evento;
-  remainingTickets?: number;
+  remainingTickets: number;
 }) {
   const { toast } = useToast();
   const parsedEventDates = JSON.parse(evento.dates);

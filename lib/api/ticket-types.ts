@@ -39,6 +39,15 @@ export async function updateTicketType(
   });
 }
 
+export async function getUserMaxTickets(userId: string): Promise<number> {
+  const config = await db.userConfiguration.findUnique({
+    where: { userId },
+    select: { maxTicketsAmount: true },
+  });
+
+  return config?.maxTicketsAmount ?? 0;
+}
+
 export async function getRemainingTicketsByUser(userId: string) {
   const now = new Date();
 
@@ -83,17 +92,9 @@ export async function getRemainingTicketsByUser(userId: string) {
       }
     }
   }
+  const max = await getUserMaxTickets(userId);
 
-  return usedTickets;
-}
-
-export async function getUserMaxTickets(userId: string): Promise<number> {
-  const config = await db.userConfiguration.findUnique({
-    where: { userId },
-    select: { maxTicketsAmount: true },
-  });
-
-  return config?.maxTicketsAmount ?? 0;
+  return max - usedTickets;
 }
 
 export async function createTicketTypeWithLimit(

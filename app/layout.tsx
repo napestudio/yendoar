@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import "./global.scss";
+import type { Metadata } from "next";
 import NavBar from "@/components/nav-bar/nav-bar";
 
 import Footer from "@/components/footer/footer";
@@ -26,7 +26,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body className={montserrat.className}>
         <NavBar />
         <main className="flex flex-col items-center bg-blue">{children}</main>

@@ -68,7 +68,7 @@ export async function createEvent(data: Evento) {
 
 export async function updateEvent(data: Evento, eventId: string) {
   try {
-    const result = await Eventos.updateEvent(eventId, data);    
+    const result = await Eventos.updateEvent(eventId, data);
     revalidatePath(`/dashboard/evento/${result.id}/edit`);
     revalidatePath(`/dashboard/evento/${result.id}`);
     revalidatePath(`/eventos/${result.id}`);
@@ -197,6 +197,23 @@ export async function getRemainingTicketsByUser(userId: string) {
     return result;
   } catch (error) {
     throw new Error("Error trayendo limite de tickets");
+  }
+}
+export async function getUserMaxInvites(userId: string) {
+  try {
+    const result = await TicketOrders.getUserMaxInvites(userId);
+    return result;
+  } catch (error) {
+    throw new Error("Error trayendo limite de invitaciones");
+  }
+}
+
+export async function getUsedInvitesByUser(userId: string) {
+  try {
+    const result = await TicketOrders.getUsedInvitesByUser(userId);
+    return result;
+  } catch (error) {
+    throw new Error("Error trayendo limite de invitaciones");
   }
 }
 
@@ -794,21 +811,17 @@ export async function createDiscountCode(data: DiscountCode) {
   let codeId = null;
   try {
     const result = await Code.createDiscountCode(data);
-    codeId = result.id;
+
+    revalidatePath(`/dashboard/evento/${result.eventId}`);
   } catch (error) {
     throw new Error("Error creando el código de descuento");
   }
-  if (codeId) {
-    redirect(`/dashboard/codigos/${codeId}`);
-  }
-
-  revalidatePath("/dashboard");
 }
 
 export async function updateDiscountCode(data: DiscountCode, eventId: string) {
   try {
     const result = await Code.updateDiscountCode(eventId, data);
-    revalidatePath(`/dashboard/evento/${result.id}`);
+    revalidatePath(`/dashboard/evento/${result.eventId}`);
   } catch (error) {
     throw new Error("Error editando el evento");
   }
@@ -819,7 +832,7 @@ export async function deleteDiscountCode(eventId: string) {
     const data = { status: "DELETED" };
     const result = await Code.updateDiscountCode(eventId, data as DiscountCode);
 
-    revalidatePath(`/dashboard`);
+    revalidatePath(`/dashboard/evento/${result.eventId}`);
     return result;
   } catch (error) {
     throw new Error("Error editando el evento");
@@ -1084,12 +1097,16 @@ export async function getSoldTicketsByType(eventId: string) {
 }
 
 export async function uploadEventImage(formData: any) {
-  const file = formData.get("file") as File;  
+  const file = formData.get("file") as File;
   if (!file) return { ok: false, status: 400 };
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
     const fileName = file.name.split(".")[0];
-    const res = (await uploadFile(buffer, `${process.env.CLIENT_ID}`, fileName)) as {
+    const res = (await uploadFile(
+      buffer,
+      `${process.env.CLIENT_ID}`,
+      fileName
+    )) as {
       secure_url: string;
       public_id: string;
       format: string;
@@ -1101,14 +1118,60 @@ export async function uploadEventImage(formData: any) {
     };
   } catch (error) {
     //throw new Error("Error trayendo las entradas vendidas");
-    return { ok: false, status: 400 }
+    return { ok: false, status: 400 };
   }
 }
 
-export async function deleteEventImage(publicId: string) { 
+export async function deleteEventImage(publicId: string) {
   try {
-    return await deleteFile(publicId);     
+    return await deleteFile(publicId);
   } catch (error) {
     throw new Error("Error eliminando la imagen");
+  }
+}
+
+export type InvitationMethodInput = {
+  quantity: number;
+  email: string;
+  ticketTypeId: string;
+  isInvitation: boolean;
+  status: string;
+  eventId: string | undefined;
+  name: string;
+  lastName: string;
+  dni: string;
+  totalPrice: number;
+};
+
+export async function inviteUserToEvent(data: InvitationMethodInput) {
+  try {
+    const result = await Orders.createInvitationOrder(data);
+    if (result) {
+      const dates = JSON.parse(result.ticketType.dates!);
+      const is2x1 = result.ticketType.buyGet === 2;
+      result.quantity = is2x1 ? result.quantity * 2 : result.quantity;
+
+      const ticketsData: TicketOrderType[] = [];
+      dates.forEach((dateObj: DatesType) => {
+        for (let i = 0; i < result.quantity; i++) {
+          ticketsData.push({
+            name: result.name!,
+            lastName: result.lastName!,
+            dni: result.dni!,
+            email: result.email!,
+            base64Qr: "code",
+            date: new Date(dateObj.date),
+            orderId: result.id,
+            eventId: result.eventId,
+            status: "NOT_VALIDATED",
+            ticketTypeId: result.ticketTypeId,
+          });
+        }
+      });
+      await createTicketOrder(ticketsData);
+      revalidatePath(`/dashboard/evento/${result.eventId}/edit`);
+    }
+  } catch (error) {
+    throw new Error("Error creando la invitacion");
   }
 }

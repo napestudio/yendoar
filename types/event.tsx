@@ -26,3 +26,20 @@ export interface Evento {
   validatorToken?: ValidatorToken[];
   eventPayments?: EventPayment[];
 }
+export interface EventoWithTicketsType {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  address: string;
+  userId: string;
+  image: string;
+  dates: string;
+  status?: EventStatus;
+  user?: User;
+  discountCode?: DiscountCode[] | undefined;
+  ticketTypes?: TicketType[];
+  validatorToken?: ValidatorToken[];
+  eventPayments?: EventPayment[];
+  tickets?: Partial<TicketOrderType>[] | undefined;
+}
