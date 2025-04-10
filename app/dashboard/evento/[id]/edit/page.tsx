@@ -2,17 +2,37 @@ import DashboardHeader from "@/components/dashboard/dashboard-header";
 import EditEventForm from "@/components/dashboard/edit-event-form";
 import { Button } from "@/components/ui/button";
 import { getEventById, getRemainingTicketsByUser } from "@/lib/actions";
-import { Evento } from "@/types/event";
+import { EventStatus } from "@/types/event";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import EditEventTabs from "./edit-event-tabs";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
+import { User } from "@/types/user";
+import { DiscountCode } from "@/types/discount-code";
+import { TicketType } from "@/types/tickets";
+import { ValidatorToken } from "@/types/validators";
+import { EventPayment } from "@prisma/client";
 
 interface EditEventPageProps {
   params: { id: string };
   searchParams: { [key: string]: string | undefined };
+}
+
+export interface Evento {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  address: string;
+  userId: string;
+  image: string;
+  dates: string;
+  status?: EventStatus;
+  user?: User;
+  discountCode?: DiscountCode[] | undefined;
+  ticketTypes?: TicketType[];
 }
 
 export default async function EditEventPage({

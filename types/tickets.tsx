@@ -49,8 +49,8 @@ export type TicketOrderType = {
   eventId: string;
   ticketTypeId?: string;
   status: "NOT_VALIDATED" | "VALIDATED";
-  ticketType?: Partial<TicketType>;
-  createdAt?: Date;
-  isInvitation?: boolean;
-  order?: Order;
+  ticketType?: Partial<TicketType> | undefined;
+  createdAt?: Date | undefined;
+  isInvitation?: boolean | undefined;
+  order?: Order | undefined;
 };
