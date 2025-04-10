@@ -8,8 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Evento } from "@/types/event";
-import { Link, Ticket } from "lucide-react";
 import InfoTicketTypeCard from "../info-ticket-type-card";
+import Link from "next/link";
+import { Ticket } from "lucide-react";
 
 export default function TicketsTab({ evento }: { evento: Evento }) {
   return (
