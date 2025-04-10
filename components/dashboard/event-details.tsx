@@ -48,7 +48,8 @@ import MinimalEventSalesStats from "./mininimal-event-sales-stats";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { getUsedInvitesByUser, getUserMaxInvites } from "@/lib/actions";
-import { AddInvitationMethodDialog } from "./add-invitation-ethod-dialog";
+import { AddInvitationMethodDialog } from "./add-invitation-method-dialog";
+
 export default async function EventDetails({ evento }: { evento: Evento }) {
   const session = await getServerSession(authOptions);
   if (!session) return;
