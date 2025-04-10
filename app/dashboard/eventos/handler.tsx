@@ -93,7 +93,7 @@ export default function EventsHandler({
             />
           </div>
         </div>
-        <div className="rounded-md border">
+        <div className="rounded-md border max-w-[90vw]">
           <Table>
             <TableHeader>
               <TableRow>
