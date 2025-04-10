@@ -33,7 +33,7 @@ export default function EventCard({
 
   const isInactive =
     evento.status === "CANCELED" || evento.status === "CONCLUDED";
-  console.log(isInactive);
+
   return (
     <>
       <Card className={cn("w-full text-left overflow-hidden")} key={evento.id}>

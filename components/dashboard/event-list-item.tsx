@@ -22,7 +22,7 @@ export default function EventListItem({ evento }: { evento: Evento }) {
 
   const fetchData = useCallback(async () => {
     const res = await getStats({ eventId: evento.id });
-    console.log(res);
+
     setTotal(res.totalRevenue);
   }, [evento.id]);
 
