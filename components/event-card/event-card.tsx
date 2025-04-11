@@ -19,6 +19,7 @@ export default function EventCard({ evento }: { evento: HomeCard }) {
   return (
     <Link
       href={`eventos/${evento.id}`}
+      prefetch={true}
       className="overflow-hidden border-4 rounded-sm border-black shadow-hard bg-white"
     >
       <Card className="border-none rounded-none flex flex-col h-full">

@@ -35,6 +35,7 @@ import { User, UserType } from "@/types/user";
 import { UserConfiguration } from "@/types/user-configuration";
 
 import cloudinary, { deleteFile, uploadFile } from "@/lib/cloudinary-upload";
+import { TicketOrder } from "@prisma/client";
 
 // Type temporal
 export type Evento = {
@@ -100,6 +101,16 @@ export async function deleteEvent(eventId: string) {
   }
 }
 
+// Para el sitio
+export async function getSingleEventById(eventId: string) {
+  try {
+    const result = await Eventos.getSingleEvent(eventId);
+    return result;
+  } catch (error) {
+    throw new Error("Error");
+  }
+}
+// Para el dashboard
 export async function getEventById(eventId: string) {
   try {
     const result = await Eventos.getEventById(eventId);
@@ -1069,27 +1080,28 @@ export async function getTicketAmountByTicketTypeId(ticketTypeId: string) {
   }
 }
 
-export async function getSoldTicketsByType(eventId: string) {
+// export async function getSoldTicketsByType(eventId: string) {
+export async function getSoldTicketsByType(tickets: any[]) {
   try {
     let ticketCounts: Record<
       string,
       { id?: string; title?: string; count?: number }
     > = {};
-    const ticketOrders = await getPaidOrdersDataByEvent(eventId);
+    // const ticketOrders = await getPaidOrdersDataByEvent(eventId);
+    console.log(tickets[6].ticketType);
 
-    ticketOrders.forEach((ticketOrder: any) => {
-      if (!ticketCounts[ticketOrder.ticketTypeId]) {
-        ticketCounts[ticketOrder.ticketTypeId] = {
-          id: ticketOrder.ticketTypeId,
-          title: ticketOrder.ticketType.title,
-          count: ticketOrder.tickets.length,
+    tickets.forEach((ticket: any) => {
+      if (!ticketCounts[ticket.id]) {
+        ticketCounts[ticket.id] = {
+          id: ticket.id,
+          title: ticket.title,
+          count: tickets.length,
         };
       } else {
-        ticketCounts[ticketOrder.ticketTypeId].count +=
-          ticketOrder.tickets.length;
+        ticketCounts[ticket.id].count! += tickets.length;
       }
     });
-
+    // console.log(ticketCounts);
     return ticketCounts;
   } catch (error) {
     throw new Error("Error trayendo la cantidad de entradas vendidas");
