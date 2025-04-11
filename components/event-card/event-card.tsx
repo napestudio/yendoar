@@ -23,13 +23,13 @@ export default function EventCard({ evento }: { evento: HomeCard }) {
       className="overflow-hidden border-4 rounded-sm border-black shadow-hard bg-white"
     >
       <Card className="border-none rounded-none flex flex-col h-full">
-        <div className="relative border-b-4 border-black max-w-[95vw] h-[250px] md:h-[300px]">
+        <div className="relative border-b-4 border-black max-w-[95vw] h-[300px]">
           <Image
             src={evento.image || ""}
             alt={`Portada del evento ${evento.title}`}
             height={500}
             width={500}
-            className="object-cover h-full"
+            className="object-cover h-full w-full"
           />
         </div>
         <CardContent className="p-4 flex flex-col gap-1 flex-grow">
