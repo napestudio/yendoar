@@ -44,6 +44,7 @@ import { User } from "@/types/user";
 import { deletePaymentMethod } from "@/lib/actions";
 import { toast } from "../ui/use-toast";
 import RemovePaymentMethodAlert from "./remove-payment-method-alert";
+import { Session } from "next-auth";
 // import { EditPaymentMethodDialog } from "./edit-payment-method-dialog"
 
 export default function PaymentMethodsTable({

@@ -128,6 +128,7 @@ export default async function EventDetails({
                   isEventOwner={isEventOwner}
                   isSeller={isSeller}
                   evento={evento}
+                  session={session}
                 />
               </TabsContent>
               <TabsContent value="tickets" className="space-y-6">

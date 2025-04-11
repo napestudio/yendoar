@@ -10,17 +10,20 @@ import { Evento } from "@/types/event";
 import DeleteEventButton from "../delete-event-button";
 import PaymentMethodsList from "../payment-methods-list";
 import { Separator } from "@/components/ui/separator";
+import { Session } from "next-auth";
 
 interface DetailsTabProps {
   evento: Evento;
   isSeller: boolean;
   isEventOwner: boolean;
+  session: Session;
 }
 
 export default function DetailsTab({
   evento,
   isSeller,
   isEventOwner,
+  session,
 }: DetailsTabProps) {
   return (
     <>
@@ -61,6 +64,7 @@ export default function DetailsTab({
                 <PaymentMethodsLoader
                   clientId={evento.user.clientId}
                   eventId={evento.id}
+                  session={session}
                 />
               )}
             </>
