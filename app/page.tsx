@@ -36,7 +36,7 @@ export default async function Home() {
             ))}
         </div>
       </section>
-      {eventos && (
+      {eventos && eventos.length > 2 && (
         <div className="w-full overflow-hidden py-5 relative mt-10 bg-white">
           <EventMarquee eventos={eventos} />
         </div>

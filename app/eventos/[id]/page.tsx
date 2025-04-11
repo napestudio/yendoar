@@ -1,29 +1,13 @@
-import {
-  getDigitalPaymentMethodKeyByEvent,
-  getEventById,
-  getServiceCharge,
-  getSingleEventById,
-  getSoldTicketsByType,
-} from "@/lib/actions";
+import { getSingleEventById, getSoldTicketsByType } from "@/lib/actions";
 import { datesFormater } from "@/lib/utils";
 import TicketTypePicker from "@/components/ticket-type-picker/ticket-type-picker";
 import EventHeader from "@/components/event-header/event-header";
-import { Evento as EventoType } from "@/types/event";
-import { DiscountCode } from "@/types/discount-code";
-import { Suspense } from "react";
-import Loader from "./loader";
-import { Metadata, ResolvingMetadata } from "next";
-import { getAllEvents, GetSingleEventResponse } from "@/lib/api/eventos";
-import { SITE_NAME, SITE_URL } from "@/lib/constants";
-import { TicketOrderType } from "@/types/tickets";
-import { TicketOrder } from "@prisma/client";
 
-// export async function generateStaticParams() {
-//   const events = await getAllEvents();
-//   return events.map((evento) => ({
-//     id: evento.id,
-//   }));
-// }
+import { DiscountCode } from "@/types/discount-code";
+
+import { Metadata, ResolvingMetadata } from "next";
+import { GetSingleEventResponse } from "@/lib/api/eventos";
+import { SITE_NAME, SITE_URL } from "@/lib/constants";
 
 export async function generateMetadata(
   { params }: { params: { id: string } },

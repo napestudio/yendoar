@@ -1085,23 +1085,21 @@ export async function getSoldTicketsByType(tickets: any[]) {
   try {
     let ticketCounts: Record<
       string,
-      { id?: string; title?: string; count?: number }
+      { id?: string; title?: string; count: number }
     > = {};
-    // const ticketOrders = await getPaidOrdersDataByEvent(eventId);
-    console.log(tickets[6].ticketType);
 
-    tickets.forEach((ticket: any) => {
-      if (!ticketCounts[ticket.id]) {
-        ticketCounts[ticket.id] = {
-          id: ticket.id,
-          title: ticket.title,
-          count: tickets.length,
+    tickets.forEach((ticket) => {
+      if (!ticketCounts[ticket.ticketType.id]) {
+        ticketCounts[ticket.ticketType.id] = {
+          id: ticket.ticketType.id,
+          title: ticket.ticketType.title,
+          count: 1,
         };
       } else {
-        ticketCounts[ticket.id].count! += tickets.length;
+        ticketCounts[ticket.ticketType.id].count++;
       }
     });
-    // console.log(ticketCounts);
+
     return ticketCounts;
   } catch (error) {
     throw new Error("Error trayendo la cantidad de entradas vendidas");

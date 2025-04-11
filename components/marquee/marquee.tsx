@@ -36,9 +36,9 @@ export default function EventMarquee({ eventos }: { eventos: HomeCard[] }) {
         reellerRef.current?.destroy();
       };
     }
-  }, []);
+  }, [reelRef]);
 
-  // if (eventos.length < 2) return;
+  if (eventos.length < 2) return;
   return (
     <div className="my-reel py-2" ref={reelRef}>
       <div className="my-reel-wrap flex gap-5">
