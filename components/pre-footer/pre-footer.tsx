@@ -55,7 +55,7 @@ export default function PreFooter() {
             <div>
               <Link
                 href={"/ingresar"}
-                className="flex items-center border-2 w-max p-2 font-semibold rounded-xl gap-2 justify-self-end mt-3 hover:bg-white hover:text-black transition-colors duration-200"
+                className="flex items-center border-2 w-max p-2 font-semibold rounded-xl gap-2 md:justify-self-end mt-3 hover:bg-white hover:text-black transition-colors duration-200"
               >
                 <Contact /> Acceso a backstage
               </Link>

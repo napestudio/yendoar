@@ -4,6 +4,7 @@ import db from "../prisma";
 import { CLIENT_ID } from "../constants";
 import { id } from "date-fns/locale";
 import { equal } from "assert";
+import { Prisma } from "@prisma/client";
 
 export const getEventsByUserId = cache(async (userId: string) => {
   return db.event.findMany({
@@ -119,6 +120,69 @@ export async function updateEvent(eventId: string, eventData: Partial<Evento>) {
     data: eventData,
   });
 }
+
+export const getSingleEvent = cache(async (eventId: string) => {
+  return db.event.findUnique({
+    where: {
+      id: eventId,
+    },
+    include: {
+      user: {
+        select: {
+          configuration: {
+            select: {
+              serviceCharge: true,
+            },
+          },
+        },
+      },
+      ticketTypes: {
+        where: {
+          status: {
+            not: "DELETED",
+          },
+        },
+      },
+      eventPayments: {
+        where: {
+          paymentMethod: {
+            type: "DIGITAL",
+          },
+        },
+        include: {
+          paymentMethod: {
+            select: {
+              type: true,
+              apiKey: true,
+            },
+          },
+        },
+      },
+      discountCode: {
+        where: {
+          status: {
+            not: "DELETED",
+          },
+        },
+      },
+      tickets: {
+        select: {
+          ticketType: {
+            select: {
+              title: true,
+              id: true,
+            },
+          },
+        },
+      },
+      validatorToken: true,
+    },
+  });
+});
+export type GetSingleEventResponse = Prisma.PromiseReturnType<
+  typeof getSingleEvent
+>;
+
 export const getEventById = cache(async (eventId: string) => {
   return db.event.findUnique({
     where: {

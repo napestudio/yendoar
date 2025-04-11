@@ -65,6 +65,9 @@ export async function getRemainingTicketsByUser(userId: string) {
           quantity: true,
           status: true,
           orders: {
+            where: {
+              isInvitation: false,
+            },
             select: {
               quantity: true,
             },

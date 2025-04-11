@@ -25,8 +25,9 @@ export default function Navigation({
             Volver a Eventos
           </Link>
         </Button>
-        {evento.status !== "CANCELED" && (
-          <div className="ml-auto flex flex-wrap items-center gap-2">
+
+        <div className="ml-auto flex flex-wrap items-center gap-2">
+          {evento.status !== "CANCELED" && (
             <Button variant="outline" size="sm">
               <Link
                 href={`${SITE_URL}/eventos/${evento.id}`}
@@ -36,23 +37,24 @@ export default function Navigation({
                 Ver en la web
               </Link>
             </Button>
-            {!isSeller && isEventOwner && (
-              <>
-                <Button variant="outline" size="sm">
-                  <Link
-                    href={`/dashboard/evento/${evento.id}/edit`}
-                    className="flex items-center"
-                  >
-                    <Edit className="mr-2 h-4 w-4" />
-                    Editar
-                  </Link>
-                </Button>
-
+          )}
+          {!isSeller && isEventOwner && (
+            <>
+              <Button variant="outline" size="sm">
+                <Link
+                  href={`/dashboard/evento/${evento.id}/edit`}
+                  className="flex items-center"
+                >
+                  <Edit className="mr-2 h-4 w-4" />
+                  Editar
+                </Link>
+              </Button>
+              {evento.status !== "CANCELED" && (
                 <CancelEventButton id={evento.id} />
-              </>
-            )}
-          </div>
-        )}
+              )}
+            </>
+          )}
+        </div>
       </div>
     </>
   );

@@ -40,7 +40,7 @@ export default function SoldTicketsTable({
           .includes(searchQuery.toLowerCase())
     )
     .filter((event) => (showOnlyInvitations ? event.isInvitation : true));
-  console.log(tickets);
+
   return (
     <div className="space-y-6">
       {tickets.length > 0 ? (

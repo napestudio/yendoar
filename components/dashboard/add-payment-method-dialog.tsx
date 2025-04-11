@@ -200,12 +200,12 @@ export function AddPaymentMethodDialog({
                                 <RadioGroupItem
                                   value={option.id}
                                   id={option.id}
-                                  className="sr-only"
+                                  className="sr-only peer"
                                 />
                               </FormControl>
                               <FormLabel
                                 htmlFor={option.id}
-                                className="flex items-center justify-between w-full rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                                className="flex items-center justify-between w-full rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground  [&:has([data-state=checked])]:border-primary peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5  [&:has([data-state=checked])]:bg-red-500"
                               >
                                 <div className="flex items-center gap-4">
                                   <div className="rounded-full bg-muted p-2 text-primary">
