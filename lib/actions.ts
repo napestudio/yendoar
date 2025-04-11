@@ -296,6 +296,7 @@ export async function createCashOrder(data: CreateOrderType) {
             orderId: result.id,
             eventId: result.eventId,
             status: "NOT_VALIDATED",
+            ticketTypeId: result.ticketTypeId,
           });
         }
       });
