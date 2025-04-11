@@ -18,6 +18,15 @@ export default function EventsDisplay({
 }) {
   const [activeTab, setActiveTab] = useState("upcoming");
   const isSeller = session.user.type === "SELLER";
+
+  const upcomingEvents = eventos.filter(
+    (evento) => evento.status !== "CONCLUDED" && evento.status !== "CANCELED"
+  );
+
+  const pastEvents = eventos.filter(
+    (evento) => evento.status === "CONCLUDED" || evento.status === "CANCELED"
+  );
+
   return (
     <Box>
       <div className="flex items-center justify-between mb-4">
@@ -53,14 +62,28 @@ export default function EventsDisplay({
         </TabsList>
         <TabsContent value="upcoming" className="mt-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 grid-cols-1 gap-4">
-            {eventos &&
-              eventos.map((evento) => (
-                <EventCard
-                  evento={evento as Evento}
-                  key={evento.id}
-                  session={session}
-                />
-              ))}
+            {upcomingEvents.length > 0 ? (
+              upcomingEvents.map((evento) => (
+                <EventCard evento={evento} key={evento.id} session={session} />
+              ))
+            ) : (
+              <p className="col-span-full text-center text-sm text-muted-foreground">
+                No hay eventos próximos.
+              </p>
+            )}
+          </div>
+        </TabsContent>
+        <TabsContent value="past" className="mt-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 grid-cols-1 gap-4">
+            {pastEvents.length > 0 ? (
+              pastEvents.map((evento) => (
+                <EventCard evento={evento} key={evento.id} session={session} />
+              ))
+            ) : (
+              <p className="col-span-full text-center text-sm text-muted-foreground">
+                No hay eventos pasados.
+              </p>
+            )}
           </div>
         </TabsContent>
       </Tabs>

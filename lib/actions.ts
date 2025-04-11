@@ -811,21 +811,17 @@ export async function createDiscountCode(data: DiscountCode) {
   let codeId = null;
   try {
     const result = await Code.createDiscountCode(data);
-    codeId = result.id;
+
+    revalidatePath(`/dashboard/evento/${result.eventId}`);
   } catch (error) {
     throw new Error("Error creando el código de descuento");
   }
-  if (codeId) {
-    redirect(`/dashboard/codigos/${codeId}`);
-  }
-
-  revalidatePath("/dashboard");
 }
 
 export async function updateDiscountCode(data: DiscountCode, eventId: string) {
   try {
     const result = await Code.updateDiscountCode(eventId, data);
-    revalidatePath(`/dashboard/evento/${result.id}`);
+    revalidatePath(`/dashboard/evento/${result.eventId}`);
   } catch (error) {
     throw new Error("Error editando el evento");
   }
@@ -836,7 +832,7 @@ export async function deleteDiscountCode(eventId: string) {
     const data = { status: "DELETED" };
     const result = await Code.updateDiscountCode(eventId, data as DiscountCode);
 
-    revalidatePath(`/dashboard`);
+    revalidatePath(`/dashboard/evento/${result.eventId}`);
     return result;
   } catch (error) {
     throw new Error("Error editando el evento");

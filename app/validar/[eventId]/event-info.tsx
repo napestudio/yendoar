@@ -7,7 +7,6 @@ import {
   getOrderTicketsByEvent,
   getTicketOrdersByEventId,
 } from "@/lib/actions";
-import { TicketOrderType } from "@/types/tickets";
 import { DataTable } from "./data-table";
 import { getColumns } from "./colums";
 import { useEffect, useState } from "react";
@@ -27,6 +26,19 @@ export type TicketsCountType = {
   };
 };
 
+type TicketOrderType = {
+  id?: string;
+  name: string;
+  lastName: string;
+  dni: string;
+  email: string;
+  base64Qr: string;
+  date: Date;
+  orderId: string;
+  eventId: string;
+  ticketTypeId?: string;
+  status: "NOT_VALIDATED" | "VALIDATED";
+};
 export default function EventInfo({
   eventId,
   type = "VALIDADOR",

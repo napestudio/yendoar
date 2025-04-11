@@ -1,3 +1,4 @@
+import { Order } from "./order";
 import { Promotion } from "./promotion";
 
 type TicketTypeStatus = "ACTIVE" | "INACTIVE" | "ENDED" | "DELETED" | "SOLDOUT";
@@ -49,4 +50,22 @@ export type TicketOrderType = {
   ticketTypeId?: string;
   status: "NOT_VALIDATED" | "VALIDATED";
   isInvitation?: true,
+};
+
+export type TicketOrderTableProps = {
+  id?: string;
+  name: string;
+  lastName: string;
+  dni: string;
+  email: string;
+  base64Qr: string;
+  date: Date;
+  orderId: string;
+  eventId: string;
+  ticketTypeId?: string;
+  status: "NOT_VALIDATED" | "VALIDATED";
+  ticketType?: Partial<TicketType> | undefined;
+  createdAt?: Date | undefined;
+  isInvitation?: boolean | undefined;
+  order?: Order | undefined;
 };

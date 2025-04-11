@@ -9,6 +9,7 @@ import {
 import { Evento } from "@/types/event";
 import DeleteEventButton from "../delete-event-button";
 import PaymentMethodsList from "../payment-methods-list";
+import { Separator } from "@/components/ui/separator";
 
 interface DetailsTabProps {
   evento: Evento;
@@ -67,18 +68,21 @@ export default function DetailsTab({
         </div>
       )}
       {!isSeller && isEventOwner && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Eliminar evento permanentemente</CardTitle>
-            <CardDescription>
-              Esta acción no se puede revertir. Por favor, asegúrate de que
-              deseas eliminar este evento antes de continuar.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <DeleteEventButton id={evento.id} />
-          </CardContent>
-        </Card>
+        <>
+          <Separator />
+          <Card className="bg-black text-white">
+            <CardHeader>
+              <CardTitle>Eliminar evento permanentemente</CardTitle>
+              <CardDescription className="text-white">
+                Esta acción no se puede revertir. Por favor, asegúrate de que
+                deseas eliminar este evento antes de continuar.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <DeleteEventButton id={evento.id} />
+            </CardContent>
+          </Card>
+        </>
       )}
     </>
   );

@@ -49,6 +49,20 @@ export const getAllEvents = cache(async () => {
 export async function getAllEventByClientId() {
   return db.event.findMany({
     where: {
+      user: {
+        clientId: {
+          equals: CLIENT_ID,
+        },
+      },
+    },
+    include: {
+      user: true,
+    },
+  });
+}
+export async function getAllActiveEventByClientId() {
+  return db.event.findMany({
+    where: {
       status: {
         equals: "ACTIVE",
       },
@@ -124,7 +138,39 @@ export const getEventById = cache(async (eventId: string) => {
           paymentMethod: true,
         },
       },
-      discountCode: true,
+      discountCode: {
+        where: {
+          status: {
+            not: "DELETED",
+          },
+        },
+      },
+      tickets: {
+        select: {
+          name: true,
+          lastName: true,
+          dni: true,
+          id: true,
+          code: true,
+          isInvitation: true,
+          email: true,
+          createdAt: true,
+          ticketType: {
+            select: {
+              title: true,
+            },
+          },
+          order: {
+            select: {
+              ticketType: {
+                select: {
+                  title: true,
+                },
+              },
+            },
+          },
+        },
+      },
       validatorToken: true,
     },
   });
