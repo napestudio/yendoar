@@ -1,14 +1,8 @@
 import BuyTicketForm from "@/components/dashboard/buy-ticket-form";
 import DashboardHeader from "@/components/dashboard/dashboard-header";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import {
-  getEventById,
-  getRemainingTicketsByUser,
-  getServiceCharge,
-  getSingleEventById,
-  getSoldTicketsByType,
-} from "@/lib/actions";
+
+import { getSingleEventById, getSoldTicketsByType } from "@/lib/actions";
 import { DiscountCode } from "@/types/discount-code";
 import { ArrowLeft, Ticket } from "lucide-react";
 import Link from "next/link";
