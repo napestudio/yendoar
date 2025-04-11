@@ -22,7 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { MoreHorizontal, Trash, UserPlus } from "lucide-react";
+import { Copy, MoreHorizontal, Trash, UserPlus } from "lucide-react";
 import { Avatar } from "../ui/avatar";
 import { formatDatesByMonth } from "@/lib/utils";
 import { addDays, isAfter, isBefore, isSameDay } from "date-fns";
@@ -31,6 +31,7 @@ import CancelInvitationAlert from "./cancel-invitation-alert";
 import { removeInvitationById } from "@/lib/actions";
 import { toast } from "../ui/use-toast";
 import { useState } from "react";
+import { SITE_URL } from "@/lib/constants";
 
 export default function UserInvitationsTable({
   invitations,
@@ -51,7 +52,13 @@ export default function UserInvitationsTable({
       return "VENCIDA";
     }
   };
-
+  const handleCopyInvitationLink = (invite: UserInvitation) => {
+    const url = `${SITE_URL}/api/invitations/accept?id=${invite.id}&t=${invite.token}`;
+    navigator.clipboard.writeText(url);
+    toast({
+      title: "Link de invitación copiado correctoamente",
+    });
+  };
   const handleCancelAlert = (invite: UserInvitation) => {
     setSelectedInvitation(invite);
     setIsAlertOpen(true);
@@ -137,6 +144,12 @@ export default function UserInvitationsTable({
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
 
+                          <DropdownMenuItem
+                            onClick={() => handleCopyInvitationLink(invitation)}
+                          >
+                            <Copy className="mr-2 h-4 w-4" />
+                            Copiar link de invitación
+                          </DropdownMenuItem>
                           <DropdownMenuItem
                             className="text-destructive"
                             onClick={() => handleCancelAlert(invitation)}

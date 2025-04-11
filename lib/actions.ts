@@ -35,6 +35,7 @@ import { User, UserType } from "@/types/user";
 import { UserConfiguration } from "@/types/user-configuration";
 
 import cloudinary, { deleteFile, uploadFile } from "@/lib/cloudinary-upload";
+import { TicketOrder } from "@prisma/client";
 
 // Type temporal
 export type Evento = {
@@ -100,6 +101,16 @@ export async function deleteEvent(eventId: string) {
   }
 }
 
+// Para el sitio
+export async function getSingleEventById(eventId: string) {
+  try {
+    const result = await Eventos.getSingleEvent(eventId);
+    return result;
+  } catch (error) {
+    throw new Error("Error");
+  }
+}
+// Para el dashboard
 export async function getEventById(eventId: string) {
   try {
     const result = await Eventos.getEventById(eventId);
@@ -1069,24 +1080,23 @@ export async function getTicketAmountByTicketTypeId(ticketTypeId: string) {
   }
 }
 
-export async function getSoldTicketsByType(eventId: string) {
+// export async function getSoldTicketsByType(eventId: string) {
+export async function getSoldTicketsByType(tickets: any[]) {
   try {
     let ticketCounts: Record<
       string,
-      { id?: string; title?: string; count?: number }
+      { id?: string; title?: string; count: number }
     > = {};
-    const ticketOrders = await getPaidOrdersDataByEvent(eventId);
 
-    ticketOrders.forEach((ticketOrder: any) => {
-      if (!ticketCounts[ticketOrder.ticketTypeId]) {
-        ticketCounts[ticketOrder.ticketTypeId] = {
-          id: ticketOrder.ticketTypeId,
-          title: ticketOrder.ticketType.title,
-          count: ticketOrder.tickets.length,
+    tickets.forEach((ticket) => {
+      if (!ticketCounts[ticket.ticketType.id]) {
+        ticketCounts[ticket.ticketType.id] = {
+          id: ticket.ticketType.id,
+          title: ticket.ticketType.title,
+          count: 1,
         };
       } else {
-        ticketCounts[ticketOrder.ticketTypeId].count +=
-          ticketOrder.tickets.length;
+        ticketCounts[ticket.ticketType.id].count++;
       }
     });
 
@@ -1165,6 +1175,7 @@ export async function inviteUserToEvent(data: InvitationMethodInput) {
             eventId: result.eventId,
             status: "NOT_VALIDATED",
             ticketTypeId: result.ticketTypeId,
+            isInvitation: true,
           });
         }
       });

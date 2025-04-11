@@ -4,9 +4,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { createEvent, uploadEventImage } from "@/lib/actions";
-import {  useState } from "react";
-import Autocomplete from "react-google-autocomplete";
-import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
+import { useState } from "react";
 import {
   Form,
   FormControl,
@@ -22,9 +20,16 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
 import { FileUploader } from "@/app/dashboard/components/file-uploader/file-uploader";
-import { Evento } from "@/types/event";
+
 import { Loader2 } from "lucide-react";
 import Box from "@/components/dashboard/box";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const formSchema = z.object({
   title: z.string().min(5, {
@@ -35,6 +40,7 @@ const formSchema = z.object({
   address: z.string(),
   file: z.any(),
   image: z.string(),
+  status: z.enum(["ACTIVE", "DRAFT", "CONCLUDED", "CANCELED", "DELETED"]),
   //.refine((file) => file?.length == 1, "File is required."),
 });
 
@@ -58,6 +64,7 @@ export default function CreateEventForm({ userId }: { userId: string }) {
       address: "",
       file: "",
       image: "",
+      status: "ACTIVE",
     },
   });
 
@@ -134,7 +141,7 @@ export default function CreateEventForm({ userId }: { userId: string }) {
       dates: parsedDates,
       endDate: endDate.toISOString(),
       userId: userId,
-      status: "ACTIVE",
+      status: values.status,
     })
       .then(() => {
         form.reset();
@@ -242,7 +249,7 @@ export default function CreateEventForm({ userId }: { userId: string }) {
           <div>
             <Box>
               <div className="space-y-4">
-                <h2 className="font-bold">Imagen del evento</h2>
+                <h3 className="font-bold">Imagen del evento</h3>
                 <FormField
                   control={form.control}
                   name="file"
@@ -262,6 +269,36 @@ export default function CreateEventForm({ userId }: { userId: string }) {
                   )}
                 />
               </div>
+            </Box>
+          </div>
+          <div className="w-full">
+            <Box>
+              <h3 className="font-bold mb-4">Estado</h3>
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue="ACTIVE"
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Estado" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="ACTIVE">Publicado</SelectItem>
+                        <SelectItem value="DRAFT">Borrador</SelectItem>
+                        <SelectItem value="CANCELED">Cancelado</SelectItem>
+                        <SelectItem value="CONCLUDED">Finalizado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </Box>
           </div>
         </div>

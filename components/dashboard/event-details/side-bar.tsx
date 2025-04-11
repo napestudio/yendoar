@@ -17,13 +17,25 @@ interface SideBarProps {
   isEventOwner: boolean;
   remainingInvites: number;
   remainingTickets: number;
+  maxInvitesAmount: number;
+  soldTickets: Record<
+    string,
+    {
+      id?: string | undefined;
+      title?: string | undefined;
+      count?: number | undefined;
+    }
+  >;
 }
+
 export default function SideBar({
   evento,
   isSeller,
   isEventOwner,
   remainingInvites,
   remainingTickets,
+  maxInvitesAmount,
+  soldTickets,
 }: SideBarProps) {
   return (
     <>
@@ -90,23 +102,27 @@ export default function SideBar({
                 Vender entrada
               </Link>
             </Button>
-            <AddInvitationDialog
-              evento={evento}
-              remainingInvites={remainingInvites}
-            >
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={
-                  evento.status === "CANCELED" ||
-                  remainingInvites <= 0 ||
-                  isSeller
-                }
+            {maxInvitesAmount > 0 && (
+              <AddInvitationDialog
+                evento={evento}
+                remainingInvites={remainingInvites}
+                soldTickets={soldTickets}
+                isEventOwner={isEventOwner}
               >
-                <User className="mr-2 h-4 w-4" />
-                Agregar invitado
-              </Button>
-            </AddInvitationDialog>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={
+                    evento.status === "CANCELED" ||
+                    remainingInvites <= 0 ||
+                    isSeller
+                  }
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  Agregar invitado
+                </Button>
+              </AddInvitationDialog>
+            )}
           </div>
         </CardContent>
         {!isSeller && isEventOwner && (

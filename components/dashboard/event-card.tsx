@@ -82,7 +82,9 @@ export default function EventCard({
         </CardContent>
         <CardFooter className="flex justify-between gap-4 p-4">
           <Button variant="outline" asChild>
-            <Link href={`/dashboard/evento/${evento.id}`}>Detalles</Link>
+            <Link href={`/dashboard/evento/${evento.id}`} prefetch={true}>
+              Detalles
+            </Link>
           </Button>
           {!isInactive && !isSeller && isEventOwner && (
             <Button>

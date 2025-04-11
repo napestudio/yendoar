@@ -43,17 +43,24 @@ import { InvitationMethodInput, inviteUserToEvent } from "@/lib/actions";
 
 import { Evento } from "@/types/event";
 import { toast } from "../ui/use-toast";
+import { TicketType } from "@/types/tickets";
+
+import { isAfter, isBefore } from "date-fns";
 
 const invitationMethodSchema = z.object({
   email: z.string().email().min(5, { message: "Debe ser un email válido" }),
   quantity: z
-    .number({ required_error: "Por favor seleccioná la cantidad de entradas" })
-    .nonnegative(),
+    .string({
+      required_error: "Por favor seleccioná un tipo de entrada",
+    })
+    .min(1, { message: "Este campo es obligatorio" }),
   name: z.string().min(2, { message: "Debe tener al menos 2 caracteres" }),
   lastName: z.string().min(2, { message: "Debe tener al menos 2 caracteres" }),
-  ticketType: z.string({
-    required_error: "Por favor seleccioná un tipo de entrada",
-  }),
+  ticketType: z
+    .string({
+      required_error: "Por favor seleccioná un tipo de entrada",
+    })
+    .min(1, { message: "Este campo es obligatorio" }),
   dni: z.string().min(1, "Este campo es obligatorio"),
 });
 
@@ -63,15 +70,27 @@ interface AddInvitationMethodDialogProps {
   children: React.ReactNode;
   evento?: Evento;
   remainingInvites: number;
+  soldTickets?: Record<
+    string,
+    {
+      id?: string | undefined;
+      title?: string | undefined;
+      count?: number | undefined;
+    }
+  >;
+  isEventOwner?: any;
 }
 
 export function AddInvitationDialog({
   children,
   evento,
   remainingInvites,
+  soldTickets,
+  isEventOwner,
 }: AddInvitationMethodDialogProps) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSoldOut, setIsSoldOut] = useState(false);
 
   const form = useForm<InvitationMethodForm>({
     resolver: zodResolver(invitationMethodSchema),
@@ -80,7 +99,7 @@ export function AddInvitationDialog({
       name: "",
       lastName: "",
       dni: "",
-      quantity: 0,
+      quantity: "0",
       ticketType: "",
     },
   });
@@ -92,7 +111,7 @@ export function AddInvitationDialog({
     setIsSubmitting(true);
     try {
       const payload: InvitationMethodInput = {
-        quantity: data.quantity,
+        quantity: parseInt(data.quantity),
         email: data.email,
         ticketTypeId: data.ticketType,
         isInvitation: true,
@@ -104,13 +123,14 @@ export function AddInvitationDialog({
         totalPrice: 0,
       };
 
-      if (remainingInvites < data.quantity) {
+      if (remainingInvites < parseInt(data.quantity)) {
         toast({
           description: `Solo quedan ${remainingInvites} invitaciones disponibles`,
           variant: "destructive",
         });
         return;
       }
+
       await inviteUserToEvent(payload);
     } catch (error) {
       console.error("Error creando método de pago", error);
@@ -126,9 +146,15 @@ export function AddInvitationDialog({
     form.reset();
   };
 
+  const isPastEndDate = (endDate: Date): boolean => {
+    return isBefore(new Date(endDate), new Date());
+  };
+  console.log(remainingInvites);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogTrigger asChild disabled={remainingInvites <= 0}>
+        {children}
+      </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-hidden flex flex-col">
         <Form {...form}>
           <form
@@ -205,16 +231,28 @@ export function AddInvitationDialog({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Cantidad de entradas</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            placeholder="0"
-                            {...field}
-                            onChange={(e) =>
-                              field.onChange(Number(e.target.value))
-                            }
-                          />
-                        </FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Seleccionar cantidad de entradas" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="1">1</SelectItem>
+                            <SelectItem value="2">2</SelectItem>
+                            <SelectItem value="3">3</SelectItem>
+                            <SelectItem value="4">4</SelectItem>
+                            <SelectItem value="5">5</SelectItem>
+                            <SelectItem value="6">6</SelectItem>
+                            <SelectItem value="7">7</SelectItem>
+                            <SelectItem value="8">8</SelectItem>
+                            <SelectItem value="9">9</SelectItem>
+                            <SelectItem value="10">10</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -236,11 +274,38 @@ export function AddInvitationDialog({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {evento?.ticketTypes?.map((ticket, i) => (
-                              <SelectItem key={i} value={ticket?.id!}>
-                                {ticket?.title}
-                              </SelectItem>
-                            ))}
+                            {evento?.ticketTypes
+                              ?.filter(
+                                (ticket: Partial<TicketType>) =>
+                                  ticket.status !== "DELETED" &&
+                                  ticket.status !== "INACTIVE"
+                              )
+                              .map((ticket, i) => {
+                                const soldTicketCount =
+                                  ticket.quantity -
+                                  (soldTickets
+                                    ? soldTickets[ticket.id!]?.count ?? 0
+                                    : 0);
+                                const isSoldOut =
+                                  soldTicketCount <= 0 ||
+                                  soldTicketCount < parseInt(watch("quantity"));
+                                return (
+                                  <SelectItem
+                                    key={i}
+                                    value={ticket?.id!}
+                                    disabled={
+                                      isSoldOut ||
+                                      ticket.status === "INACTIVE" ||
+                                      ticket.status === "SOLDOUT" ||
+                                      (ticket.endDate
+                                        ? isPastEndDate(ticket.endDate)
+                                        : false)
+                                    }
+                                  >
+                                    {ticket?.title}
+                                  </SelectItem>
+                                );
+                              })}
                           </SelectContent>
                         </Select>
                         <FormMessage />

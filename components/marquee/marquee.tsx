@@ -36,7 +36,7 @@ export default function EventMarquee({ eventos }: { eventos: HomeCard[] }) {
         reellerRef.current?.destroy();
       };
     }
-  }, []);
+  }, [reelRef]);
 
   if (eventos.length < 2) return;
   return (
@@ -47,14 +47,15 @@ export default function EventMarquee({ eventos }: { eventos: HomeCard[] }) {
             <div className="text-5xl gradient-marquee hover:text-white transition-colors text-stroke uppercase">
               <Link
                 href={`eventos/${evento.id}`}
-                className="flex gap-2 items-end hover:text-white"
+                className="flex gap-2 items-end hover:text-white "
               >
-                <span className="font-bold">{evento.title}</span>
-                <span className="font-medium text-xl">
+                <span className="font-black tracking-widest">
+                  {evento.title}
+                </span>
+                <span className="font-bold text-xl tracking-widest">
                   {datesFormater(evento.dates as string)}
                 </span>{" "}
-                <span className="text-2xl font-bold">{evento.location}</span>
-                <span className="ml-2 font-bold">/</span>
+                <span className="ml-2 font-black">/</span>
               </Link>
             </div>
           </div>
