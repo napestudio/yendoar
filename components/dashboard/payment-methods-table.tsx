@@ -121,9 +121,14 @@ export default function PaymentMethodsTable({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Métodos de Pago</CardTitle>
+        <CardTitle>Métodos de Pago {eventId ? "disponibles" : ""}</CardTitle>
         <CardDescription>
-          {eventId && <>Asigna métodos de pago a este evento.</>}
+          {eventId && (
+            <>
+              Asigna métodos de pago a este evento. No se puede asignar más de
+              un método de pago digital por evento.
+            </>
+          )}
           {!eventId && <>Listado de los métodos de pago de la plataforma.</>}
         </CardDescription>
       </CardHeader>

@@ -11,6 +11,12 @@ import DeleteEventButton from "../delete-event-button";
 import PaymentMethodsList from "../payment-methods-list";
 import { Separator } from "@/components/ui/separator";
 import { Session } from "next-auth";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface DetailsTabProps {
   evento: Evento;
@@ -54,25 +60,52 @@ export default function DetailsTab({
       </Card>
       {!isSeller && isEventOwner && (
         <div className="flex flex-col max-w-[90vw] gap-5">
-          {evento.eventPayments && evento.eventPayments?.length > 0 && (
-            <PaymentMethodsList methods={evento.eventPayments} />
-          )}
+          {evento.eventPayments &&
+            evento.eventPayments?.length > 0 &&
+            evento.user?.clientId && (
+              <>
+                <PaymentMethodsList methods={evento.eventPayments} />
+                <Separator />
+                <Card className="px-5">
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger>
+                        Métodos de pago disponibles
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <>
+                          {evento.eventPayments && (
+                            <PaymentMethodsLoader
+                              clientId={evento.user.clientId}
+                              eventId={evento.id}
+                              session={session}
+                            />
+                          )}
+                        </>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </Card>
+              </>
+            )}
 
-          {evento.eventPayments && evento.user?.clientId && (
-            <>
-              {evento.eventPayments && (
-                <PaymentMethodsLoader
-                  clientId={evento.user.clientId}
-                  eventId={evento.id}
-                  session={session}
-                />
-              )}
-            </>
-          )}
+          {evento.eventPayments &&
+            evento.user?.clientId &&
+            evento.eventPayments?.length === 0 && (
+              <>
+                {evento.eventPayments && (
+                  <PaymentMethodsLoader
+                    clientId={evento.user.clientId}
+                    eventId={evento.id}
+                    session={session}
+                  />
+                )}
+              </>
+            )}
         </div>
       )}
       {!isSeller && isEventOwner && (
-        <>
+        <div className="pt-28">
           <Separator />
           <Card className="bg-black text-white">
             <CardHeader>
@@ -86,7 +119,7 @@ export default function DetailsTab({
               <DeleteEventButton id={evento.id} />
             </CardContent>
           </Card>
-        </>
+        </div>
       )}
     </>
   );
