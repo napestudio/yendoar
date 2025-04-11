@@ -6,6 +6,7 @@ import {
   getEventById,
   getRemainingTicketsByUser,
   getServiceCharge,
+  getSingleEventById,
   getSoldTicketsByType,
 } from "@/lib/actions";
 import { DiscountCode } from "@/types/discount-code";
@@ -14,11 +15,11 @@ import Link from "next/link";
 import React from "react";
 
 async function getEventData(id: string) {
-  const evento = await getEventById(id);
+  const evento = await getSingleEventById(id);
   if (!evento) return;
-  const serviceCharge = await getServiceCharge(evento.userId);
+  const serviceCharge = evento.user.configuration?.serviceCharge || 0;
 
-  const soldTickets = await getSoldTicketsByType(evento.id);
+  const soldTickets = await getSoldTicketsByType(evento.tickets);
   return {
     evento,
     serviceCharge,
@@ -36,7 +37,6 @@ export default async function NewCashTicketPage({
     return <p>Evento no encontrado.</p>;
   }
   const { evento, serviceCharge, soldTickets } = eventData;
-  const remainingTickets = await getRemainingTicketsByUser(evento.userId || "");
   return (
     <>
       <div className="space-y-6 pb-8">
@@ -51,10 +51,6 @@ export default async function NewCashTicketPage({
               Volver al Evento
             </Link>
           </Button>
-          <Card className="flex items-center gap-1 px-4  leading-none">
-            Disponibles<span className="font-bold">{remainingTickets}</span>{" "}
-            <Ticket className="w-8 h-8" />
-          </Card>
         </div>
 
         <div className="w-full space-y-5">

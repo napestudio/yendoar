@@ -1,4 +1,4 @@
-import { Evento } from "@/types/event";
+import { Evento, EventoWithTicketsType } from "@/types/event";
 
 import { Calendar, MapPin, Users } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,7 +24,11 @@ import DetailsTab from "./details-tab";
 import Navigation from "./navigation";
 import SideBar from "./side-bar";
 import SoldTicketsTab from "./sold-tickets-tab";
-export default async function EventDetails({ evento }: { evento: Evento }) {
+export default async function EventDetails({
+  evento,
+}: {
+  evento: EventoWithTicketsType;
+}) {
   const session = await getServerSession(authOptions);
   if (!session) return;
   const groupedDates = datesFormater(evento.dates as string);
@@ -40,7 +44,14 @@ export default async function EventDetails({ evento }: { evento: Evento }) {
 
   const maxInvitesAmount = await getUserMaxInvites(evento.userId);
   const usedInvites = await getUsedInvitesByUser(evento.userId);
-  const soldTickets:Record<string, { id?: string | undefined; title?: string | undefined; count?: number | undefined; }> = await getSoldTicketsByType(evento.id);
+  const soldTickets: Record<
+    string,
+    {
+      id?: string | undefined;
+      title?: string | undefined;
+      count?: number | undefined;
+    }
+  > = await getSoldTicketsByType(evento.tickets || []);
   const remaingingTickets = await getRemainingTicketsByUser(evento.userId);
   const remainingInvites = maxInvitesAmount - usedInvites;
   return (
@@ -137,6 +148,7 @@ export default async function EventDetails({ evento }: { evento: Evento }) {
               isSeller={isSeller}
               remainingInvites={remainingInvites}
               remainingTickets={remaingingTickets}
+              maxInvitesAmount={maxInvitesAmount}
               soldTickets={soldTickets}
             />
           </div>

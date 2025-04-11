@@ -130,7 +130,7 @@ export function AddInvitationDialog({
         });
         return;
       }
-      
+
       await inviteUserToEvent(payload);
     } catch (error) {
       console.error("Error creando método de pago", error);
@@ -149,10 +149,12 @@ export function AddInvitationDialog({
   const isPastEndDate = (endDate: Date): boolean => {
     return isBefore(new Date(endDate), new Date());
   };
-
+  console.log(remainingInvites);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogTrigger asChild disabled={remainingInvites <= 0}>
+        {children}
+      </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-hidden flex flex-col">
         <Form {...form}>
           <form
@@ -279,8 +281,14 @@ export function AddInvitationDialog({
                                   ticket.status !== "INACTIVE"
                               )
                               .map((ticket, i) => {
-                                const soldTicketCount = (ticket.quantity) - (soldTickets ? (soldTickets[ticket.id!]?.count ?? 0) : 0);
-                                const isSoldOut = (soldTicketCount <= 0) || (soldTicketCount < parseInt(watch("quantity")));
+                                const soldTicketCount =
+                                  ticket.quantity -
+                                  (soldTickets
+                                    ? soldTickets[ticket.id!]?.count ?? 0
+                                    : 0);
+                                const isSoldOut =
+                                  soldTicketCount <= 0 ||
+                                  soldTicketCount < parseInt(watch("quantity"));
                                 return (
                                   <SelectItem
                                     key={i}
