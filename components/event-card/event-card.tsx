@@ -22,12 +22,13 @@ export default function EventCard({ evento }: { evento: HomeCard }) {
       className="overflow-hidden border-4 rounded-sm border-black shadow-hard bg-white"
     >
       <Card className="border-none rounded-none flex flex-col h-full">
-        <div className="aspect-[16/9] relative border-b-4 border-black">
+        <div className="relative border-b-4 border-black max-w-[95vw] h-[250px] md:h-[300px]">
           <Image
             src={evento.image || ""}
-            alt="text"
-            fill
-            style={{ objectFit: "cover" }}
+            alt={`Portada del evento ${evento.title}`}
+            height={500}
+            width={500}
+            className="object-cover h-full"
           />
         </div>
         <CardContent className="p-4 flex flex-col gap-1 flex-grow">
