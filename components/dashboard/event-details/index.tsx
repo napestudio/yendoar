@@ -14,6 +14,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import {
   getRemainingTicketsByUser,
+  getSoldTicketsByType,
   getUsedInvitesByUser,
   getUserMaxInvites,
 } from "@/lib/actions";
@@ -38,6 +39,7 @@ export default async function EventDetails({ evento }: { evento: Evento }) {
 
   const maxInvitesAmount = await getUserMaxInvites(evento.userId);
   const usedInvites = await getUsedInvitesByUser(evento.userId);
+  const soldTickets:Record<string, { id?: string | undefined; title?: string | undefined; count?: number | undefined; }> = await getSoldTicketsByType(evento.id);
   const remaingingTickets = await getRemainingTicketsByUser(evento.userId);
   const remainingInvites = maxInvitesAmount - usedInvites;
   return (
@@ -122,6 +124,7 @@ export default async function EventDetails({ evento }: { evento: Evento }) {
               isSeller={isSeller}
               remainingInvites={remainingInvites}
               remainingTickets={remaingingTickets}
+              soldTickets={soldTickets}
             />
           </div>
         </div>

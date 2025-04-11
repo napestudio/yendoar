@@ -1169,6 +1169,7 @@ export async function inviteUserToEvent(data: InvitationMethodInput) {
             eventId: result.eventId,
             status: "NOT_VALIDATED",
             ticketTypeId: result.ticketTypeId,
+            isInvitation: true,
           });
         }
       });

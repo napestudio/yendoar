@@ -17,13 +17,16 @@ interface SideBarProps {
   isEventOwner: boolean;
   remainingInvites: number;
   remainingTickets: number;
+  soldTickets: Record<string, { id?: string | undefined; title?: string | undefined; count?: number | undefined; }>;
 }
+
 export default function SideBar({
   evento,
   isSeller,
   isEventOwner,
   remainingInvites,
   remainingTickets,
+  soldTickets,
 }: SideBarProps) {
   return (
     <>
@@ -68,6 +71,8 @@ export default function SideBar({
               <AddInvitationDialog
                 evento={evento}
                 remainingInvites={remainingInvites}
+                soldTickets={soldTickets}
+                isEventOwner={isEventOwner}
               >
                 <Button
                   variant="outline"
