@@ -297,6 +297,7 @@ export async function createCashOrder(data: CreateOrderType) {
             eventId: result.eventId,
             status: "NOT_VALIDATED",
             ticketTypeId: result.ticketTypeId,
+            isInvitation: false,
           });
         }
       });
@@ -581,6 +582,7 @@ export async function payOrderHandler(orderId: string) {
           orderId: orderId,
           eventId: order.event.id,
           status: "NOT_VALIDATED",
+          isInvitation: false,
         });
       }
     });
@@ -607,7 +609,6 @@ export async function createFreeTicket(
 export async function createTicketOrder(tickets: TicketOrderType[]) {
   try {
     const result = await TicketOrders.createTicketOrder(tickets);
-
     if (result.length > 0) {
       await sendTicketMail(result as TicketOrderType[]);
     }
@@ -628,7 +629,7 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
     };
     qrTickets.push(newTicket);
   }
-
+  
   const emailSubject = `Gracias por comprar en ${SITE_NAME}`;
   const emailBody = `  
   <div
@@ -691,6 +692,9 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
                   </p>
                   <h3 style="font-size: 1.5rem; color: black; margin: 0px">
                     ${eventData?.title}
+                  </h3>
+                  <h3 style="font-size: 1rem; color: black; margin: 0px">
+                    ${t.ticketType.title}
                   </h3>
                   <p style="font-size: 14px; color: black; margin: 0px">
                     Lugar: <span style="font-weight:600;">${
@@ -1185,5 +1189,14 @@ export async function inviteUserToEvent(data: InvitationMethodInput) {
     }
   } catch (error) {
     throw new Error("Error creando la invitacion");
+  }
+}
+
+export async function getTicketOrderById(ticketId: string) {
+  try {
+    const result = await TicketOrders.getTicketOrderById(ticketId);
+    return result;
+  } catch (error) {
+    throw new Error("Error trayendo la orden de tickets");
   }
 }
