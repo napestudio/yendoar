@@ -1,21 +1,19 @@
 import BuyTicketForm from "@/components/dashboard/buy-ticket-form";
 import DashboardHeader from "@/components/dashboard/dashboard-header";
 import { Button } from "@/components/ui/button";
-import {
-  getEventById,
-  getServiceCharge,
-  getSoldTicketsByType,
-} from "@/lib/actions";
+
+import { getSingleEventById, getSoldTicketsByType } from "@/lib/actions";
 import { DiscountCode } from "@/types/discount-code";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Ticket } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
 async function getEventData(id: string) {
-  const evento = await getEventById(id);
+  const evento = await getSingleEventById(id);
   if (!evento) return;
-  const serviceCharge = await getServiceCharge(evento.userId);
-  const soldTickets = await getSoldTicketsByType(evento.id);
+  const serviceCharge = evento.user.configuration?.serviceCharge || 0;
+
+  const soldTickets = await getSoldTicketsByType(evento.tickets);
   return {
     evento,
     serviceCharge,
@@ -33,7 +31,6 @@ export default async function NewCashTicketPage({
     return <p>Evento no encontrado.</p>;
   }
   const { evento, serviceCharge, soldTickets } = eventData;
-
   return (
     <>
       <div className="space-y-6 pb-8">
@@ -41,7 +38,7 @@ export default async function NewCashTicketPage({
           title={`Vender entrada para: ${evento.title}`}
           subtitle="Completa el formulario para emitir un ticket cobrando en efectivo."
         />
-        <div className="flex items-center gap-2 mt-4">
+        <div className="flex items-center justify-between gap-2 mt-4">
           <Button variant="outline" size="sm" asChild>
             <Link href={`/dashboard/evento/${params.id}`}>
               <ArrowLeft className="mr-2 h-4 w-4" />

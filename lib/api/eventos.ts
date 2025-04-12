@@ -4,6 +4,7 @@ import db from "../prisma";
 import { CLIENT_ID } from "../constants";
 import { id } from "date-fns/locale";
 import { equal } from "assert";
+import { Prisma } from "@prisma/client";
 
 export const getEventsByUserId = cache(async (userId: string) => {
   return db.event.findMany({
@@ -47,6 +48,20 @@ export const getAllEvents = cache(async () => {
 });
 
 export async function getAllEventByClientId() {
+  return db.event.findMany({
+    where: {
+      user: {
+        clientId: {
+          equals: CLIENT_ID,
+        },
+      },
+    },
+    include: {
+      user: true,
+    },
+  });
+}
+export async function getAllActiveEventByClientId() {
   return db.event.findMany({
     where: {
       status: {
@@ -105,6 +120,69 @@ export async function updateEvent(eventId: string, eventData: Partial<Evento>) {
     data: eventData,
   });
 }
+
+export const getSingleEvent = cache(async (eventId: string) => {
+  return db.event.findUnique({
+    where: {
+      id: eventId,
+    },
+    include: {
+      user: {
+        select: {
+          configuration: {
+            select: {
+              serviceCharge: true,
+            },
+          },
+        },
+      },
+      ticketTypes: {
+        where: {
+          status: {
+            not: "DELETED",
+          },
+        },
+      },
+      eventPayments: {
+        where: {
+          paymentMethod: {
+            type: "DIGITAL",
+          },
+        },
+        include: {
+          paymentMethod: {
+            select: {
+              type: true,
+              apiKey: true,
+            },
+          },
+        },
+      },
+      discountCode: {
+        where: {
+          status: {
+            not: "DELETED",
+          },
+        },
+      },
+      tickets: {
+        select: {
+          ticketType: {
+            select: {
+              title: true,
+              id: true,
+            },
+          },
+        },
+      },
+      validatorToken: true,
+    },
+  });
+});
+export type GetSingleEventResponse = Prisma.PromiseReturnType<
+  typeof getSingleEvent
+>;
+
 export const getEventById = cache(async (eventId: string) => {
   return db.event.findUnique({
     where: {
@@ -124,7 +202,39 @@ export const getEventById = cache(async (eventId: string) => {
           paymentMethod: true,
         },
       },
-      discountCode: true,
+      discountCode: {
+        where: {
+          status: {
+            not: "DELETED",
+          },
+        },
+      },
+      tickets: {
+        select: {
+          name: true,
+          lastName: true,
+          dni: true,
+          id: true,
+          code: true,
+          isInvitation: true,
+          email: true,
+          createdAt: true,
+          ticketType: {
+            select: {
+              title: true,
+            },
+          },
+          order: {
+            select: {
+              ticketType: {
+                select: {
+                  title: true,
+                },
+              },
+            },
+          },
+        },
+      },
       validatorToken: true,
     },
   });

@@ -1,26 +1,13 @@
-import {
-  getDigitalPaymentMethodKeyByEvent,
-  getEventById,
-  getServiceCharge,
-  getSoldTicketsByType,
-} from "@/lib/actions";
+import { getSingleEventById, getSoldTicketsByType } from "@/lib/actions";
 import { datesFormater } from "@/lib/utils";
 import TicketTypePicker from "@/components/ticket-type-picker/ticket-type-picker";
 import EventHeader from "@/components/event-header/event-header";
-import { Evento as EventoType } from "@/types/event";
-import { DiscountCode } from "@/types/discount-code";
-import { Suspense } from "react";
-import Loader from "../loader";
-import { Metadata, ResolvingMetadata } from "next";
-import { getAllEvents } from "@/lib/api/eventos";
-import { SITE_NAME, SITE_URL } from "@/lib/constants";
 
-// export async function generateStaticParams() {
-//   const events = await getAllEvents();
-//   return events.map((evento) => ({
-//     id: evento.id,
-//   }));
-// }
+import { DiscountCode } from "@/types/discount-code";
+
+import { Metadata, ResolvingMetadata } from "next";
+import { GetSingleEventResponse } from "@/lib/api/eventos";
+import { SITE_NAME, SITE_URL } from "@/lib/constants";
 
 export async function generateMetadata(
   { params }: { params: { id: string } },
@@ -62,37 +49,37 @@ export async function generateMetadata(
 }
 
 async function getEventData(id: string) {
-  const evento = await getEventById(id);
+  const evento = await getSingleEventById(id);
+
   if (!evento) return;
-  const serviceCharge = await getServiceCharge(evento.userId);
-  const soldTickets = await getSoldTicketsByType(evento.id);
+  const serviceCharge = evento.user.configuration?.serviceCharge || 0;
+  const soldTickets = await getSoldTicketsByType(evento.tickets);
+  const paymentMethod = evento.eventPayments;
+
   return {
     evento,
     serviceCharge,
     soldTickets,
+    paymentMethod,
   };
 }
 
 export default async function Evento({ params }: { params: { id: string } }) {
   const eventData = await getEventData(params.id);
-  const paymentMethod = await getDigitalPaymentMethodKeyByEvent(params.id);
   if (!eventData) {
     return <p>Evento no encontrado.</p>;
   }
 
-  const { evento, serviceCharge, soldTickets } = eventData;
+  const { evento, serviceCharge, soldTickets, paymentMethod } = eventData;
 
   const groupedDates = datesFormater(evento?.dates as string);
 
-  const discountCode =
-    evento?.discountCode &&
-    (evento.discountCode as DiscountCode[]).filter(
-      (dc) => dc.status !== "DELETED"
-    );
-
   return (
-    <Suspense fallback={<Loader />}>
-      <EventHeader evento={evento as EventoType} dates={groupedDates} />
+    <>
+      <EventHeader
+        evento={evento as GetSingleEventResponse}
+        dates={groupedDates}
+      />
 
       <section className="w-[50rem] max-w-[95vw] mx-auto py-6 md:py-12 mt-[3rem]">
         {paymentMethod.length > 0 && (
@@ -124,6 +111,6 @@ export default async function Evento({ params }: { params: { id: string } }) {
           </>
         )}
       </section>
-    </Suspense>
+    </>
   );
 }

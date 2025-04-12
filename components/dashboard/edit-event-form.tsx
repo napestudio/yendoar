@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { deleteEventImage, updateEvent, uploadEventImage } from "@/lib/actions";
 import { useState } from "react";
-import Autocomplete from "react-google-autocomplete";
 
 import {
   Form,
@@ -21,19 +20,19 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Evento } from "@/types/event";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { Label } from "@/components/ui/label";
+
 import { useToast } from "@/components/ui/use-toast";
 import { FileUploader } from "@/app/dashboard/components/file-uploader/file-uploader";
-import { Loader2, TicketIcon } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Loader2 } from "lucide-react";
 
 import Box from "./box";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const formSchema = z.object({
   title: z.string().min(5, {
@@ -44,6 +43,7 @@ const formSchema = z.object({
   address: z.string(),
   image: z.string(),
   file: z.any(),
+  status: z.enum(["ACTIVE", "DRAFT", "CONCLUDED", "CANCELED", "DELETED"]),
 });
 
 export default function EditEventForm({ evento }: { evento: Evento }) {
@@ -65,6 +65,7 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
       address: evento.address,
       image: evento.image || "",
       file: evento.image || "",
+      status: evento.status,
     },
   });
 
@@ -116,7 +117,7 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
     const parsedDates = JSON.stringify(dateTimeSelections);
 
     if (deleteImageValue) {
-      const res = await deleteEventImage(evento.image);      
+      const res = await deleteEventImage(evento.image);
       if (res.result === "ok") values.image = "";
       setDeleteImageValue(false);
     }
@@ -143,7 +144,7 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
       } finally {
         setIsLoading(false);
       }
-    }      
+    }
 
     updateEvent(
       {
@@ -155,7 +156,7 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
         dates: parsedDates,
         userId: evento.userId,
         endDate: endDate.toISOString(),
-        status: "ACTIVE",
+        status: values.status,
       },
       evento.id
     )
@@ -297,6 +298,36 @@ export default function EditEventForm({ evento }: { evento: Evento }) {
                     )}
                   />
                 </div>
+              </Box>
+            </div>
+            <div>
+              <Box>
+                <h3 className="font-bold mb-4">Estado</h3>
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={evento.status}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Estado" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="ACTIVE">Publicado</SelectItem>
+                          <SelectItem value="DRAFT">Borrador</SelectItem>
+                          <SelectItem value="CANCELED">Cancelado</SelectItem>
+                          <SelectItem value="CONCLUDED">Finalizado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </Box>
             </div>
           </div>

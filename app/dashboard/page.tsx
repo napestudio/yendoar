@@ -12,7 +12,11 @@ import StatsCards from "@/components/dashboard/stats-cards";
 import EventsDisplay from "@/components/dashboard/events-display";
 import DashboardHeader from "@/components/dashboard/dashboard-header";
 import { getEventsBySellerId } from "@/lib/actions";
-import { getAllEventByClientId, getEventsByUserId } from "@/lib/api/eventos";
+import {
+  getAllActiveEventByClientId,
+  getAllEventByClientId,
+  getEventsByUserId,
+} from "@/lib/api/eventos";
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
@@ -24,7 +28,7 @@ export default async function Dashboard() {
   switch (type) {
     case "ADMIN":
     case "SUPERADMIN":
-      eventos = await getAllEventByClientId();
+      eventos = await getAllActiveEventByClientId();
       break;
     case "SELLER":
       eventos = await getEventsBySellerId(id);

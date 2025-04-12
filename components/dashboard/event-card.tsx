@@ -30,16 +30,16 @@ export default function EventCard({
     session.user.type === "ADMIN" ||
     session.user.type === "SUPERADMIN";
   const isSeller = session.user.type === "SELLER";
+
+  const isInactive =
+    evento.status === "CANCELED" || evento.status === "CONCLUDED";
+
   return (
     <>
-      <Card
-        className={cn(
-          "w-full text-left overflow-hidden",
-          evento.status === "CANCELED" && "opacity-50"
-        )}
-        key={evento.id}
-      >
-        <CardHeader className="flex gap-2 p-0">
+      <Card className={cn("w-full text-left overflow-hidden")} key={evento.id}>
+        <CardHeader
+          className={cn("flex gap-2 p-0", isInactive && "opacity-50")}
+        >
           <div className="relative h-48 w-full ">
             <Image
               src={evento.image || "/placeholder.svg"}
@@ -82,9 +82,11 @@ export default function EventCard({
         </CardContent>
         <CardFooter className="flex justify-between gap-4 p-4">
           <Button variant="outline" asChild>
-            <Link href={`/dashboard/evento/${evento.id}`}>Detalles</Link>
+            <Link href={`/dashboard/evento/${evento.id}`} prefetch={true}>
+              Detalles
+            </Link>
           </Button>
-          {evento.status !== "CANCELED" && !isSeller && isEventOwner && (
+          {!isInactive && !isSeller && isEventOwner && (
             <Button>
               <Link
                 href={`/dashboard/evento/${evento.id}/edit?tab=tickets`}

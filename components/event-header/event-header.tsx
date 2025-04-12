@@ -1,9 +1,10 @@
+import { GetSingleEventResponse } from "@/lib/api/eventos";
 import { Evento } from "@/types/event";
 import { CalendarIcon, MapPin } from "lucide-react";
 import Image from "next/image";
 
 type EventHeaderProps = {
-  evento: Evento;
+  evento: GetSingleEventResponse;
   dates: string;
   width?: number;
   height?: number;
@@ -20,7 +21,7 @@ export default function EventHeader({
     }
     return description;
   };
-
+  if (!evento) return;
   return (
     <section className="w-full relative">
       <div className="absolute h-[40vh] w-full overflow-hidden ">

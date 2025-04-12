@@ -1,7 +1,18 @@
-import { TicketOrderType, TicketType } from "@/types/tickets";
 import db from "../prisma";
-import { title } from "process";
-import { isAfter } from "date-fns";
+
+type TicketOrderType = {
+  id?: string;
+  name: string;
+  lastName: string;
+  dni: string;
+  email: string;
+  base64Qr: string;
+  date: Date;
+  orderId: string;
+  eventId: string;
+  ticketTypeId?: string;
+  status: "NOT_VALIDATED" | "VALIDATED";
+};
 
 export async function createTicketOrder(data: TicketOrderType[]) {
   const createdOrders = await db.$transaction(

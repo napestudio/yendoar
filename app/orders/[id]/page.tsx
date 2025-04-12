@@ -13,6 +13,7 @@ import EventHeader from "@/components/event-header/event-header";
 import { Evento } from "@/types/event";
 import OrderTotal from "@/components/order-total/order-total";
 import { TicketType } from "@/types/tickets";
+import { GetSingleEventResponse } from "@/lib/api/eventos";
 
 export default async function OrderPage({
   params,
@@ -43,7 +44,7 @@ export default async function OrderPage({
   return (
     <>
       <EventHeader
-        evento={evento as Evento}
+        evento={evento as GetSingleEventResponse}
         dates={groupedEventDates}
         width={10}
         height={10}
