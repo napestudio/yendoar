@@ -1236,7 +1236,7 @@ export const downloadPdfFile = async (ticketId: any) => {
 
   // Agregar imagen QR al PDF (posición x: 140, y: 30, tamaño: 50x50)
   doc.addImage(qrCodeBase64, "PNG", 20, 68, 40, 40);
-  console.log(doc);
+
   // Descargar PDF
   doc.save(`ticket-${ticketId}.pdf`);
 };

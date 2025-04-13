@@ -28,7 +28,10 @@ export default function SoldTicketsTab({
       </CardHeader>
       <CardContent>
         {evento.validatorToken && evento.tickets?.length && (
-          <SoldTicketsTable tickets={evento.tickets as TicketOrderType[]} />
+          <SoldTicketsTable
+            tickets={evento.tickets as TicketOrderType[]}
+            evento={evento}
+          />
         )}
       </CardContent>
     </Card>

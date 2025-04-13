@@ -1,7 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -41,3 +40,13 @@ export const datesFormater = (dates: string) => {
 export const isExpired = (date: Date) => {
   return new Date(date) < new Date();
 };
+
+export function slugify(text: string): string {
+  return text
+    .toLowerCase() // convierte a minúsculas
+    .normalize("NFD") // separa letras acentuadas en base + tilde
+    .replace(/[\u0300-\u036f]/g, "") // remueve los tildes
+    .replace(/[^a-z0-9\s-]/g, "") // elimina caracteres no válidos
+    .trim() // remueve espacios al principio y al final
+    .replace(/\s+/g, "-"); // reemplaza espacios por guiones
+}

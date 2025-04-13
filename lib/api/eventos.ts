@@ -215,6 +215,7 @@ export const getEventById = cache(async (eventId: string) => {
           lastName: true,
           dni: true,
           id: true,
+          date: true,
           code: true,
           isInvitation: true,
           email: true,
@@ -232,12 +233,11 @@ export const getEventById = cache(async (eventId: string) => {
                   title: true,
                   location: true,
                   address: true,
-                }
+                },
               },
               ticketType: {
                 select: {
                   title: true,
-                  
                 },
               },
             },
@@ -245,7 +245,6 @@ export const getEventById = cache(async (eventId: string) => {
         },
       },
       validatorToken: true,
-      
     },
   });
 });
