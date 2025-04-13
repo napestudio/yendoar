@@ -32,10 +32,12 @@ export default async function PaymentMethodsPage() {
             Método de pago
           </Button>
         </AddPaymentMethodDialog>
-        <PaymentMethodsLoader
-          clientId={session.user.clientId}
-          session={session}
-        />
+        <div className="max-w-[95vw]">
+          <PaymentMethodsLoader
+            clientId={session.user.clientId}
+            session={session}
+          />
+        </div>
       </div>
     </div>
   );
