@@ -12,11 +12,18 @@ type TicketOrderType = {
   eventId: string;
   ticketTypeId?: string;
   status: "NOT_VALIDATED" | "VALIDATED";
+  isInvitation?: boolean;
 };
 
 export async function createTicketOrder(data: TicketOrderType[]) {
   const createdOrders = await db.$transaction(
-    data.map((order) => db.ticketOrder.create({ data: order }))
+    data.map((order) => db.ticketOrder.create({ data: order, include:{
+      ticketType: {
+        select: {
+          title: true,
+        }
+      }
+    } }))
   );
   return createdOrders;
 }
@@ -141,4 +148,28 @@ export async function getUserMaxInvites(userId: string): Promise<number> {
   });
 
   return config?.maxInvitesAmount ?? 0;
+}
+
+export async function getTicketOrderById(id: string) {
+  return await db.ticketOrder.findUnique({
+    where: { id },
+    include: {
+      order: {
+        include: {
+          ticketType: {
+            select: {
+              title: true,
+            }
+          },
+        },
+      },
+      event: {
+        select: {
+          title: true,
+          address: true,
+          location: true,
+        },
+      },
+    },
+  });
 }
