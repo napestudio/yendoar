@@ -630,7 +630,7 @@ export async function sendTicketMail(tickets: TicketOrderType[]) {
     };
     qrTickets.push(newTicket);
   }
-  
+
   const emailSubject = `Gracias por comprar en ${SITE_NAME}`;
   const emailBody = `  
   <div
@@ -1202,7 +1202,9 @@ export async function getTicketOrderById(ticketId: string) {
   }
 }
 
-export const downloadPdfFile = async (response: any) => {
+export const downloadPdfFile = async (ticketId: any) => {
+  const response = await getTicketOrderById(ticketId);
+  if (!response) return;
   const qrCodeBase64 = await setQrCode(response.id);
   const formattedDate = `${new Date(
     response.date
@@ -1233,7 +1235,7 @@ export const downloadPdfFile = async (response: any) => {
 
   // Agregar imagen QR al PDF (posición x: 140, y: 30, tamaño: 50x50)
   doc.addImage(qrCodeBase64, "PNG", 20, 68, 40, 40);
-
+  console.log(doc);
   // Descargar PDF
-  doc.save(`ticket-${response.id}.pdf`);
+  doc.save(`ticket-${ticketId}.pdf`);
 };
