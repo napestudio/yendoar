@@ -42,11 +42,16 @@ import {
 import { downloadPdfFile, getTicketOrderById, setQrCode } from "@/lib/actions";
 
 import { jsPDF } from "jspdf";
+import { es } from "date-fns/locale";
+import { EventoWithTicketsType } from "@/types/event";
+import { slugify } from "@/lib/utils";
 
 export default function SoldTicketsTable({
   tickets,
+  evento,
 }: {
   tickets: TicketOrderTableProps[];
+  evento: EventoWithTicketsType;
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showOnlyInvitations, setShowOnlyInvitations] = useState(false);
@@ -75,13 +80,13 @@ export default function SoldTicketsTable({
     )
     .filter((event) => (showOnlyInvitations ? event.isInvitation : true));
 
-  const handleTicketDownload = async (ticketId: string) => {
-    const response: any = tickets.find(t => t.id === ticketId);
-    const formattedDate = new Date(JSON.parse(response.ticketType.dates)[0].date || "");
-    if (!response) return;
-    const qrCodeBase64 = await setQrCode(ticketId);
-    const fullDate = `${formattedDate.toLocaleDateString()} - ${formattedDate.getHours()}:${String(formattedDate.getMinutes()).padStart(2, "0")}hs.`;
-    
+  // const handleTicketDownload = async (ticketId: string) => {
+  const handleTicketDownload = async (ticket: TicketOrderTableProps) => {
+    if (!ticket) return;
+    const qrCodeBase64 = await setQrCode(ticket.id);
+
+    const fullDate = format(ticket.date, "dd/MM/yyyy HH:mm", { locale: es });
+
     // Crear PDF
     const doc = new jsPDF();
     doc.addImage(
@@ -94,25 +99,25 @@ export default function SoldTicketsTable({
     );
     // Texto principal
     doc.setFontSize(12);
-    doc.text(`N.: ${String(response.code).padStart(5, "0") || "-"}`, 20, 30);
+    doc.text(`N.: ${String(ticket.code).padStart(5, "0") || "-"}`, 20, 30);
     doc.setFontSize(18);
-    doc.text(`${response.order.event.title || "-"}`, 20, 40);
+    doc.text(`${evento.title || "-"}`, 20, 40);
 
     doc.setFontSize(12);
-    doc.text(`${response.order.ticketType.title || "-"}`, 20, 48);
+    doc.text(`${ticket || "-"}`, 20, 48);
     doc.text(`Fecha:  ${fullDate}`, 20, 53);
-    doc.text(`Dirección: ${response.order.event.address || "-"}`, 20, 58);
-    doc.text(`Lugar: ${response.order.event.location || "-"}`, 20, 63);
+    doc.text(`Dirección: ${evento.address || "-"}`, 20, 58);
+    doc.text(`Lugar: ${evento.address || "-"}`, 20, 63);
 
     // Agregar imagen QR al PDF (posición x: 140, y: 30, tamaño: 50x50)
     doc.addImage(qrCodeBase64, "PNG", 20, 68, 40, 40);
     // Descargar PDF
-    doc.save(`ticket-${ticketId}.pdf`);
+    doc.save(`ticket-${slugify(evento.title)}.pdf`);
   };
 
   return (
     <div className="space-y-6">
-      {tickets.length > 0 ? (
+      {evento.tickets && evento.tickets.length > 0 ? (
         <>
           <div className="flex items-center gap-2 mb-4">
             <Input
@@ -174,7 +179,7 @@ export default function SoldTicketsTable({
                               variant="ghost"
                               size="sm"
                               className="w-full inline-flex gap-1 items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md cursor-pointer"
-                              onClick={() => handleTicketDownload(ticket.id!)}
+                              onClick={() => handleTicketDownload(ticket)}
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
