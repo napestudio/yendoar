@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createCashOrder, createOrder } from "@/lib/actions";
+import { createCashOrder } from "@/lib/actions";
 import { datesFormater } from "@/lib/utils";
 import { Input } from "../ui/input";
 import { DiscountCode } from "@/types/discount-code";
