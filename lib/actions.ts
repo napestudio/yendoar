@@ -579,6 +579,7 @@ export async function payOrderHandler(orderId: string) {
           base64Qr: "code",
           date: new Date(dateObj.date),
           orderId: orderId,
+          ticketTypeId: order.ticketTypeId,
           eventId: order.event.id,
           status: "NOT_VALIDATED",
         });

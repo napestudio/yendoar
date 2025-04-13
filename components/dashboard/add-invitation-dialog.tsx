@@ -149,7 +149,7 @@ export function AddInvitationDialog({
   const isPastEndDate = (endDate: Date): boolean => {
     return isBefore(new Date(endDate), new Date());
   };
-  console.log(remainingInvites);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild disabled={remainingInvites <= 0}>

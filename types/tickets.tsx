@@ -47,9 +47,9 @@ export type TicketOrderType = {
   date: Date;
   orderId: string;
   eventId: string;
-  ticketTypeId?: string;
+  ticketTypeId: string;
   status: "NOT_VALIDATED" | "VALIDATED";
-  isInvitation?: true,
+  isInvitation?: true;
 };
 
 export type TicketOrderTableProps = {
