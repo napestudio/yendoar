@@ -45,6 +45,7 @@ import { deletePaymentMethod } from "@/lib/actions";
 import { toast } from "../ui/use-toast";
 import RemovePaymentMethodAlert from "./remove-payment-method-alert";
 import { Session } from "next-auth";
+import { cn } from "@/lib/utils";
 // import { EditPaymentMethodDialog } from "./edit-payment-method-dialog"
 
 export default function PaymentMethodsTable({
@@ -96,6 +97,31 @@ export default function PaymentMethodsTable({
         description: (error as Error).message || "No se pudo eliminar",
       });
     }
+  };
+
+  const renderTypeBadge = (type: string) => {
+    const statusMap: Record<string, { label: string; color: string }> = {
+      CASH: {
+        label: "Punto de venta",
+        color: "bg-green text-white",
+      },
+      DIGITAL: {
+        label: "MercadoPago",
+        color: "bg-blue text-white",
+      },
+      DEFAULT: {
+        label: type,
+        color: "",
+      },
+    };
+
+    const { label, color } = statusMap[type] || statusMap.DEFAULT;
+
+    return (
+      <Badge className={cn(color, "whitespace-nowrap")} variant="secondary">
+        {label}
+      </Badge>
+    );
   };
 
   const getStatusBadge = (status: boolean) => {
@@ -209,7 +235,7 @@ export default function PaymentMethodsTable({
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell>{method.type}</TableCell>
+                  <TableCell>{renderTypeBadge(method.type)}</TableCell>
                   {!eventId && (
                     <TableCell>{getStatusBadge(method.enabled)}</TableCell>
                   )}

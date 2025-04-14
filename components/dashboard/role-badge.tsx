@@ -23,13 +23,13 @@ export default function RoleBadge({ role }: RoleBadgeProps) {
     case "PRODUCER":
       return (
         <Badge variant="outline" className="bg-green text-white">
-          PRODUCER
+          PRODUCTOR
         </Badge>
       );
     case "SELLER":
       return (
         <Badge variant="outline" className="bg-orange-500/20 text-black">
-          SELLER
+          PUNTO DE VENTA
         </Badge>
       );
     default:

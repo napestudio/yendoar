@@ -37,6 +37,40 @@ export default function SideBar({
   maxInvitesAmount,
   soldTickets,
 }: SideBarProps) {
+  const renderStatusBadge = (status: string) => {
+    const statusMap: Record<string, { label: string; color: string }> = {
+      ACTIVE: {
+        label: "ACTIVO",
+        color: "bg-cyan-500/20 text-green-700 hover:bg-green-500/20",
+      },
+      CONCLUDED: {
+        label: "FINALIZADO",
+        color: "bg-gray-500/20 text-gray-700 hover:bg-gray-500/20",
+      },
+      CANCELED: {
+        label: "CANCELADO",
+        color: "bg-red-500/20 text-red-700 hover:bg-red-500/20",
+      },
+      DELETED: {
+        label: "ELIMINADO",
+        color: "bg-red-500/20 text-red-700 hover:bg-red-500/20",
+      },
+
+      DEFAULT: {
+        label: status,
+        color: "",
+      },
+    };
+
+    const { label, color } = statusMap[status] || statusMap.DEFAULT;
+
+    return (
+      <Badge className={color} variant="secondary">
+        {label}
+      </Badge>
+    );
+  };
+
   return (
     <>
       <Card>
@@ -44,10 +78,12 @@ export default function SideBar({
           <CardTitle>Detalles del evento</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div>
-            <h4 className="text-sm font-medium mb-1">Estado</h4>
-            <Badge variant="secondary">{evento.status}</Badge>
-          </div>
+          {evento.status && (
+            <div>
+              <h4 className="text-sm font-medium mb-1">Estado</h4>
+              {renderStatusBadge(evento.status)}
+            </div>
+          )}
 
           <div>
             <h4 className="text-sm font-medium mb-1">Creado por</h4>
