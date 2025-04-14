@@ -104,13 +104,18 @@ export default function SoldTicketsTable({
     doc.text(`${evento.title || "-"}`, 20, 40);
 
     doc.setFontSize(12);
-    doc.text(`${ticket || "-"}`, 20, 48);
-    doc.text(`Fecha:  ${fullDate}`, 20, 53);
-    doc.text(`Dirección: ${evento.address || "-"}`, 20, 58);
-    doc.text(`Lugar: ${evento.address || "-"}`, 20, 63);
+    doc.text(
+      `Comprador: ${ticket.name || "-"} ${ticket.lastName || "-"}`,
+      20,
+      48
+    );
+    doc.text(`Tipo de ticket: ${ticket.ticketType?.title || "-"}`, 20, 53);
+    doc.text(`Fecha:  ${fullDate}hs`, 20, 58);
+    doc.text(`Dirección: ${evento.address || "-"}`, 20, 63);
+    doc.text(`Lugar: ${evento.address || "-"}`, 20, 68);
 
     // Agregar imagen QR al PDF (posición x: 140, y: 30, tamaño: 50x50)
-    doc.addImage(qrCodeBase64, "PNG", 20, 68, 40, 40);
+    doc.addImage(qrCodeBase64, "PNG", 20, 75, 40, 40);
     // Descargar PDF
     doc.save(`ticket-${slugify(evento.title)}.pdf`);
   };

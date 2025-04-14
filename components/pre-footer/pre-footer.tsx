@@ -31,11 +31,11 @@ export default function PreFooter() {
         </div>
         <div className="h-full flex flex-col justify-between items-center md:items-end gap-5">
           <Image
-            src={"/img/logo-mug.svg"}
-            width={841.9}
-            height={595.3}
+            src={"/img/logo-mug.png"}
+            width={699}
+            height={705}
             alt="Logo mug.ar"
-            className="invert w-[150px]"
+            className="w-[150px]"
           />
           <div className="text-center md:text-right">
             <p>
