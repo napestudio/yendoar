@@ -39,9 +39,34 @@ import {
 
 import { EventPayment, PaymentMethod } from "@prisma/client";
 import UnassignPaymentMethodButton from "./unassign-payment-method";
+import { cn } from "@/lib/utils";
 // import { EditPaymentMethodDialog } from "./edit-payment-method-dialog"
 
 export default function PaymentMethodsList({ methods }: { methods: any[] }) {
+  const renderTypeBadge = (type: string) => {
+    const statusMap: Record<string, { label: string; color: string }> = {
+      CASH: {
+        label: "Punto de venta",
+        color: "bg-green text-white",
+      },
+      DIGITAL: {
+        label: "MercadoPago",
+        color: "bg-blue text-white",
+      },
+      DEFAULT: {
+        label: type,
+        color: "",
+      },
+    };
+
+    const { label, color } = statusMap[type] || statusMap.DEFAULT;
+
+    return (
+      <Badge className={cn(color, "whitespace-nowrap")} variant="secondary">
+        {label}
+      </Badge>
+    );
+  };
   return (
     <Card className="max-w-[100vw] overflow-hidden">
       <CardHeader>
@@ -116,7 +141,9 @@ export default function PaymentMethodsList({ methods }: { methods: any[] }) {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell>{method.paymentMethod.type}</TableCell>
+                  <TableCell>
+                    {renderTypeBadge(method.paymentMethod.type)}
+                  </TableCell>
 
                   <TableCell className="text-right">
                     <DropdownMenu>
