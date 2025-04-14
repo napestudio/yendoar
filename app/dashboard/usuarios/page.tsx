@@ -49,7 +49,7 @@ export default async function UsersPage() {
             Invitar Usuario
           </Button>
         </InviteUserDialog>
-        <div className="max-w-[95vw]">
+        <div className="max-w-[95vw] space-y-10">
           {accounts && (
             <UsersTable accounts={accounts as User[]} session={session} />
           )}
