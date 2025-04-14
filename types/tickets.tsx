@@ -1,3 +1,4 @@
+import { Evento } from "./event";
 import { Order } from "./order";
 import { Promotion } from "./promotion";
 
@@ -49,7 +50,9 @@ export type TicketOrderType = {
   eventId: string;
   ticketTypeId: string;
   status: "NOT_VALIDATED" | "VALIDATED";
-  isInvitation?: true;
+  isInvitation?: boolean;
+  code?: number;
+  event?: Evento;
 };
 
 export type TicketOrderTableProps = {
@@ -68,4 +71,6 @@ export type TicketOrderTableProps = {
   createdAt?: Date | undefined;
   isInvitation?: boolean | undefined;
   order?: Order | undefined;
+  event?: Evento;
+  code?: number;
 };

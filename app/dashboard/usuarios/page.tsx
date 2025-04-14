@@ -49,12 +49,14 @@ export default async function UsersPage() {
             Invitar Usuario
           </Button>
         </InviteUserDialog>
-        {accounts && (
-          <UsersTable accounts={accounts as User[]} session={session} />
-        )}
-        {invitations.length > 0 && (
-          <UserInvitationsTable invitations={invitations} />
-        )}
+        <div className="max-w-[95vw]">
+          {accounts && (
+            <UsersTable accounts={accounts as User[]} session={session} />
+          )}
+          {invitations.length > 0 && (
+            <UserInvitationsTable invitations={invitations} />
+          )}
+        </div>
       </div>
     </div>
   );

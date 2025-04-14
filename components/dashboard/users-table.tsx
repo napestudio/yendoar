@@ -123,8 +123,8 @@ export default function UsersTable({
         <CardTitle>Lista de usuarios</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <div className="relative flex-1">
+        {/* <div className="flex flex-col md:flex-row gap-4 mb-6"> */}
+        {/* <div className="relative flex-1">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Buscar usuarios..."
@@ -147,18 +147,16 @@ export default function UsersTable({
                 </SelectItem>
               </SelectContent>
             </Select>
-          </div>
-        </div>
+          </div> */}
+        {/* </div> */}
 
-        <div className="rounded-md border">
+        <div className="rounded-md border max-w-[90vw]">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Usuario</TableHead>
                 <TableHead>Rol</TableHead>
                 <TableHead>Eventos Creados</TableHead>
-                {/* <TableHead>Revenue Generated</TableHead>
-                <TableHead>Last Active</TableHead> */}
                 <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
