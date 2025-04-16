@@ -45,6 +45,7 @@ import { jsPDF } from "jspdf";
 import { es } from "date-fns/locale";
 import { EventoWithTicketsType } from "@/types/event";
 import { slugify } from "@/lib/utils";
+import ExportEventAsPDF from "../data-pdf";
 
 export default function SoldTicketsTable({
   tickets,
@@ -124,19 +125,29 @@ export default function SoldTicketsTable({
     <div className="space-y-6">
       {evento.tickets && evento.tickets.length > 0 ? (
         <>
-          <div className="flex items-center gap-2 mb-4">
-            <Input
-              placeholder="Buscar..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-[250px]"
-            />
-            <Button
-              variant={showOnlyInvitations ? "default" : "outline"}
-              onClick={() => setShowOnlyInvitations((prev) => !prev)}
-            >
-              {showOnlyInvitations ? "Ver todos" : "Ver invitados"}
-            </Button>
+          <div className="flex flex-col items-start gap-2 mb-4">
+            <div className="flex gap-2">
+              <ExportEventAsPDF
+                eventTitle={evento.title}
+                ticketsData={evento.tickets as Partial<TicketOrderTableProps>[]}
+                quantity={evento.tickets.length}
+                type={"ESTADISTICAS"}
+              />
+            </div>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Buscar..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-[250px]"
+              />
+              <Button
+                variant={showOnlyInvitations ? "default" : "outline"}
+                onClick={() => setShowOnlyInvitations((prev) => !prev)}
+              >
+                {showOnlyInvitations ? "Ver todos" : "Ver invitados"}
+              </Button>
+            </div>
           </div>
           <div className="rounded-md border">
             <Table>
