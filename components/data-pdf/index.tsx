@@ -1,12 +1,13 @@
 "use client";
 
-import { TicketOrderType } from "@/types/tickets";
+import { TicketOrderTableProps, TicketOrderType } from "@/types/tickets";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
 import { Button } from "../ui/button";
 import { Download, FileText } from "lucide-react";
 import * as XLSX from "xlsx";
+import { format } from "date-fns";
 
 export default function ExportEventAsPDF({
   eventTitle,
@@ -15,7 +16,8 @@ export default function ExportEventAsPDF({
   type = "VALIDADOR",
 }: {
   eventTitle: string;
-  ticketsData: Partial<TicketOrderType>[];
+  ticketsData: Partial<TicketOrderTableProps>[];
+  // ticketsData: Partial<TicketOrderType>[] ;
   quantity: number;
   type?: "ESTADISTICAS" | "VALIDADOR";
 }) {
@@ -33,29 +35,32 @@ export default function ExportEventAsPDF({
     // Define las columnas de la tabla
     const columns = [
       { header: "Nombre", dataKey: "name" },
-      { header: "Apellido", dataKey: "lastName" },
       { header: "Email", dataKey: "email" },
       { header: "DNI", dataKey: "dni" },
+      { header: "Tipo", dataKey: "type" },
+      { header: "Fecha de compra", dataKey: "date" },
     ];
 
     // Prepara los datos de la tabla
     const rows = ticketsData.map((ticket) => ({
-      name: ticket.name,
-      lastName: ticket.lastName,
+      name: `${ticket.name} ${ticket.lastName}`,
       email: ticket.email,
       dni: ticket.dni,
+      type: ticket.ticketType,
+      date: ticket.createdAt,
     }));
 
     // Agrega la tabla al PDF
 
     autoTable(doc, {
       startY: 50, // Posición vertical donde comenzará la tabla
-      head: [["Nombre", "Apellido", "Email", "DNI"]], // Encabezados de la tabla
+      head: [["Comprador", "Email", "DNI", "TIPO", "FECHA DE COMPRA"]], // Encabezados de la tabla
       body: ticketsData.map((ticket) => [
-        ticket.name || "",
-        ticket.lastName || "",
+        `${ticket.name} ${ticket.lastName}` || "",
         ticket.email || "",
         ticket.dni || "",
+        ticket.ticketType?.title || "",
+        format(ticket.createdAt!, "dd/MM/yyyy") || "",
       ]), // Datos de la tabla
     });
 
@@ -83,12 +88,13 @@ export default function ExportEventAsPDF({
   };
   const exportXLSX = () => {
     const wsData = [
-      ["Nombre", "Apellido", "Email", "DNI"], // Encabezados
+      ["Nombre", "Email", "DNI", "TIPO", "FECHA DE COMPRA"], // Encabezados
       ...ticketsData.map((ticket) => [
-        ticket.name || "",
-        ticket.lastName || "",
+        `${ticket.name} ${ticket.lastName}` || "",
         ticket.email || "",
         ticket.dni || "",
+        ticket.ticketType?.title || "",
+        format(ticket.createdAt!, "dd/MM/yyyy") || "",
       ]), // Datos de los tickets
     ];
 
